@@ -13,6 +13,7 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/motion/rtc_motion.dart';
+import '../widgets/acciones_reserva.dart';
 
 /// Port de `Frontend/src/app/(public)/reservas/confirmacion/page.tsx`, con una
 /// diferencia deliberada.
@@ -178,11 +179,13 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     const SizedBox(height: RtcSpace.s2),
     _bajada(
       'Tu pago fue recibido. Te enviamos los detalles al correo con el link '
-      'para cancelar si lo necesitas.',
+      'para cambiar de horario si lo necesitas.',
     ),
     if (_booking != null) ...[
       const SizedBox(height: RtcSpace.s6),
       _detalle(_booking!),
+      const SizedBox(height: RtcSpace.s3),
+      AccionesReserva(booking: _booking!),
     ],
     const SizedBox(height: RtcSpace.s6),
     _nota('Revisa tu bandeja de entrada (y carpeta de spam por si acaso).'),

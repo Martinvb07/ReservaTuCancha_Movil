@@ -7,6 +7,7 @@ import '../screens/dashboard/analytics_screen.dart';
 import '../screens/dashboard/bloqueos_screen.dart';
 import '../screens/dashboard/dashboard_home_screen.dart';
 import '../screens/dashboard/editar_cancha_screen.dart';
+import '../screens/dashboard/escanear_screen.dart';
 import '../screens/dashboard/fotos_screen.dart';
 import '../screens/dashboard/mi_club_screen.dart';
 import '../screens/dashboard/mis_canchas_screen.dart';
@@ -240,6 +241,7 @@ final rtcPanelRoutes = <String, WidgetBuilder>{
   '/dashboard/propetario/canchas': (_) => const MisCanchasScreen(),
   '/dashboard/propetario/canchas/nueva': (_) => const NuevaCanchaScreen(),
   '/dashboard/propetario/reservas': (_) => const ReservasScreen(),
+  '/dashboard/propetario/escanear': (_) => const EscanearScreen(),
   '/dashboard/propetario/analytics': (_) => const AnalyticsScreen(),
   '/dashboard/propetario/bloqueos': (_) => const BloqueosScreen(),
   '/dashboard/propetario/fotos': (_) => const FotosScreen(),

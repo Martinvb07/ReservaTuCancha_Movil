@@ -12,6 +12,7 @@ import '../theme/typography.dart';
 import '../app/routes.dart';
 import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 import '../data/preferencias.dart';
+import '../widgets/acciones_reserva.dart';
 
 /// Port de `Frontend/src/app/(public)/mis-reservas/page.tsx`.
 ///
@@ -598,6 +599,12 @@ class _BookingCard extends StatelessWidget {
                 ),
             ],
           ),
+          // QR y calendario solo para las que ya estan pagadas y por jugar.
+          if (booking.status == 'confirmed' ||
+              booking.status == 'reagendada') ...[
+            const SizedBox(height: RtcSpace.s4),
+            AccionesReserva(booking: booking),
+          ],
         ],
       ),
     );

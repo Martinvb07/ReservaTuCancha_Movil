@@ -22,6 +22,7 @@ import '../widgets/review_card.dart';
 import '../widgets/star_rating.dart';
 import '../widgets/boton_favorito.dart';
 import '../widgets/galeria_fotos.dart';
+import '../widgets/acciones_reserva.dart';
 
 /// Port de `Frontend/src/app/(public)/canchas/[id]/page.tsx`, rama movil.
 ///
@@ -363,7 +364,17 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
           Positioned(
             top: arriba + RtcSpace.s3,
             right: RtcSpace.s5,
-            child: BotonFavorito(courtId: court.id),
+            child: Row(
+              children: [
+                _botonFoto(
+                  icono: LucideIcons.share2,
+                  etiqueta: 'Compartir cancha',
+                  onTap: () => compartirCancha(court),
+                ),
+                const SizedBox(width: 10),
+                BotonFavorito(courtId: court.id),
+              ],
+            ),
           ),
           if (photos.length > 1)
             Positioned(

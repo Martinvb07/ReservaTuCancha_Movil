@@ -292,10 +292,12 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
         const Color(0xFF9333EA), // purple-600
         Colors.white,
       ),
+      // Mis canchas sigue en el menu lateral; aca va lo que se usa en la
+      // puerta de la cancha.
       (
-        '/dashboard/propetario/canchas',
-        'Mis canchas',
-        LucideIcons.building2,
+        '/dashboard/propetario/escanear',
+        'Escanear QR',
+        LucideIcons.scanLine,
         Gray.c800,
         Colors.white,
       ),

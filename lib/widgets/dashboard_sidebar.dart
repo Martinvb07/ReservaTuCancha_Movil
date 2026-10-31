@@ -37,6 +37,7 @@ class DashboardSidebar extends StatelessWidget {
           'Reservas',
           LucideIcons.calendarDays,
         ),
+        ('/dashboard/propetario/escanear', 'Escanear QR', LucideIcons.scanLine),
       ],
     ),
     (
