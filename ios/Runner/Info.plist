@@ -79,5 +79,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Para mostrarte las canchas más cerca de ti.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Para escanear el código QR de las reservas y tomar fotos de tus canchas.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Para subir fotos de tus canchas y de tu club.</string>
 </dict>
 </plist>

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../api/analytics_api.dart';
@@ -23,6 +24,8 @@ import '../widgets/remote_image.dart';
 import '../widgets/rtc_bottom_nav.dart';
 import '../data/preferencias.dart';
 import '../widgets/boton_favorito.dart';
+import '../data/ubicacion.dart';
+import '../widgets/rtc_toast.dart';
 
 /// Inicio de la app.
 ///
@@ -43,6 +46,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// El deporte elegido en los chips; null es "Todas".
   String? _deporte;
+
+  /// Con "Cerca de mí" activo: la posicion del jugador. El carrusel se ordena
+  /// por distancia y cada tarjeta dice a cuanto queda.
+  Position? _posicion;
+  bool _ubicando = false;
+
+  Future<void> _alternarCerca() async {
+    if (_posicion != null) {
+      setState(() => _posicion = null);
+      return;
+    }
+    setState(() => _ubicando = true);
+    final (pos, error) = await Ubicacion.obtener();
+    if (!mounted) return;
+    setState(() {
+      _posicion = pos;
+      _ubicando = false;
+    });
+    if (error != null) rtcToast(context, error, tipo: RtcToastTipo.error);
+  }
 
   final _scroll = ScrollController();
 
@@ -88,9 +111,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  List<Court> get _filtradas => _deporte == null
-      ? _canchas
-      : _canchas.where((c) => c.sport == _deporte).toList();
+  List<Court> get _filtradas {
+    final lista = _deporte == null
+        ? [..._canchas]
+        : _canchas.where((c) => c.sport == _deporte).toList();
+    final pos = _posicion;
+    if (pos != null) {
+      // Las que no tienen coordenadas van al final.
+      double d(Court c) => Ubicacion.km(pos, c) ?? double.infinity;
+      lista.sort((a, b) => d(a).compareTo(d(b)));
+    }
+    return lista;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
         _ChipsDeporte(
           elegido: _deporte,
           onElegir: (d) => setState(() => _deporte = d),
+          cerca: _posicion != null,
+          ubicando: _ubicando,
+          onCerca: _alternarCerca,
         ),
         const SizedBox(height: RtcSpace.s6),
         _Titulo(
@@ -139,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
         else if (filtradas.isEmpty)
           _SinCanchas(deporte: _deporte)
         else
-          _Carrusel(canchas: filtradas),
+          _Carrusel(canchas: filtradas, posicion: _posicion),
         // Las favoritas, si hay alguna entre las canchas cargadas.
         ValueListenableBuilder<Set<String>>(
           valueListenable: Preferencias.instance.favoritos,
@@ -293,10 +328,22 @@ class _Titulo extends StatelessWidget {
 // ── CHIPS DE DEPORTE ─────────────────────────────────────────────────────
 
 class _ChipsDeporte extends StatelessWidget {
-  const _ChipsDeporte({required this.elegido, required this.onElegir});
+  const _ChipsDeporte({
+    required this.elegido,
+    required this.onElegir,
+    required this.cerca,
+    required this.ubicando,
+    required this.onCerca,
+  });
 
   final String? elegido;
   final ValueChanged<String?> onElegir;
+
+  /// "Cerca de mí" no es un deporte: ordena lo que se vea, con cualquier
+  /// deporte elegido. Por eso se prende y apaga aparte.
+  final bool cerca;
+  final bool ubicando;
+  final VoidCallback onCerca;
 
   @override
   Widget build(BuildContext context) {
@@ -311,6 +358,19 @@ class _ChipsDeporte extends StatelessWidget {
             activo: elegido == null,
             onTap: () => onElegir(null),
             icono: (c) => Icon(LucideIcons.layoutGrid, size: 22, color: c),
+          ),
+          const SizedBox(width: 10),
+          _Chip(
+            etiqueta: 'Cerca de mí',
+            activo: cerca,
+            onTap: onCerca,
+            icono: (c) => ubicando
+                ? SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: c),
+                  )
+                : Icon(LucideIcons.locateFixed, size: 22, color: c),
           ),
           for (final s in sports) ...[
             const SizedBox(width: 10),
@@ -396,9 +456,10 @@ class _Chip extends StatelessWidget {
 const _altoCarrusel = 400.0;
 
 class _Carrusel extends StatefulWidget {
-  const _Carrusel({required this.canchas});
+  const _Carrusel({required this.canchas, this.posicion});
 
   final List<Court> canchas;
+  final Position? posicion;
 
   @override
   State<_Carrusel> createState() => _CarruselState();
@@ -453,7 +514,10 @@ class _CarruselState extends State<_Carrusel> {
               alignment: i < _pagina
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
-              child: _TarjetaGrande(court: widget.canchas[i]),
+              child: _TarjetaGrande(
+                court: widget.canchas[i],
+                posicion: widget.posicion,
+              ),
             ),
           );
         },
@@ -463,9 +527,18 @@ class _CarruselState extends State<_Carrusel> {
 }
 
 class _TarjetaGrande extends StatelessWidget {
-  const _TarjetaGrande({required this.court});
+  const _TarjetaGrande({required this.court, this.posicion});
 
   final Court court;
+  final Position? posicion;
+
+  String _ubicacionTexto() {
+    final pos = posicion;
+    final km = pos == null ? null : Ubicacion.km(pos, court);
+    return km == null
+        ? court.locationLabel
+        : '${court.city} · ${textoDistancia(km)}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -582,7 +655,7 @@ class _TarjetaGrande extends StatelessWidget {
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            court.locationLabel,
+                            _ubicacionTexto(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: RtcType.sm.copyWith(

@@ -2,6 +2,11 @@
     <!-- La app habla con el backend NestJS: sin esto solo funciona en debug,
          que trae el permiso en su propio manifest. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- "Cerca de mí" y el mapa de ubicacion del panel. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- El escaner del QR de las reservas, en el panel del dueño. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:label="ReservaTuCancha"
