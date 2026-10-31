@@ -71,6 +71,11 @@ class DeepLinksDePago {
   /// se reconoce abre el inicio.
   static void _abrirEnlaceDelSitio(Uri uri) {
     final ruta = uri.path;
+    final token = uri.queryParameters['token'] ?? '';
+    if ((ruta == kReprogramarPath || ruta == kResenaPath) && token.isNotEmpty) {
+      rtcAbrirConToken(ruta, token);
+      return;
+    }
     if (ruta.startsWith(kCourtDetailPrefix)) {
       final id = ruta.substring(kCourtDetailPrefix.length).split('/').first;
       if (id.isNotEmpty) {

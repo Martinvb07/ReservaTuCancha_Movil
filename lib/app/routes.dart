@@ -20,6 +20,8 @@ import '../screens/home_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/mis_reservas_screen.dart';
 import '../screens/para_clubes_screen.dart';
+import '../screens/reprogramar_screen.dart';
+import '../screens/resena_screen.dart';
 import '../screens/solicitar_acceso_screen.dart';
 import '../screens/soporte_screen.dart';
 
@@ -39,6 +41,17 @@ final rtcRoutes = <String, WidgetBuilder>{
 /// en el mapa de arriba: la arma `rtcOnGenerateRoute`.
 const kCourtDetailPrefix = '/canchas/';
 
+/// Los enlaces de los correos con token (`?token=`).
+const kReprogramarPath = '/reservas/reprogramar';
+const kResenaPath = '/resena';
+
+/// Abre una pantalla de token desde un enlace del correo.
+void rtcAbrirConToken(String path, String token) {
+  rtcNavigatorKey.currentState?.pushNamed(
+    Uri(path: path, queryParameters: {'token': token}).toString(),
+  );
+}
+
 /// La confirmacion tambien lleva parametro (`?bookingId=`).
 const kConfirmacionPath = '/reservas/confirmacion';
 
@@ -50,6 +63,22 @@ Route<dynamic>? rtcOnGenerateRoute(RouteSettings settings) {
   if (name == null) return null;
 
   final uri = Uri.parse(name);
+
+  // Los dos enlaces de los correos que llevan token: cambiar de horario y
+  // dejar resena. Sin token no hay nada que mostrar.
+  final token = uri.queryParameters['token'] ?? '';
+  if (uri.path == kReprogramarPath && token.isNotEmpty) {
+    return MaterialPageRoute<void>(
+      settings: settings,
+      builder: (_) => ReprogramarScreen(token: token),
+    );
+  }
+  if (uri.path == kResenaPath && token.isNotEmpty) {
+    return MaterialPageRoute<void>(
+      settings: settings,
+      builder: (_) => ResenaScreen(token: token),
+    );
+  }
 
   if (uri.path == kConfirmacionPath) {
     final bookingId = uri.queryParameters['bookingId'];
