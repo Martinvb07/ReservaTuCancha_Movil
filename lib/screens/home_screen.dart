@@ -21,6 +21,8 @@ import '../widgets/modo_toggle.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
 import '../widgets/rtc_bottom_nav.dart';
+import '../data/preferencias.dart';
+import '../widgets/boton_favorito.dart';
 
 /// Inicio de la app.
 ///
@@ -138,6 +140,36 @@ class _HomeScreenState extends State<HomeScreen> {
           _SinCanchas(deporte: _deporte)
         else
           _Carrusel(canchas: filtradas),
+        // Las favoritas, si hay alguna entre las canchas cargadas.
+        ValueListenableBuilder<Set<String>>(
+          valueListenable: Preferencias.instance.favoritos,
+          builder: (context, favs, _) {
+            final favoritas = _canchas
+                .where((c) => favs.contains(c.id))
+                .toList();
+            if (favoritas.isEmpty) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.only(top: RtcSpace.s8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const _Titulo('Tus favoritas'),
+                  const SizedBox(height: RtcSpace.s3),
+                  for (final c in favoritas.take(3))
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        RtcSpace.s5,
+                        0,
+                        RtcSpace.s5,
+                        RtcSpace.s3,
+                      ),
+                      child: _FilaCancha(court: c),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
         if (populares.isNotEmpty) ...[
           const SizedBox(height: RtcSpace.s8),
           _Titulo(
@@ -604,19 +636,7 @@ class _TarjetaGrande extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: Lime.c400,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        LucideIcons.arrowUpRight,
-                        size: 22,
-                        color: Gray.c900,
-                      ),
-                    ),
+                    BotonFavorito(courtId: court.id, tamano: 50),
                   ],
                 ),
               ),

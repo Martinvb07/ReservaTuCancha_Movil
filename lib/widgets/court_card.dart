@@ -8,6 +8,7 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'remote_image.dart';
+import 'boton_favorito.dart';
 
 /// Port de `Frontend/src/components/courts/CourtCard.tsx`.
 ///
@@ -220,6 +221,11 @@ class _CourtCardState extends State<CourtCard> {
                           ),
                         ),
                       ],
+                    ),
+                    Positioned(
+                      right: 12,
+                      bottom: 12,
+                      child: BotonFavorito(courtId: court.id, tamano: 40),
                     ),
                   ],
                 ),

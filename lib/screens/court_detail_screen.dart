@@ -20,6 +20,7 @@ import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
 import '../widgets/review_card.dart';
 import '../widgets/star_rating.dart';
+import '../widgets/boton_favorito.dart';
 
 /// Port de `Frontend/src/app/(public)/canchas/[id]/page.tsx`, rama movil.
 ///
@@ -353,9 +354,14 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
               },
             ),
           ),
+          Positioned(
+            top: arriba + RtcSpace.s3,
+            right: RtcSpace.s5,
+            child: BotonFavorito(courtId: court.id),
+          ),
           if (photos.length > 1)
             Positioned(
-              top: arriba + RtcSpace.s3 + 6,
+              bottom: _solape + RtcSpace.s4,
               right: RtcSpace.s5,
               child: Container(
                 padding: const EdgeInsets.symmetric(

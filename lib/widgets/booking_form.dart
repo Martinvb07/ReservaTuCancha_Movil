@@ -14,6 +14,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'medios_pago.dart';
 import 'motion/rtc_motion.dart';
+import '../data/preferencias.dart';
 
 /// Port de `Frontend/src/components/bookings/BookingForm.tsx`.
 ///
@@ -49,9 +50,16 @@ class BookingForm extends StatefulWidget {
 const _perPage = 8;
 
 class _BookingFormState extends State<BookingForm> {
-  final _nombre = TextEditingController();
-  final _email = TextEditingController();
-  final _telefono = TextEditingController();
+  // Salen llenos con lo de la ultima reserva hecha desde este telefono.
+  final _nombre = TextEditingController(
+    text: Preferencias.instance.jugador.nombre,
+  );
+  final _email = TextEditingController(
+    text: Preferencias.instance.jugador.email,
+  );
+  final _telefono = TextEditingController(
+    text: Preferencias.instance.jugador.telefono,
+  );
   final _notas = TextEditingController();
 
   /// 'when' | 'checkout'.
@@ -339,6 +347,15 @@ class _BookingFormState extends State<BookingForm> {
       if (!mounted) return;
       // La pantalla de confirmacion se abre ANTES que el navegador: cuando la
       // persona vuelve, la app ya estuvo consultando si el pago entro.
+      // Para la proxima: el formulario ya sale lleno y Mis reservas las
+      // muestra sin buscar.
+      Preferencias.instance.guardarJugador(
+        DatosJugador(
+          nombre: _nombre.text.trim(),
+          email: _email.text.trim(),
+          telefono: _telefono.text.trim(),
+        ),
+      );
       rtcAbrirConfirmacion(booking.id);
       await abrirCheckout(checkout);
     } on RtcApiException catch (e) {

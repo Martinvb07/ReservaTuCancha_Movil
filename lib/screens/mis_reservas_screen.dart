@@ -11,6 +11,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../app/routes.dart';
 import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
+import '../data/preferencias.dart';
 
 /// Port de `Frontend/src/app/(public)/mis-reservas/page.tsx`.
 ///
@@ -36,6 +37,17 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
   /// silencio y muestra "no encontramos": en el telefono, con la red que se
   /// cae, eso hace pensar que la reserva no existe.
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    // Si ya reservo desde este telefono, sus reservas aparecen solas.
+    final email = Preferencias.instance.jugador.email;
+    if (email.isNotEmpty) {
+      _controller.text = email;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _search());
+    }
+  }
 
   @override
   void dispose() {
