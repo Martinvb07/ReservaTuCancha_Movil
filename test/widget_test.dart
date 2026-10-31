@@ -7,7 +7,7 @@ import 'package:reservatucancha/theme/tokens.dart';
 import 'package:reservatucancha/widgets/motion/rtc_motion.dart';
 
 void main() {
-  testWidgets('la app abre en la home con el hero y el buscador', (
+  testWidgets('la app abre en el inicio con el buscador y la barra de abajo', (
     tester,
   ) async {
     await tester.pumpWidget(RtcApp());
@@ -15,10 +15,12 @@ void main() {
     // infinitas (igual que sus keyframes en CSS) y el arbol nunca queda quieto.
     await tester.pump(const Duration(milliseconds: 800));
 
-    expect(find.text('PARTIDO HOY?'), findsOneWidget);
+    expect(find.text('¿Partido hoy?'), findsOneWidget);
     expect(find.text('¿Listo para jugar?'), findsOneWidget);
-    // Con el scroll en cero el buscador todavia no se acoplo al navbar.
-    expect(find.text('Busca tu cancha'), findsNothing);
+    // La pestaña activa de la barra inferior es la unica que muestra su
+    // nombre.
+    expect(find.text('Inicio'), findsOneWidget);
+    expect(find.text('Todas'), findsOneWidget);
   });
 
   test('el tema usa los tokens de la web, no los de Material', () {

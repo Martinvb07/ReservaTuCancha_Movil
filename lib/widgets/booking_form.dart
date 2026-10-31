@@ -9,7 +9,6 @@ import '../booking/pago.dart';
 import '../models/court.dart';
 import '../models/fechas.dart';
 import '../theme/palette.dart';
-import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'medios_pago.dart';
@@ -353,12 +352,13 @@ class _BookingFormState extends State<BookingForm> {
 
   @override
   Widget build(BuildContext context) {
+    // Va sobre el fondo gris de la ficha: la tarjeta blanca se separa sola,
+    // sin borde ni sombra.
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c200),
-        boxShadow: RtcShadows.card,
+        borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

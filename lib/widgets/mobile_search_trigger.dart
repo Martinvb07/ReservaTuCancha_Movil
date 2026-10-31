@@ -11,9 +11,17 @@ import '../theme/typography.dart';
 /// La pildora del hero que abre el buscador completo. En la web el
 /// `active:scale-[.99]` da el feedback al tocar; aca es un AnimatedScale.
 class MobileSearchTrigger extends StatefulWidget {
-  const MobileSearchTrigger({super.key, required this.onTap});
+  const MobileSearchTrigger({
+    super.key,
+    required this.onTap,
+    this.suave = false,
+  });
 
   final VoidCallback onTap;
+
+  /// Sobre el fondo claro de la app la sombra fuerte (pensada para ir encima
+  /// de una foto) se ve sucia: con esto queda apenas marcada.
+  final bool suave;
 
   @override
   State<MobileSearchTrigger> createState() => _MobileSearchTriggerState();
@@ -44,9 +52,11 @@ class _MobileSearchTriggerState extends State<MobileSearchTrigger> {
             // boxShadow: '0 10px 30px rgba(0,0,0,.24)' — inline en el TSX
             boxShadow: [
               cssShadow(
-                dy: 10,
-                blur: 30,
-                color: Colors.black.withValues(alpha: 0.24),
+                dy: widget.suave ? 6 : 10,
+                blur: widget.suave ? 20 : 30,
+                color: Colors.black.withValues(
+                  alpha: widget.suave ? 0.07 : 0.24,
+                ),
               ),
             ],
           ),

@@ -7,6 +7,15 @@ library;
 
 import 'package:flutter/material.dart';
 
+/// Superficies de la app. El fondo es un gris apenas verdoso: las tarjetas
+/// blancas flotan sobre el sin necesitar bordes.
+abstract final class Fondo {
+  static const app = Color(0xFFF1F4F2);
+
+  /// Lo que va encima del fondo en reposo: chips, botones circulares.
+  static const suave = Color(0xFFE6EBE8);
+}
+
 abstract final class Lime {
   static const c100 = Color(0xFFECFCCB);
   static const c400 = Color(0xFFA3E635); // acento del hero

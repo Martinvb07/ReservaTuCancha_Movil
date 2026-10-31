@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -16,7 +18,6 @@ import '../widgets/icons/sport_icon.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
 import '../widgets/review_card.dart';
-import '../widgets/section_heading.dart';
 import '../widgets/star_rating.dart';
 
 /// Port de `Frontend/src/app/(public)/canchas/[id]/page.tsx`, rama movil.
@@ -46,7 +47,20 @@ class CourtDetailScreen extends StatefulWidget {
   State<CourtDetailScreen> createState() => _CourtDetailScreenState();
 }
 
+/// Alto de la foto de arriba, sin contar la barra de estado.
+const _altoFoto = 340.0;
+
+/// Cuanto sube la hoja blanca sobre la foto.
+const _solape = 32.0;
+
+/// Alto aproximado de la barra de reserva, para que el final del scroll no
+/// quede tapado.
+const _altoBarra = 96.0;
+
 class _CourtDetailScreenState extends State<CourtDetailScreen> {
+  /// El titulo de la seccion de reserva: el boton de abajo lleva hasta aca.
+  final _reservaKey = GlobalKey();
+
   Court? _court;
   List<Review> _reviews = const [];
   bool _loading = true;
@@ -97,257 +111,379 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
     // `court.photos?.length ? court.photos : [sport.img]`
     final photos = court.photos.isNotEmpty ? court.photos : [sport.image];
 
-    return ListView(
-      padding: EdgeInsets.zero,
+    return Stack(
       children: [
-        _hero(court, sport, photos.first),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            RtcSpace.s4,
-            RtcSpace.s6,
-            RtcSpace.s4,
-            RtcSpace.s6,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // `order-1`: en una sola columna la columna de reserva va
-              // primero, y dentro de ella el formulario va antes del recuadro.
-              BookingForm(
-                courtId: court.id,
-                courtName: court.name,
-                pricePerHour: court.pricePerHour,
-                availability: court.availability,
-                initialDate: widget.initialDate,
-                initialStart: widget.initialStart,
-              ),
-              const SizedBox(height: RtcSpace.s4),
-              _infoBox(),
-              const SizedBox(height: RtcSpace.s8),
-              if (photos.length > 1) ...[
-                _galeria(court, photos),
-                const SizedBox(height: RtcSpace.s8),
-              ],
-              if (court.description != null &&
-                  court.description!.trim().isNotEmpty) ...[
-                const BarHeading(title: 'Sobre esta cancha'),
-                const SizedBox(height: RtcSpace.s3),
-                Text(
-                  court.description!,
-                  style: RtcType.base.copyWith(color: Gray.c600),
-                ),
-                const SizedBox(height: RtcSpace.s8),
-              ],
-              if (court.amenities.isNotEmpty) ...[
-                const BarHeading(title: 'Instalaciones'),
-                const SizedBox(height: RtcSpace.s3),
-                _instalaciones(court.amenities),
-                const SizedBox(height: RtcSpace.s8),
-              ],
-              const BarHeading(title: 'Dónde queda'),
-              const SizedBox(height: RtcSpace.s3),
-              CourtLocationMap(
-                coordinates: court.coordinates,
-                city: court.city,
-                address: court.address,
-                seed: court.id,
-                name: court.name,
-              ),
-              const SizedBox(height: RtcSpace.s8),
-              BarHeading(
-                title: 'Reseñas',
-                trailing: _reviews.isEmpty ? null : '(${_reviews.length})',
-              ),
-              const SizedBox(height: RtcSpace.s4),
-              _resenas(),
-            ],
-          ),
+        ListView(
+          padding: const EdgeInsets.only(bottom: _altoBarra + RtcSpace.s6),
+          children: [
+            _hero(court, photos),
+            // La hoja blanca sube sobre la foto, como en las apps de reserva.
+            Transform.translate(
+              offset: const Offset(0, -_solape),
+              child: _hoja(court, sport, photos),
+            ),
+          ],
         ),
+        Positioned(left: 0, right: 0, bottom: 0, child: _barraReserva(court)),
       ],
     );
   }
 
-  // ── HERO ─────────────────────────────────────────────────────────────
-  // h-64 con la foto al 55% y el degradado que sube desde gray-900.
-  Widget _hero(Court court, SportMeta sport, String photo) {
-    return SizedBox(
-      height: 256, // h-64
-      child: Stack(
-        fit: StackFit.expand,
+  /// Lleva al formulario de reserva desde la barra de abajo.
+  void _irAReservar() {
+    final destino = _reservaKey.currentContext;
+    if (destino == null) return;
+    Scrollable.ensureVisible(
+      destino,
+      duration: const Duration(milliseconds: 450),
+      curve: Curves.easeOutCubic,
+      alignment: 0.02,
+    );
+  }
+
+  Widget _hoja(Court court, SportMeta sport, List<String> photos) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+        RtcSpace.s5,
+        RtcSpace.s6,
+        RtcSpace.s5,
+        RtcSpace.s4,
+      ),
+      decoration: const BoxDecoration(
+        color: Fondo.app,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ColoredBox(color: Gray.c900),
-          Opacity(
-            opacity: 0.55,
-            child: RemoteImage(url: photo, sport: court.sport),
+          _titulo(court, sport),
+          if (court.amenities.isNotEmpty) ...[
+            const SizedBox(height: RtcSpace.s6),
+            _seccion('Lo que ofrece'),
+            const SizedBox(height: RtcSpace.s3),
+            _instalaciones(court.amenities),
+          ],
+          const SizedBox(height: RtcSpace.s6),
+          _seccion('Reserva tu turno', key: _reservaKey),
+          const SizedBox(height: RtcSpace.s3),
+          BookingForm(
+            courtId: court.id,
+            courtName: court.name,
+            pricePerHour: court.pricePerHour,
+            availability: court.availability,
+            initialDate: widget.initialDate,
+            initialStart: widget.initialStart,
           ),
-          // from-gray-900 via-gray-900/50 to-gray-900/20
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Gray.c900,
-                  Gray.c900.withValues(alpha: 0.50),
-                  Gray.c900.withValues(alpha: 0.20),
-                ],
-              ),
+          const SizedBox(height: RtcSpace.s3),
+          _infoBox(),
+          if (court.description != null &&
+              court.description!.trim().isNotEmpty) ...[
+            const SizedBox(height: RtcSpace.s6),
+            _seccion('Sobre esta cancha'),
+            const SizedBox(height: RtcSpace.s2),
+            Text(
+              court.description!,
+              style: RtcType.sm.copyWith(color: Gray.c600, height: 1.5),
+            ),
+          ],
+          if (photos.length > 1) ...[
+            const SizedBox(height: RtcSpace.s6),
+            _seccion('Fotos'),
+            const SizedBox(height: RtcSpace.s3),
+            _galeria(court, photos),
+          ],
+          const SizedBox(height: RtcSpace.s6),
+          _seccion('Dónde queda'),
+          const SizedBox(height: RtcSpace.s3),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: CourtLocationMap(
+              coordinates: court.coordinates,
+              city: court.city,
+              address: court.address,
+              seed: court.id,
+              name: court.name,
             ),
           ),
-          // Volver a canchas
-          Positioned(
-            top: RtcSpace.s4,
-            left: RtcSpace.s4,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => rtcNavigate('/empresas'),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14, // px-3.5
-                  vertical: RtcSpace.s2,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: RtcRadius.brFull,
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.20),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+          const SizedBox(height: RtcSpace.s6),
+          _seccion(
+            _reviews.isEmpty ? 'Reseñas' : 'Reseñas (${_reviews.length})',
+          ),
+          const SizedBox(height: RtcSpace.s3),
+          _resenas(),
+        ],
+      ),
+    );
+  }
+
+  Widget _seccion(String texto, {Key? key}) => Text(
+    texto,
+    key: key,
+    style: RtcType.lg.copyWith(fontWeight: FontWeight.w700, color: Gray.c900),
+  );
+
+  /// Precio fijo abajo y el boton que lleva al formulario: el precio siempre
+  /// a la vista, como la barra de "Book now" de las apps de reserva.
+  Widget _barraReserva(Court court) {
+    final abajo = MediaQuery.paddingOf(context).bottom;
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        RtcSpace.s5,
+        RtcSpace.s4,
+        RtcSpace.s5,
+        RtcSpace.s4 + abajo,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Precio', style: RtcType.xs.copyWith(color: Gray.c500)),
+              Text.rich(
+                TextSpan(
                   children: [
-                    const Icon(
-                      LucideIcons.arrowLeft,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: RtcSpace.s2),
-                    Text(
-                      'Volver a canchas',
-                      style: RtcType.sm.copyWith(
-                        color: Colors.white,
-                        fontWeight: RtcType.medium,
+                    TextSpan(
+                      text: '\$${formatCop(court.pricePerHour)}',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Gray.c900,
                       ),
                     ),
+                    const TextSpan(text: ' /hora'),
                   ],
+                ),
+                style: RtcType.sm.copyWith(color: Gray.c500),
+              ),
+            ],
+          ),
+          const SizedBox(width: RtcSpace.s4),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _irAReservar,
+              child: Container(
+                height: 54,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Green.c600,
+                  borderRadius: RtcRadius.brFull,
+                ),
+                child: Text(
+                  'Reservar',
+                  style: RtcType.base.copyWith(
+                    fontWeight: RtcType.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            left: RtcSpace.s4,
-            right: RtcSpace.s4,
-            bottom: RtcSpace.s4,
-            child: _heroTitulo(court, sport),
           ),
         ],
       ),
     );
   }
 
-  Widget _heroTitulo(Court court, SportMeta sport) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // La pildora lima con el icono del deporte.
-              Container(
+  // ── HERO ─────────────────────────────────────────────────────────────
+  // La foto a todo el ancho, debajo de la barra de estado, con los botones
+  // flotando encima.
+  Widget _hero(Court court, List<String> photos) {
+    final arriba = MediaQuery.paddingOf(context).top;
+    return SizedBox(
+      height: _altoFoto + arriba,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          RemoteImage(url: photos.first, sport: court.sport),
+          // Velo arriba para que la barra de estado y los botones se lean.
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.center,
+                colors: [
+                  Colors.black.withValues(alpha: 0.45),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: arriba + RtcSpace.s3,
+            left: RtcSpace.s5,
+            child: _botonFoto(
+              icono: LucideIcons.arrowLeft,
+              etiqueta: 'Volver',
+              onTap: () async {
+                final salio = await Navigator.of(context).maybePop();
+                if (!salio) rtcNavigate('/empresas');
+              },
+            ),
+          ),
+          if (photos.length > 1)
+            Positioned(
+              top: arriba + RtcSpace.s3 + 6,
+              right: RtcSpace.s5,
+              child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: RtcSpace.s3,
-                  vertical: 4,
+                  vertical: 6,
                 ),
-                decoration: const BoxDecoration(
-                  color: Lime.c400,
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.35),
                   borderRadius: RtcRadius.brFull,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SportIcon(sport: court.sport, size: 14, color: Gray.c900),
-                    const SizedBox(width: 6), // gap-1.5
+                    const Icon(
+                      LucideIcons.images,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 6),
                     Text(
-                      sport.label,
+                      '${photos.length} fotos',
                       style: RtcType.xs.copyWith(
-                        color: Gray.c900,
-                        fontWeight: RtcType.bold,
+                        color: Colors.white,
+                        fontWeight: RtcType.semibold,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10), // mb-2.5
-              Text(
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _botonFoto({
+    required IconData icono,
+    required String etiqueta,
+    required VoidCallback onTap,
+  }) {
+    return Semantics(
+      button: true,
+      label: etiqueta,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: ClipOval(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.25),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
+              ),
+              child: Icon(icono, size: 20, color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _titulo(Court court, SportMeta sport) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
                 court.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: RtcType.xl2.copyWith(
-                  color: Colors.white,
-                  fontWeight: RtcType.bold,
+                  fontSize: 24,
+                  height: 1.2,
+                  fontWeight: FontWeight.w800,
+                  color: Gray.c900,
                 ),
               ),
-              const SizedBox(height: RtcSpace.s2),
-              Row(
+            ),
+            const SizedBox(width: RtcSpace.s3),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: RtcSpace.s3,
+                vertical: 6,
+              ),
+              decoration: const BoxDecoration(
+                color: Lime.c400,
+                borderRadius: RtcRadius.brFull,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(LucideIcons.mapPin, size: 16, color: Lime.c400),
+                  SportIcon(sport: court.sport, size: 14, color: Gray.c900),
                   const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      [
-                        court.address,
-                        court.city,
-                      ].where((s) => s.isNotEmpty).join(', '),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: RtcType.sm.copyWith(color: Gray.c200),
+                  Text(
+                    sport.label,
+                    style: RtcType.xs.copyWith(
+                      color: Gray.c900,
+                      fontWeight: RtcType.bold,
                     ),
                   ),
                 ],
               ),
-              if (court.totalReviews > 0) ...[
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const RtcStar(
-                      size: 16,
-                      fill: Yellow.c400,
-                      stroke: Yellow.c400,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      court.averageRating.toStringAsFixed(1),
-                      style: RtcType.sm.copyWith(
-                        color: Gray.c200,
-                        fontWeight: RtcType.semibold,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '· ${court.totalReviews} reseñas',
-                      style: RtcType.sm.copyWith(color: Gray.c400),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
-        const SizedBox(width: RtcSpace.s3),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '\$${formatCop(court.pricePerHour)}',
-              style: RtcType.xl2.copyWith(
-                color: Lime.c400,
-                fontWeight: RtcType.bold,
-              ),
             ),
-            Text('COP / hora', style: RtcType.xs.copyWith(color: Gray.c400)),
           ],
         ),
+        const SizedBox(height: RtcSpace.s3),
+        Row(
+          children: [
+            const Icon(LucideIcons.mapPin, size: 16, color: Gray.c500),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                [
+                  court.address,
+                  court.city,
+                ].where((s) => s.isNotEmpty).join(', '),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: RtcType.sm.copyWith(color: Gray.c600),
+              ),
+            ),
+          ],
+        ),
+        if (court.totalReviews > 0) ...[
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              const RtcStar(size: 16, fill: Yellow.c400, stroke: Yellow.c400),
+              const SizedBox(width: 6),
+              Text(
+                court.averageRating.toStringAsFixed(1),
+                style: RtcType.sm.copyWith(
+                  color: Gray.c900,
+                  fontWeight: RtcType.bold,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '· ${court.totalReviews} reseñas',
+                style: RtcType.sm.copyWith(color: Gray.c500),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
@@ -374,55 +510,42 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
   }
 
   // ── INSTALACIONES ────────────────────────────────────────────────────
+  // Una fila de mosaicos blancos con el icono arriba y el nombre debajo.
   Widget _instalaciones(List<String> amenities) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-      itemCount: amenities.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        // p-2.5 con un icono de 32: la fila mide 52 de alto.
-        mainAxisExtent: 52,
-      ),
-      itemBuilder: (context, i) {
-        final a = amenities[i];
-        return Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: RtcRadius.brXl,
-            border: Border.all(color: Gray.c100),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Green.c50,
-                  borderRadius: RtcRadius.brLg,
-                ),
-                child: Icon(amenityIcon(a), size: 16, color: Green.c600),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  a,
+    return SizedBox(
+      height: 92,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: amenities.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
+        itemBuilder: (context, i) {
+          final a = amenities[i];
+          return Container(
+            width: 84,
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(amenityIcon(a), size: 22, color: Green.c600),
+                const SizedBox(height: 8),
+                Text(
+                  a[0].toUpperCase() + a.substring(1),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: RtcType.sm.copyWith(
-                    color: Gray.c700,
-                    fontWeight: RtcType.medium,
+                  style: RtcType.xs.copyWith(
+                    color: Gray.c800,
+                    fontWeight: RtcType.semibold,
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -432,9 +555,8 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: RtcSpace.s10),
         decoration: BoxDecoration(
-          color: Gray.c50,
-          borderRadius: RtcRadius.brXxl,
-          border: Border.all(color: Gray.c100),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
           children: [
@@ -481,9 +603,8 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Gray.c50,
-        borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -577,7 +698,7 @@ class _DetalleSkeleton extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        Container(height: 256, color: Gray.c900),
+        Container(height: _altoFoto, color: Gray.c200),
         Padding(
           padding: const EdgeInsets.all(RtcSpace.s4),
           child: RtcSkeletonPulse(
@@ -606,7 +727,10 @@ class _DetalleSkeleton extends StatelessWidget {
     child: Container(
       height: height,
       width: width,
-      decoration: BoxDecoration(color: Gray.c200, borderRadius: RtcRadius.brXl),
+      decoration: BoxDecoration(
+        color: Fondo.suave,
+        borderRadius: RtcRadius.brXl,
+      ),
     ),
   );
 }

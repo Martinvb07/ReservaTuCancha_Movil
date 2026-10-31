@@ -17,7 +17,20 @@ import 'support_chat.dart';
 ///
 /// En `/auth` no se montan: esas pantallas ocupan toda la ventana.
 class FloatingActions extends StatefulWidget {
-  const FloatingActions({super.key});
+  const FloatingActions({
+    super.key,
+    this.extraAbajo = 0,
+    this.botonesVisibles = true,
+  });
+
+  /// Lo que tienen que subir los botones para no quedar encima de la barra
+  /// inferior de la app.
+  final double extraAbajo;
+
+  /// En la app los botones de chat y WhatsApp solo se muestran en Soporte:
+  /// en el resto tapaban el contenido. El chat sigue montado igual, para que
+  /// Soporte lo pueda abrir y no se pierda la conversacion.
+  final bool botonesVisibles;
 
   /// El `ABRIR_SOPORTE` de la web. La pantalla /soporte no monta su propio
   /// chat: pide abrir este. Se incrementa para que cada pedido se note aunque
@@ -76,7 +89,7 @@ class _FloatingActionsState extends State<FloatingActions> {
   }
 
   Widget _botones(BuildContext context) {
-    final abajo = MediaQuery.paddingOf(context).bottom;
+    final abajo = MediaQuery.paddingOf(context).bottom + widget.extraAbajo;
     return Stack(
       children: [
         // Con el chat abierto el FAB de WhatsApp queda debajo del panel: se
@@ -85,7 +98,7 @@ class _FloatingActionsState extends State<FloatingActions> {
           right: RtcSpace.s6,
           bottom: RtcSpace.s6 + abajo,
           child: _Fab(
-            oculto: _chatAbierto,
+            oculto: _chatAbierto || !widget.botonesVisibles,
             background: const Color(0xFF22C55E), // green-500
             foreground: Colors.white,
             icon: LucideIcons.messageCircle,
@@ -99,7 +112,7 @@ class _FloatingActionsState extends State<FloatingActions> {
           right: RtcSpace.s6,
           bottom: RtcSpace.s6 + _tamano + RtcSpace.s4 + abajo, // bottom-24
           child: _Fab(
-            oculto: _chatAbierto,
+            oculto: _chatAbierto || !widget.botonesVisibles,
             background: Gray.c900,
             foreground: Lime.c400,
             icon: LucideIcons.bot,
