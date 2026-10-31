@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/palette.dart';
 import '../theme/typography.dart';
+import '../widgets/mobile_search_sheet.dart';
 import '../widgets/rtc_bottom_nav.dart';
 import '../widgets/rtc_mobile_menu.dart';
 import 'dashboard_shell.dart';
@@ -220,6 +221,11 @@ class RtcLayout extends StatelessWidget {
                         ),
                         child: RtcBottomNav(
                           activa: activa,
+                          conBuscador: state.docked,
+                          onBuscar: () {
+                            final nav = rtcNavigatorKey.currentContext;
+                            if (nav != null) showMobileSearchSheet(nav);
+                          },
                           onTap: (tab) => tab.ruta == 'menu'
                               ? _abrirMenu()
                               : rtcNavigate(tab.ruta),

@@ -11,6 +11,7 @@ import '../theme/typography.dart';
 import '../app/routes.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
+import '../widgets/modo_toggle.dart';
 
 /// Port de `Frontend/src/app/(public)/para-clubes/page.tsx`.
 class ParaClubesScreen extends StatefulWidget {
@@ -292,6 +293,12 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                 ),
               ],
             ),
+          ),
+          // El cambio de modo, en la misma esquina que en el inicio.
+          const Positioned(
+            top: RtcSpace.s4,
+            right: RtcSpace.s5,
+            child: ModoToggle(clubes: true, sobreOscuro: true),
           ),
         ],
       ),

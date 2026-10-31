@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../api/analytics_api.dart';
 import '../api/courts_api.dart';
 import '../api/rtc_api.dart';
+import '../app/nav_state.dart';
 import '../app/routes.dart';
 import '../models/court.dart';
 import '../theme/palette.dart';
@@ -15,6 +16,7 @@ import '../theme/typography.dart';
 import '../widgets/icons/sport_icon.dart';
 import '../widgets/mobile_search_sheet.dart';
 import '../widgets/mobile_search_trigger.dart';
+import '../widgets/modo_toggle.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
 import '../widgets/rtc_bottom_nav.dart';
@@ -39,10 +41,24 @@ class _HomeScreenState extends State<HomeScreen> {
   /// El deporte elegido en los chips; null es "Todas".
   String? _deporte;
 
+  final _scroll = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _cargar();
+    // Cuando el buscador sale de la pantalla por arriba, la barra de abajo
+    // muestra la lupa a su lado: es el acople del buscador al navbar de la
+    // web, pero abajo, donde llega el pulgar.
+    _scroll.addListener(() {
+      RtcNavScope.read(context).docked = _scroll.offset > _alturaHastaBuscador;
+    });
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
   }
 
   /// Las destacadas de `/analytics/public` y, si vienen pocas, se completan
@@ -82,68 +98,77 @@ class _HomeScreenState extends State<HomeScreen> {
     return RefreshIndicator(
       onRefresh: _cargar,
       color: Green.c600,
-      child: ListView(
-        padding: const EdgeInsets.only(
-          top: RtcSpace.s4,
-          bottom: kBottomNavEspacio + RtcSpace.s6,
+      child: _lista(filtradas, populares),
+    );
+  }
+
+  Widget _lista(List<Court> filtradas, List<Court> populares) {
+    return ListView(
+      controller: _scroll,
+      padding: const EdgeInsets.only(
+        top: RtcSpace.s4,
+        bottom: kBottomNavEspacio + RtcSpace.s6,
+      ),
+      children: [
+        const _Cabecera(),
+        const SizedBox(height: RtcSpace.s5),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
+          child: MobileSearchTrigger(
+            suave: true,
+            onTap: () => showMobileSearchSheet(context),
+          ),
         ),
-        children: [
-          const _Cabecera(),
-          const SizedBox(height: RtcSpace.s5),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
-            child: MobileSearchTrigger(
-              suave: true,
-              onTap: () => showMobileSearchSheet(context),
-            ),
-          ),
-          const SizedBox(height: RtcSpace.s5),
-          _ChipsDeporte(
-            elegido: _deporte,
-            onElegir: (d) => setState(() => _deporte = d),
-          ),
-          const SizedBox(height: RtcSpace.s6),
+        const SizedBox(height: RtcSpace.s5),
+        _ChipsDeporte(
+          elegido: _deporte,
+          onElegir: (d) => setState(() => _deporte = d),
+        ),
+        const SizedBox(height: RtcSpace.s6),
+        _Titulo(
+          'Canchas para hoy',
+          accion: 'Ver todas',
+          onAccion: () => rtcBuscarCanchas(sport: _deporte ?? ''),
+        ),
+        const SizedBox(height: RtcSpace.s3),
+        if (_cargando)
+          const _CarruselEsqueleto()
+        else if (filtradas.isEmpty)
+          _SinCanchas(deporte: _deporte)
+        else
+          _Carrusel(canchas: filtradas),
+        if (populares.isNotEmpty) ...[
+          const SizedBox(height: RtcSpace.s8),
           _Titulo(
-            'Canchas para hoy',
+            'Mejor calificadas',
             accion: 'Ver todas',
-            onAccion: () => rtcBuscarCanchas(sport: _deporte ?? ''),
+            onAccion: () => rtcNavigate('/empresas'),
           ),
           const SizedBox(height: RtcSpace.s3),
-          if (_cargando)
-            const _CarruselEsqueleto()
-          else if (filtradas.isEmpty)
-            _SinCanchas(deporte: _deporte)
-          else
-            _Carrusel(canchas: filtradas),
-          if (populares.isNotEmpty) ...[
-            const SizedBox(height: RtcSpace.s8),
-            _Titulo(
-              'Mejor calificadas',
-              accion: 'Ver todas',
-              onAccion: () => rtcNavigate('/empresas'),
-            ),
-            const SizedBox(height: RtcSpace.s3),
-            for (var i = 0; i < populares.length && i < 4; i++)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  RtcSpace.s5,
-                  0,
-                  RtcSpace.s5,
-                  RtcSpace.s3,
-                ),
-                child: RtcFadeUp(
-                  delay: Duration(milliseconds: i * 60),
-                  child: _FilaCancha(court: populares[i]),
-                ),
+          for (var i = 0; i < populares.length && i < 4; i++)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                RtcSpace.s5,
+                0,
+                RtcSpace.s5,
+                RtcSpace.s3,
               ),
-          ],
-          const SizedBox(height: RtcSpace.s5),
-          const _BannerClubes(),
+              child: RtcFadeUp(
+                delay: Duration(milliseconds: i * 60),
+                child: _FilaCancha(court: populares[i]),
+              ),
+            ),
         ],
-      ),
+        const SizedBox(height: RtcSpace.s5),
+        const _BannerClubes(),
+      ],
     );
   }
 }
+
+/// Lo que mide la pantalla desde arriba hasta el borde inferior del buscador:
+/// padding, cabecera, espacio y la pildora. Pasado eso, se acopla abajo.
+const _alturaHastaBuscador = 16.0 + 92 + 20 + 64;
 
 // ── CABECERA ─────────────────────────────────────────────────────────────
 
@@ -182,52 +207,8 @@ class _Cabecera extends StatelessWidget {
               ],
             ),
           ),
-          _BotonCircular(
-            icono: LucideIcons.calendarCheck,
-            etiqueta: 'Mis reservas',
-            onTap: () => rtcNavigate('/mis-reservas'),
-          ),
+          const ModoToggle(clubes: false),
         ],
-      ),
-    );
-  }
-}
-
-class _BotonCircular extends StatelessWidget {
-  const _BotonCircular({
-    required this.icono,
-    required this.etiqueta,
-    required this.onTap,
-  });
-
-  final IconData icono;
-  final String etiqueta;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: etiqueta,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              cssShadow(
-                dy: 4,
-                blur: 14,
-                color: Colors.black.withValues(alpha: 0.06),
-              ),
-            ],
-          ),
-          child: Icon(icono, size: 20, color: Gray.c900),
-        ),
       ),
     );
   }
