@@ -14,6 +14,7 @@ import '../models/court.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import '../models/fechas.dart';
 
 /// Lo que va dentro del QR. El prefijo lo distingue de cualquier otro QR que
 /// el dueño escanee por error; el escaner del panel lo lee con
@@ -120,6 +121,34 @@ Future<void> agregarAlCalendario(Booking b) {
   return launchUrl(uri, mode: LaunchMode.externalApplication);
 }
 
+/// Invita a los amigos al partido: dia, hora, cancha y el enlace a la ficha,
+/// listo para pegarlo en el grupo de WhatsApp.
+Future<void> invitarAlPartido(Booking b) {
+  final dia = fechaLargaCapitalizada(b.date);
+  final enlace = b.courtId.isEmpty
+      ? 'https://reservatucancha.site'
+      : 'https://reservatucancha.site/canchas/${b.courtId}';
+  return SharePlus.instance.share(
+    ShareParams(
+      text:
+          'Partido confirmado: $dia de ${hora12(b.startTime)} a '
+          '${hora12(b.endTime)} en ${b.courtName}'
+          '${b.city.isEmpty ? '' : ', ${b.city}'}. $enlace',
+      subject: 'Partido en ${b.courtName}',
+    ),
+  );
+}
+
+/// El proximo mismo dia de la semana, a partir de manana, para "Reservar de
+/// nuevo": quien juega los jueves vuelve a ver el jueves.
+DateTime proximoMismoDia(DateTime original, DateTime hoy) {
+  var d = DateTime(hoy.year, hoy.month, hoy.day).add(const Duration(days: 1));
+  while (d.weekday != original.weekday) {
+    d = d.add(const Duration(days: 1));
+  }
+  return d;
+}
+
 /// Comparte el enlace a la ficha de la cancha (WhatsApp, etc.).
 Future<void> compartirCancha(Court c) {
   return SharePlus.instance.share(
@@ -154,8 +183,30 @@ class AccionesReserva extends StatelessWidget {
         Expanded(
           child: _Accion(
             icono: LucideIcons.calendarPlus,
-            texto: 'Al calendario',
+            texto: 'Calendario',
             onTap: () => agregarAlCalendario(booking),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Semantics(
+          button: true,
+          label: 'Invitar al partido',
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => invitarAlPartido(booking),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: const BoxDecoration(
+                color: Green.c600,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                LucideIcons.userPlus,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ],

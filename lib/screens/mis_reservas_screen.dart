@@ -13,6 +13,7 @@ import '../app/routes.dart';
 import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 import '../data/preferencias.dart';
 import '../widgets/acciones_reserva.dart';
+import '../models/fechas.dart';
 
 /// Port de `Frontend/src/app/(public)/mis-reservas/page.tsx`.
 ///
@@ -604,6 +605,44 @@ class _BookingCard extends StatelessWidget {
               booking.status == 'reagendada') ...[
             const SizedBox(height: RtcSpace.s4),
             AccionesReserva(booking: booking),
+          ],
+          // Para los que juegan fijo: la misma cancha y la misma hora, el
+          // proximo mismo dia de la semana.
+          if (booking.status == 'completed' && booking.courtId.isNotEmpty) ...[
+            const SizedBox(height: RtcSpace.s4),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => rtcOpenCourt(
+                booking.courtId,
+                date: fechaIso(proximoMismoDia(booking.date, DateTime.now())),
+                start: booking.startTime,
+              ),
+              child: Container(
+                height: 44,
+                decoration: const BoxDecoration(
+                  color: Green.c600,
+                  borderRadius: RtcRadius.brFull,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      LucideIcons.repeat,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Reservar de nuevo',
+                      style: RtcType.sm.copyWith(
+                        fontWeight: RtcType.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ],
       ),

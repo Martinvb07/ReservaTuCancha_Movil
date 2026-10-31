@@ -7,6 +7,7 @@ class Booking {
   const Booking({
     required this.id,
     required this.bookingCode,
+    this.courtId = '',
     required this.courtName,
     required this.city,
     required this.date,
@@ -25,6 +26,9 @@ class Booking {
 
   final String id;
   final String bookingCode;
+
+  /// Para volver a la ficha ("Reservar de nuevo", "Invitar").
+  final String courtId;
   final String courtName;
   final String city;
   final DateTime date;
@@ -68,6 +72,9 @@ class Booking {
     return Booking(
       id: json['_id'] as String,
       bookingCode: (json['bookingCode'] as String?) ?? 'N/A',
+      courtId: court != null
+          ? (court['_id'] ?? '').toString()
+          : (json['courtId'] ?? '').toString(),
       courtName: (court?['name'] as String?) ?? 'Cancha',
       city: (location['city'] as String?) ?? '',
       date: DateTime.parse(json['date'] as String),
