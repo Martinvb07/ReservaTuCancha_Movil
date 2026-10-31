@@ -29,6 +29,7 @@ import '../widgets/rtc_toast.dart';
 import '../api/bookings_api.dart';
 import '../models/fechas.dart';
 import '../widgets/etiqueta_cupo.dart';
+import 'court_detail_screen.dart' show tagFotoCancha;
 
 /// Inicio de la app.
 ///
@@ -560,7 +561,7 @@ class _TarjetaGrande extends StatelessWidget {
     final sport = getSport(court.sport);
     final foto = court.photos.isNotEmpty ? court.photos.first : sport.image;
     return GestureDetector(
-      onTap: () => rtcOpenCourt(court.id),
+      onTap: () => rtcOpenCourt(court.id, foto: foto),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32),
@@ -577,7 +578,10 @@ class _TarjetaGrande extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              RemoteImage(url: foto, sport: court.sport),
+              Hero(
+                tag: tagFotoCancha(court.id),
+                child: RemoteImage(url: foto, sport: court.sport),
+              ),
               // Velo arriba para el nombre y abajo para los botones.
               DecoratedBox(
                 decoration: BoxDecoration(

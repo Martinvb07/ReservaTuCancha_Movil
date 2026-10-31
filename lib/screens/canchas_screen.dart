@@ -761,10 +761,14 @@ class _CanchasScreenState extends State<CanchasScreen> {
                       child: CourtCard(
                         court: _visible[i],
                         cupo: _cupoHoy[_visible[i].id],
+                        conTransicion: true,
                         onTap: () => rtcOpenCourt(
                           _visible[i].id,
                           date: _fecha,
                           start: _hora,
+                          foto: _visible[i].photos.isNotEmpty
+                              ? _visible[i].photos.first
+                              : getSport(_visible[i].sport).image,
                         ),
                       ),
                     ),

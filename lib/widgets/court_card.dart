@@ -11,13 +11,25 @@ import 'remote_image.dart';
 import 'boton_favorito.dart';
 import '../api/bookings_api.dart';
 import 'etiqueta_cupo.dart';
+import '../screens/court_detail_screen.dart' show tagFotoCancha;
 
 /// Port de `Frontend/src/components/courts/CourtCard.tsx`.
 ///
 /// El `:hover` de la web (elevar la tarjeta y agrandar la foto) no existe en
 /// tactil, asi que va como estado PRESIONADO: la tarjeta se hunde apenas.
 class CourtCard extends StatefulWidget {
-  const CourtCard({super.key, required this.court, this.onTap, this.cupo});
+  const CourtCard({
+    super.key,
+    required this.court,
+    this.onTap,
+    this.cupo,
+    this.conTransicion = false,
+  });
+
+  /// La foto vuela hasta la ficha al abrirla. Solo donde la cancha aparece
+  /// una vez en pantalla: dos tarjetas con la misma cancha romperian la
+  /// transicion.
+  final bool conTransicion;
 
   final Court court;
   final VoidCallback? onTap;
@@ -31,6 +43,10 @@ class CourtCard extends StatefulWidget {
 
 class _CourtCardState extends State<CourtCard> {
   bool _pressed = false;
+
+  String get _foto => widget.court.photos.isNotEmpty
+      ? widget.court.photos.first
+      : getSport(widget.court.sport).image;
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +86,13 @@ class _CourtCardState extends State<CourtCard> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      RemoteImage(
-                        url: court.photos.isNotEmpty
-                            ? court.photos.first
-                            : sport.image,
-                        sport: court.sport,
-                      ),
+                      if (widget.conTransicion)
+                        Hero(
+                          tag: tagFotoCancha(court.id),
+                          child: RemoteImage(url: _foto, sport: court.sport),
+                        )
+                      else
+                        RemoteImage(url: _foto, sport: court.sport),
                       Positioned(
                         top: 12,
                         left: 12,

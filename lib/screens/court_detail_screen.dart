@@ -38,9 +38,14 @@ class CourtDetailScreen extends StatefulWidget {
     required this.courtId,
     this.initialDate,
     this.initialStart,
+    this.fotoInicial,
   });
 
   final String courtId;
+
+  /// La foto de la tarjeta que se toco: hace la transicion y se muestra
+  /// mientras llega la ficha.
+  final String? fotoInicial;
 
   /// Preseleccion que llega desde el buscador (`?date=`, `?start=`): la
   /// consume el formulario de reserva.
@@ -107,7 +112,12 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return const _DetalleSkeleton();
+    if (_loading) {
+      return _DetalleSkeleton(
+        courtId: widget.courtId,
+        foto: widget.fotoInicial,
+      );
+    }
     if (_error != null) return _errorState();
 
     final court = _court!;
@@ -334,7 +344,10 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
           GestureDetector(
             onTap: () =>
                 abrirGaleria(context, fotos: photos, sport: court.sport),
-            child: RemoteImage(url: photos.first, sport: court.sport),
+            child: Hero(
+              tag: tagFotoCancha(court.id),
+              child: RemoteImage(url: photos.first, sport: court.sport),
+            ),
           ),
           // Velo arriba para que la barra de estado y los botones se lean.
           DecoratedBox(
@@ -828,14 +841,25 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
 /// la pagina en el servidor y no la manda hasta tenerla); en la app la
 /// peticion sale del telefono, asi que hace falta algo mientras tanto.
 class _DetalleSkeleton extends StatelessWidget {
-  const _DetalleSkeleton();
+  const _DetalleSkeleton({required this.courtId, this.foto});
+
+  final String courtId;
+  final String? foto;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        Container(height: _altoFoto, color: Gray.c200),
+        SizedBox(
+          height: _altoFoto + MediaQuery.paddingOf(context).top,
+          child: foto == null
+              ? const ColoredBox(color: Gray.c200)
+              : Hero(
+                  tag: tagFotoCancha(courtId),
+                  child: RemoteImage(url: foto!),
+                ),
+        ),
         Padding(
           padding: const EdgeInsets.all(RtcSpace.s4),
           child: RtcSkeletonPulse(
@@ -871,3 +895,6 @@ class _DetalleSkeleton extends StatelessWidget {
     ),
   );
 }
+
+/// El tag compartido entre la foto de la tarjeta y la de la ficha.
+String tagFotoCancha(String courtId) => 'foto-cancha-$courtId';

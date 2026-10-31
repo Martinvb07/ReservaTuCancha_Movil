@@ -128,6 +128,9 @@ Route<dynamic>? rtcOnGenerateRoute(RouteSettings settings) {
     settings: settings,
     builder: (_) => CourtDetailScreen(
       courtId: id,
+      fotoInicial: settings.arguments is String
+          ? settings.arguments as String
+          : null,
       initialDate: uri.queryParameters['date'],
       initialStart: uri.queryParameters['start'],
     ),
@@ -229,7 +232,9 @@ void rtcBuscarCanchas({
 
 /// Abre la ficha de una cancha, con la preseleccion del buscador si la hay.
 /// Es el `<Link href={/canchas/${id}?date=...}>` de la tarjeta.
-void rtcOpenCourt(String id, {String? date, String? start}) {
+/// `foto` es la que ya se esta viendo en la tarjeta: la ficha la usa para la
+/// transicion y para no mostrar un hueco mientras carga.
+void rtcOpenCourt(String id, {String? date, String? start, String? foto}) {
   final query = <String, String>{
     if (date != null && date.isNotEmpty) 'date': date,
     if (start != null && start.isNotEmpty) 'start': start,
@@ -238,7 +243,7 @@ void rtcOpenCourt(String id, {String? date, String? start}) {
     path: '$kCourtDetailPrefix$id',
     queryParameters: query.isEmpty ? null : query,
   ).toString();
-  rtcNavigatorKey.currentState?.pushNamed(path);
+  rtcNavigatorKey.currentState?.pushNamed(path, arguments: foto);
 }
 
 /// Abre la confirmacion de un pago. La llaman el formulario (justo antes de
