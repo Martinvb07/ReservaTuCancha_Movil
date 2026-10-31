@@ -9,16 +9,21 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'remote_image.dart';
 import 'boton_favorito.dart';
+import '../api/bookings_api.dart';
+import 'etiqueta_cupo.dart';
 
 /// Port de `Frontend/src/components/courts/CourtCard.tsx`.
 ///
 /// El `:hover` de la web (elevar la tarjeta y agrandar la foto) no existe en
 /// tactil, asi que va como estado PRESIONADO: la tarjeta se hunde apenas.
 class CourtCard extends StatefulWidget {
-  const CourtCard({super.key, required this.court, this.onTap});
+  const CourtCard({super.key, required this.court, this.onTap, this.cupo});
 
   final Court court;
   final VoidCallback? onTap;
+
+  /// Turnos libres hoy, si ya llegaron.
+  final Disponibilidad? cupo;
 
   @override
   State<CourtCard> createState() => _CourtCardState();
@@ -152,6 +157,10 @@ class _CourtCardState extends State<CourtCard> {
                         ),
                       ],
                     ),
+                    if (widget.cupo != null) ...[
+                      const SizedBox(height: RtcSpace.s2),
+                      EtiquetaCupo(disponibilidad: widget.cupo!),
+                    ],
 
                     if (shown.isNotEmpty) ...[
                       const SizedBox(height: RtcSpace.s3),

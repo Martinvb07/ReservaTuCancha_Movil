@@ -26,6 +26,9 @@ import '../data/preferencias.dart';
 import '../widgets/boton_favorito.dart';
 import '../data/ubicacion.dart';
 import '../widgets/rtc_toast.dart';
+import '../api/bookings_api.dart';
+import '../models/fechas.dart';
+import '../widgets/etiqueta_cupo.dart';
 
 /// Inicio de la app.
 ///
@@ -109,7 +112,16 @@ class _HomeScreenState extends State<HomeScreen> {
       _canchas = canchas;
       _cargando = false;
     });
+    // El cupo de hoy llega despues: las tarjetas se ven sin esperarlo.
+    final cupo = await bookingsApi.disponibilidad(
+      canchas.map((c) => c.id).toList(),
+      fechaIso(ahoraEnBogota()),
+    );
+    if (mounted) setState(() => _cupo = cupo);
   }
+
+  /// Turnos libres hoy por cancha.
+  Map<String, Disponibilidad> _cupo = const {};
 
   List<Court> get _filtradas {
     final lista = _deporte == null
@@ -174,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
         else if (filtradas.isEmpty)
           _SinCanchas(deporte: _deporte)
         else
-          _Carrusel(canchas: filtradas, posicion: _posicion),
+          _Carrusel(canchas: filtradas, posicion: _posicion, cupo: _cupo),
         // Las favoritas, si hay alguna entre las canchas cargadas.
         ValueListenableBuilder<Set<String>>(
           valueListenable: Preferencias.instance.favoritos,
@@ -456,10 +468,11 @@ class _Chip extends StatelessWidget {
 const _altoCarrusel = 400.0;
 
 class _Carrusel extends StatefulWidget {
-  const _Carrusel({required this.canchas, this.posicion});
+  const _Carrusel({required this.canchas, this.posicion, this.cupo = const {}});
 
   final List<Court> canchas;
   final Position? posicion;
+  final Map<String, Disponibilidad> cupo;
 
   @override
   State<_Carrusel> createState() => _CarruselState();
@@ -517,6 +530,7 @@ class _CarruselState extends State<_Carrusel> {
               child: _TarjetaGrande(
                 court: widget.canchas[i],
                 posicion: widget.posicion,
+                cupo: widget.cupo[widget.canchas[i].id],
               ),
             ),
           );
@@ -527,10 +541,11 @@ class _CarruselState extends State<_Carrusel> {
 }
 
 class _TarjetaGrande extends StatelessWidget {
-  const _TarjetaGrande({required this.court, this.posicion});
+  const _TarjetaGrande({required this.court, this.posicion, this.cupo});
 
   final Court court;
   final Position? posicion;
+  final Disponibilidad? cupo;
 
   String _ubicacionTexto() {
     final pos = posicion;
@@ -665,6 +680,10 @@ class _TarjetaGrande extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (cupo != null) ...[
+                      const SizedBox(height: 10),
+                      EtiquetaCupo(disponibilidad: cupo!, sobreFoto: true),
+                    ],
                   ],
                 ),
               ),

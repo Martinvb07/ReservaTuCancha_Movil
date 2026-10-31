@@ -21,6 +21,7 @@ import '../widgets/price_slider.dart';
 import '../app/nav_state.dart';
 import '../app/routes.dart';
 import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
+import '../api/bookings_api.dart';
 
 /// Port de `Frontend/src/app/(public)/empresas/page.client.tsx`, rama movil.
 ///
@@ -89,6 +90,20 @@ class _CanchasScreenState extends State<CanchasScreen> {
 
   // Refinamientos locales, igual que en la web (no viajan en la URL).
   final _selectedAmenities = <String>{};
+
+  /// Turnos libres hoy (y desde las 6 pm) por cancha, para las etiquetas y
+  /// los filtros rapidos.
+  Map<String, Disponibilidad> _cupoHoy = const {};
+  Map<String, Disponibilidad> _cupoTarde = const {};
+
+  /// Filtros rapidos: chips de un toque arriba de la lista.
+  bool _soloHoy = false;
+  bool _soloTarde = false;
+  bool _baratas = false;
+
+  /// "Menos de $80.000".
+  static const _topeBarata = 80000;
+
   int _minPrice = PriceSlider.min;
   int _maxPrice = PriceSlider.max;
   String _sort = 'destacados';
@@ -105,6 +120,20 @@ class _CanchasScreenState extends State<CanchasScreen> {
   void initState() {
     super.initState();
     _loadCourts();
+  }
+
+  Future<void> _cargarCupo() async {
+    final ids = _courts.map((c) => c.id).toList();
+    final hoy = fechaIso(ahoraEnBogota());
+    final r = await Future.wait([
+      bookingsApi.disponibilidad(ids, hoy),
+      bookingsApi.disponibilidad(ids, hoy, desde: '18:00'),
+    ]);
+    if (!mounted) return;
+    setState(() {
+      _cupoHoy = r[0];
+      _cupoTarde = r[1];
+    });
   }
 
   Future<void> _loadCourts() async {
@@ -125,6 +154,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
         _total = page.total;
         _loadingCourts = false;
       });
+      _cargarCupo();
     } on RtcApiException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -166,6 +196,15 @@ class _CanchasScreenState extends State<CanchasScreen> {
           .where((c) => _selectedAmenities.every(c.amenities.contains))
           .toList();
     }
+    if (_soloHoy) {
+      list = list.where((c) => (_cupoHoy[c.id]?.libres ?? 0) > 0).toList();
+    }
+    if (_soloTarde) {
+      list = list.where((c) => (_cupoTarde[c.id]?.libres ?? 0) > 0).toList();
+    }
+    if (_baratas) {
+      list = list.where((c) => c.pricePerHour < _topeBarata).toList();
+    }
     if (_priceActive) {
       // El tope del slider significa "sin tope".
       list = list.where((c) {
@@ -200,6 +239,9 @@ class _CanchasScreenState extends State<CanchasScreen> {
   }
 
   void _clearFilters() => setState(() {
+    _soloHoy = false;
+    _soloTarde = false;
+    _baratas = false;
     _selectedAmenities.clear();
     _minPrice = PriceSlider.min;
     _maxPrice = PriceSlider.max;
@@ -672,6 +714,23 @@ class _CanchasScreenState extends State<CanchasScreen> {
     if (_loadingCourts) return _skeletonGrid();
 
     final list = _filtered;
+    final rapidos = _FiltrosRapidos(
+      hoy: _soloHoy,
+      tarde: _soloTarde,
+      baratas: _baratas,
+      onHoy: () => setState(() {
+        _soloHoy = !_soloHoy;
+        _page = 1;
+      }),
+      onTarde: () => setState(() {
+        _soloTarde = !_soloTarde;
+        _page = 1;
+      }),
+      onBaratas: () => setState(() {
+        _baratas = !_baratas;
+        _page = 1;
+      }),
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         RtcSpace.s4,
@@ -680,10 +739,19 @@ class _CanchasScreenState extends State<CanchasScreen> {
         RtcSpace.s10,
       ),
       child: list.isEmpty
-          ? _emptyState()
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                rapidos,
+                const SizedBox(height: RtcSpace.s4),
+                _emptyState(),
+              ],
+            )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                rapidos,
+                const SizedBox(height: RtcSpace.s4),
                 for (var i = 0; i < _visible.length; i++)
                   Padding(
                     padding: const EdgeInsets.only(bottom: RtcSpace.s8),
@@ -692,6 +760,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
                       delay: Duration(milliseconds: (i < 8 ? i : 8) * 45),
                       child: CourtCard(
                         court: _visible[i],
+                        cupo: _cupoHoy[_visible[i].id],
                         onTap: () => rtcOpenCourt(
                           _visible[i].id,
                           date: _fecha,
@@ -1199,6 +1268,58 @@ class _PageArrow extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Los chips de un toque arriba de la lista: cupo hoy, cupo de noche y
+/// precio. Se combinan entre si y con los filtros de la hoja.
+class _FiltrosRapidos extends StatelessWidget {
+  const _FiltrosRapidos({
+    required this.hoy,
+    required this.tarde,
+    required this.baratas,
+    required this.onHoy,
+    required this.onTarde,
+    required this.onBaratas,
+  });
+
+  final bool hoy;
+  final bool tarde;
+  final bool baratas;
+  final VoidCallback onHoy;
+  final VoidCallback onTarde;
+  final VoidCallback onBaratas;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 38,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          _FilterPill(
+            active: hoy,
+            icon: LucideIcons.calendarCheck,
+            label: 'Con cupo hoy',
+            onTap: onHoy,
+          ),
+          const SizedBox(width: RtcSpace.s2),
+          _FilterPill(
+            active: tarde,
+            icon: LucideIcons.moon,
+            label: 'Después de las 6 pm',
+            onTap: onTarde,
+          ),
+          const SizedBox(width: RtcSpace.s2),
+          _FilterPill(
+            active: baratas,
+            icon: LucideIcons.tag,
+            label: 'Menos de \$80.000',
+            onTap: onBaratas,
+          ),
+        ],
       ),
     );
   }

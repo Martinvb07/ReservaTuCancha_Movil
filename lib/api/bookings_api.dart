@@ -10,6 +10,31 @@ import 'rtc_api.dart';
 class BookingsApi {
   const BookingsApi();
 
+  /// `GET /bookings/disponibilidad` — cuantos turnos quedan libres en cada
+  /// cancha una fecha, y cual es el proximo. Si falla devuelve un mapa vacio:
+  /// es un dato de ayuda en las tarjetas y no vale romper el listado.
+  Future<Map<String, Disponibilidad>> disponibilidad(
+    List<String> ids,
+    String fecha, {
+    String? desde,
+  }) async {
+    if (ids.isEmpty) return const {};
+    try {
+      final data = await RtcApi.instance.get(
+        '/bookings/disponibilidad',
+        query: {'ids': ids.join(','), 'fecha': fecha, 'desde': desde},
+      );
+      final mapa = (data as Map<String, dynamic>?) ?? const {};
+      return {
+        for (final e in mapa.entries)
+          if (e.value is Map<String, dynamic>)
+            e.key: Disponibilidad.fromJson(e.value as Map<String, dynamic>),
+      };
+    } on RtcApiException {
+      return const {};
+    }
+  }
+
   /// `GET /bookings/slots?courtId&date` — las franjas ya tomadas.
   Future<List<BlockedSlot>> takenSlots(String courtId, String date) async {
     final data = await RtcApi.instance.get(
@@ -120,3 +145,18 @@ class BookingsApi {
 }
 
 const bookingsApi = BookingsApi();
+
+/// Turnos libres de una cancha en un dia.
+class Disponibilidad {
+  const Disponibilidad({required this.libres, this.proximo});
+
+  final int libres;
+
+  /// "HH:mm" del primer turno libre, o null si no queda ninguno.
+  final String? proximo;
+
+  factory Disponibilidad.fromJson(Map<String, dynamic> json) => Disponibilidad(
+    libres: (json['libres'] as num?)?.toInt() ?? 0,
+    proximo: json['proximo'] as String?,
+  );
+}
