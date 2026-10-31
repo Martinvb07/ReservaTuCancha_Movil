@@ -102,6 +102,11 @@ class _CourtCardState extends State<CourtCard> {
                             label: court.averageRating.toStringAsFixed(1),
                           ),
                         ),
+                      Positioned(
+                        right: 12,
+                        bottom: 12,
+                        child: BotonFavorito(courtId: court.id, tamano: 40),
+                      ),
                     ],
                   ),
                 ),
@@ -221,11 +226,6 @@ class _CourtCardState extends State<CourtCard> {
                           ),
                         ),
                       ],
-                    ),
-                    Positioned(
-                      right: 12,
-                      bottom: 12,
-                      child: BotonFavorito(courtId: court.id, tamano: 40),
                     ),
                   ],
                 ),
