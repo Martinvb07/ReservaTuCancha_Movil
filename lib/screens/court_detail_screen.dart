@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../api/courts_api.dart';
@@ -131,6 +132,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
 
   /// Lleva al formulario de reserva desde la barra de abajo.
   void _irAReservar() {
+    HapticFeedback.lightImpact();
     final destino = _reservaKey.currentContext;
     if (destino == null) return;
     Scrollable.ensureVisible(

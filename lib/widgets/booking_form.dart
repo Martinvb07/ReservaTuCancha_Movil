@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../api/bookings_api.dart';
@@ -311,6 +312,7 @@ class _BookingFormState extends State<BookingForm> {
 
   Future<void> _confirmarYPagar() async {
     if (_processing || !_validar()) return;
+    HapticFeedback.mediumImpact();
     setState(() {
       _processing = true;
       _errorGeneral = null;

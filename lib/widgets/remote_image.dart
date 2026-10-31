@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -38,12 +39,14 @@ class RemoteImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      url,
+    // En cache de disco: la foto se baja una vez y las siguientes aperturas
+    // de la app la muestran al instante, sin gastar datos.
+    return CachedNetworkImage(
+      imageUrl: url,
       fit: fit,
-      loadingBuilder: (context, child, progress) =>
-          progress == null ? child : _placeholder(),
-      errorBuilder: (context, error, stack) => _placeholder(rota: true),
+      fadeInDuration: const Duration(milliseconds: 220),
+      placeholder: (context, _) => _placeholder(),
+      errorWidget: (context, _, _) => _placeholder(rota: true),
     );
   }
 

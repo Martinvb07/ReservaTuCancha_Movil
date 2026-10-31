@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../app/routes.dart';
@@ -37,6 +38,7 @@ class _ModoToggleState extends State<ModoToggle> {
 
   Future<void> _cambiar() async {
     if (_cambiando) return;
+    HapticFeedback.lightImpact();
     setState(() {
       _cambiando = true;
       _clubes = !_clubes;

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../theme/motion.dart';
@@ -143,7 +144,12 @@ class _Lupa extends StatelessWidget {
               label: 'Buscar canchas',
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: visible ? onTap : null,
+                onTap: visible
+                    ? () {
+                        HapticFeedback.selectionClick();
+                        onTap?.call();
+                      }
+                    : null,
                 child: Container(
                   width: 60,
                   height: 60,
@@ -188,7 +194,10 @@ class _Item extends StatelessWidget {
       label: tab.etiqueta,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: onTap,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
         child: AnimatedContainer(
           duration: RtcDur.pick,
           curve: RtcCurves.smooth,

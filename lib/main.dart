@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'app/nav_state.dart';
 import 'app/routes.dart';
 import 'app/rtc_layout.dart';
 import 'auth/session.dart';
 import 'booking/pago.dart';
+import 'data/preferencias.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -17,9 +19,26 @@ Future<void> main() async {
   // En iOS no cambia nada: ahi siempre fue asi.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   await RtcSession.instance.restore();
+  // Datos del jugador y favoritos, para que el formulario ya salga lleno.
+  await Preferencias.instance.cargar();
   // El deep link del pago: `reservatucancha://pago?bookingId=X`.
   await DeepLinksDePago.escuchar();
-  runApp(RtcApp());
+
+  // Reporte de errores. Sin DSN (el caso de desarrollo) Sentry no se activa
+  // y la app arranca igual; en la build de la tienda se pasa con
+  // --dart-define=SENTRY_DSN=https://...
+  const dsn = String.fromEnvironment('SENTRY_DSN');
+  if (dsn.isEmpty) {
+    runApp(RtcApp());
+    return;
+  }
+  await SentryFlutter.init((options) {
+    options.dsn = dsn;
+    options.tracesSampleRate = 0.2;
+    // Sin datos personales: nombres, correos y telefonos de las reservas
+    // no tienen por que salir del telefono en un reporte de error.
+    options.sendDefaultPii = false;
+  }, appRunner: () => runApp(RtcApp()));
 }
 
 class RtcApp extends StatelessWidget {
