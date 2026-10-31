@@ -1,0 +1,122 @@
+/// Espeja la reserva que devuelve `/bookings/public` del backend NestJS.
+library;
+
+import 'package:flutter/material.dart';
+
+class Booking {
+  const Booking({
+    required this.id,
+    required this.bookingCode,
+    required this.courtName,
+    required this.city,
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+    required this.totalPrice,
+    required this.status,
+    this.guestEmail = '',
+    this.guestName = '',
+    this.paymentMethod = 'wompi',
+    this.guestPhone = '',
+    this.notes,
+    this.cancelToken,
+  });
+
+  final String id;
+  final String bookingCode;
+  final String courtName;
+  final String city;
+  final DateTime date;
+  final String startTime;
+  final String endTime;
+  final int totalPrice;
+
+  /// pending | confirmed | reagendada | completed
+  final String status;
+
+  final String guestEmail;
+
+  /// Lo necesita el panel del propietario: en /mis-reservas no se muestra.
+  final String guestName;
+
+  /// 'wompi' o 'efectivo'. El efectivo se retiro del sitio publico, pero
+  /// quedan reservas viejas con ese metodo.
+  final String paymentMethod;
+
+  /// Los dos ultimos solo los usa el panel del propietario.
+  final String guestPhone;
+  final String? notes;
+
+  final String? cancelToken;
+
+  factory Booking.fromJson(Map<String, dynamic> json) {
+    final court = json['courtId'] is Map<String, dynamic>
+        ? json['courtId'] as Map<String, dynamic>
+        : null;
+    final location = (court?['location'] as Map<String, dynamic>?) ?? const {};
+    return Booking(
+      id: json['_id'] as String,
+      bookingCode: (json['bookingCode'] as String?) ?? 'N/A',
+      courtName: (court?['name'] as String?) ?? 'Cancha',
+      city: (location['city'] as String?) ?? '',
+      date: DateTime.parse(json['date'] as String),
+      startTime: json['startTime'] as String,
+      endTime: json['endTime'] as String,
+      totalPrice: (json['totalPrice'] as num?)?.toInt() ?? 0,
+      status: (json['status'] as String?) ?? 'pending',
+      guestEmail: (json['guestEmail'] as String?) ?? '',
+      guestName: (json['guestName'] as String?) ?? '',
+      paymentMethod: (json['paymentMethod'] as String?) ?? 'wompi',
+      guestPhone: (json['guestPhone'] as String?) ?? '',
+      notes: (json['notes'] as String?)?.trim().isEmpty ?? true
+          ? null
+          : (json['notes'] as String).trim(),
+      cancelToken: json['cancelToken'] as String?,
+    );
+  }
+}
+
+/// `STATUS_STYLES` de `mis-reservas/page.tsx`.
+class BookingStatusStyle {
+  const BookingStatusStyle({
+    required this.pillBackground,
+    required this.pillForeground,
+    required this.dot,
+    required this.label,
+  });
+
+  final Color pillBackground;
+  final Color pillForeground;
+  final Color dot;
+  final String label;
+}
+
+const _statusStyles = <String, BookingStatusStyle>{
+  'pending': BookingStatusStyle(
+    pillBackground: Color(0xFFFEF9C3), // yellow-100
+    pillForeground: Color(0xFFA16207), // yellow-700
+    dot: Color(0xFFFACC15), // yellow-400
+    label: 'Sin pagar',
+  ),
+  'confirmed': BookingStatusStyle(
+    pillBackground: Color(0xFFDCFCE7), // green-100
+    pillForeground: Color(0xFF15803D), // green-700
+    dot: Color(0xFF22C55E), // green-500
+    label: 'Confirmada',
+  ),
+  'reagendada': BookingStatusStyle(
+    pillBackground: Color(0xFFFEE2E2), // red-100
+    pillForeground: Color(0xFFDC2626), // red-600
+    dot: Color(0xFFF87171), // red-400
+    label: 'Reagendada',
+  ),
+  'completed': BookingStatusStyle(
+    pillBackground: Color(0xFFDBEAFE), // blue-100
+    pillForeground: Color(0xFF1D4ED8), // blue-700
+    dot: Color(0xFF60A5FA), // blue-400
+    label: 'Completada',
+  ),
+};
+
+BookingStatusStyle bookingStatusStyle(String status) =>
+    _statusStyles[status] ?? _statusStyles['pending']!;

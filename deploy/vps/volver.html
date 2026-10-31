@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Volviendo a la app…</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: #111827;
+    color: #fff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    text-align: center;
+  }
+  .caja { max-width: 360px; }
+  .punto {
+    width: 56px; height: 56px; margin: 0 auto 24px;
+    border-radius: 999px;
+    border: 3px solid rgba(163,230,53,.25);
+    border-top-color: #a3e635;
+    animation: girar .9s linear infinite;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  h1 { font-size: 20px; margin: 0 0 8px; font-weight: 800; }
+  p { margin: 0 0 24px; color: #9ca3af; font-size: 14px; line-height: 1.5; }
+  a {
+    display: block; padding: 16px 20px;
+    background: #a3e635; color: #111827;
+    border-radius: 16px; text-decoration: none;
+    font-weight: 800; font-size: 16px;
+  }
+  .alt { margin-top: 12px; background: transparent; color: #9ca3af;
+         border: 1px solid rgba(255,255,255,.2); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="caja">
+    <div class="punto"></div>
+    <h1>Volviendo a la app</h1>
+    <p>Estamos confirmando tu pago en ReservaTuCancha. Si esta pantalla no se
+       cierra sola, toca el botón.</p>
+    <a id="abrir" href="#">Volver a la app</a>
+    <a class="alt" href="/mis-reservas">Ver mi reserva en el sitio</a>
+  </div>
+
+<script>
+  // El bookingId lo pone la app cuando le pide el link de pago a Wompi, y
+  // Wompi lo devuelve tal cual en la URL de retorno.
+  var id = new URLSearchParams(location.search).get('bookingId') || '';
+  var destino = 'reservatucancha://pago?bookingId=' + encodeURIComponent(id);
+
+  document.getElementById('abrir').href = destino;
+
+  // El salto automatico. Un esquema propio si saca del navegador, a diferencia
+  // de un App Link, que Chrome se queda cuando la navegacion es automatica.
+  // Si el navegador lo bloquea, queda el boton de arriba.
+  location.replace(destino);
+</script>
+</body>
+</html>
