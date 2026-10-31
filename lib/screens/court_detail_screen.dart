@@ -21,6 +21,7 @@ import '../widgets/remote_image.dart';
 import '../widgets/review_card.dart';
 import '../widgets/star_rating.dart';
 import '../widgets/boton_favorito.dart';
+import '../widgets/galeria_fotos.dart';
 
 /// Port de `Frontend/src/app/(public)/canchas/[id]/page.tsx`, rama movil.
 ///
@@ -328,7 +329,12 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          RemoteImage(url: photos.first, sport: court.sport),
+          // Tocar la foto abre todas a pantalla completa.
+          GestureDetector(
+            onTap: () =>
+                abrirGaleria(context, fotos: photos, sport: court.sport),
+            child: RemoteImage(url: photos.first, sport: court.sport),
+          ),
           // Velo arriba para que la barra de estado y los botones se lean.
           DecoratedBox(
             decoration: BoxDecoration(
@@ -529,9 +535,17 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         mainAxisSpacing: 10,
         childAspectRatio: 4 / 3,
       ),
-      itemBuilder: (context, i) => ClipRRect(
-        borderRadius: RtcRadius.brXl,
-        child: RemoteImage(url: photos[i], sport: court.sport),
+      itemBuilder: (context, i) => GestureDetector(
+        onTap: () => abrirGaleria(
+          context,
+          fotos: photos,
+          inicial: i,
+          sport: court.sport,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: RemoteImage(url: photos[i], sport: court.sport),
+        ),
       ),
     );
   }
