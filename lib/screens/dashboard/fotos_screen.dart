@@ -213,24 +213,18 @@ class _FotosScreenState extends State<FotosScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text('✦', style: RtcType.sm.copyWith(color: Lime.c600)),
-            const SizedBox(width: RtcSpace.s2),
-            Text(
-              'PANEL PROPIETARIO',
-              style: RtcType.sm.copyWith(
-                color: Lime.c600,
-                fontWeight: RtcType.semibold,
-                letterSpacing: 1.6,
-              ),
-            ),
-          ],
+        Text(
+          'Panel propietario',
+          style: RtcType.sm.copyWith(
+            color: Green.c700,
+            fontWeight: RtcType.semibold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
-          'GALERÍA DE FOTOS',
+          'Galería de fotos',
           style: RtcType.xl3.copyWith(
+            letterSpacing: -0.4,
             fontWeight: FontWeight.w900,
             color: Gray.c900,
           ),
@@ -251,7 +245,6 @@ class _FotosScreenState extends State<FotosScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +457,6 @@ class _FotosScreenState extends State<FotosScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
       ),
       child: Column(
         children: [

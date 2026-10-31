@@ -323,19 +323,12 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text('✦', style: RtcType.sm.copyWith(color: Lime.c600)),
-            const SizedBox(width: RtcSpace.s2),
-            Text(
-              'EDITAR CANCHA',
-              style: RtcType.sm.copyWith(
-                color: Lime.c600,
-                fontWeight: RtcType.semibold,
-                letterSpacing: 1.6,
-              ),
-            ),
-          ],
+        Text(
+          'Editar cancha',
+          style: RtcType.sm.copyWith(
+            color: Green.c700,
+            fontWeight: RtcType.semibold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
@@ -361,7 +354,6 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: RtcRadius.brXxl,
-              border: Border.all(color: Gray.c100),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,

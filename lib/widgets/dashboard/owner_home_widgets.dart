@@ -865,7 +865,6 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

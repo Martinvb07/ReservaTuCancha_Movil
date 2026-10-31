@@ -113,7 +113,6 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
       ),
       child: Column(
         children: [
@@ -324,7 +323,6 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

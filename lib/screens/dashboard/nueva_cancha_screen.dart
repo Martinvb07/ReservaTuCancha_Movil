@@ -395,7 +395,6 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
           decoration: BoxDecoration(
             color: Slate.c50,
             borderRadius: BorderRadius.circular(24), // rounded-3xl
-            border: Border.all(color: Gray.c100),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -467,24 +466,18 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text('✦', style: RtcType.sm.copyWith(color: Lime.c600)),
-            const SizedBox(width: RtcSpace.s2),
-            Text(
-              'NUEVA CANCHA',
-              style: RtcType.sm.copyWith(
-                color: Lime.c600,
-                fontWeight: RtcType.semibold,
-                letterSpacing: 1.6,
-              ),
-            ),
-          ],
+        Text(
+          'Nueva cancha',
+          style: RtcType.sm.copyWith(
+            color: Green.c700,
+            fontWeight: RtcType.semibold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
-          'PUBLICAR CANCHA',
+          'Publicar cancha',
           style: RtcType.xl3.copyWith(
+            letterSpacing: -0.4,
             fontWeight: FontWeight.w900,
             color: Gray.c900,
           ),

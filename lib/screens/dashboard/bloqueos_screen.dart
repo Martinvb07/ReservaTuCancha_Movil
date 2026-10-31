@@ -228,8 +228,9 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
             const SizedBox(width: RtcSpace.s2),
             Expanded(
               child: Text(
-                'BLOQUEAR HORARIOS',
+                'Bloquear horarios',
                 style: RtcType.xl2.copyWith(
+                  letterSpacing: -0.4,
                   fontWeight: FontWeight.w900,
                   color: Gray.c900,
                 ),

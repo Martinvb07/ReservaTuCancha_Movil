@@ -85,24 +85,18 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text('✦', style: RtcType.sm.copyWith(color: Lime.c600)),
-            const SizedBox(width: RtcSpace.s2),
-            Text(
-              'PANEL PROPIETARIO',
-              style: RtcType.sm.copyWith(
-                color: Lime.c600,
-                fontWeight: RtcType.semibold,
-                letterSpacing: 1.6,
-              ),
-            ),
-          ],
+        Text(
+          'Panel propietario',
+          style: RtcType.sm.copyWith(
+            color: Green.c700,
+            fontWeight: RtcType.semibold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
-          'HOLA, ${nombre.toUpperCase()}',
+          'Hola, $nombre',
           style: RtcType.xl3.copyWith(
+            letterSpacing: -0.4,
             fontWeight: FontWeight.w900,
             color: Gray.c900,
           ),
@@ -219,7 +213,6 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: RtcRadius.brXxl,
-              border: Border.all(color: Gray.c100),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,11 +222,10 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        titulo.toUpperCase(),
+                        titulo,
                         style: RtcType.xs.copyWith(
-                          color: Gray.c400,
-                          fontWeight: RtcType.bold,
-                          letterSpacing: 1.2,
+                          color: Gray.c500,
+                          fontWeight: RtcType.semibold,
                         ),
                       ),
                     ),

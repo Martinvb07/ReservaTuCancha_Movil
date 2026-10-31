@@ -106,24 +106,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text('✦', style: RtcType.xs.copyWith(color: Lime.c600)),
-            const SizedBox(width: RtcSpace.s2),
-            Text(
-              'PANEL PROPIETARIO',
-              style: RtcType.xs.copyWith(
-                color: Lime.c600,
-                fontWeight: RtcType.semibold,
-                letterSpacing: 1.6,
-              ),
-            ),
-          ],
+        Text(
+          'Panel propietario',
+          style: RtcType.sm.copyWith(
+            color: Green.c700,
+            fontWeight: RtcType.semibold,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
-          'ANALYTICS',
+          'Analytics',
           style: RtcType.xl2.copyWith(
+            letterSpacing: -0.4,
             fontWeight: FontWeight.w900,
             color: Gray.c900,
           ),
@@ -238,7 +232,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: RtcRadius.brXxl,
-            border: Border.all(color: Gray.c100),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,12 +241,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      etiqueta.toUpperCase(),
+                      etiqueta,
                       style: RtcType.xs.copyWith(
-                        fontSize: 10,
-                        color: Gray.c400,
-                        fontWeight: RtcType.bold,
-                        letterSpacing: 1.2,
+                        fontSize: 12,
+                        fontWeight: RtcType.semibold,
+                        color: Gray.c500,
                       ),
                     ),
                   ),
@@ -538,7 +530,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -551,11 +542,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      titulo.toUpperCase(),
-                      style: RtcType.xs.copyWith(
-                        fontWeight: FontWeight.w900,
+                      titulo,
+                      style: RtcType.base.copyWith(
+                        fontWeight: FontWeight.w700,
                         color: Gray.c900,
-                        letterSpacing: 1.6,
                       ),
                     ),
                     const SizedBox(height: 2),

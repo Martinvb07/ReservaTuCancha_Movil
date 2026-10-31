@@ -62,7 +62,7 @@ class _DashboardShellState extends State<DashboardShell> {
     return RealtimeNotifications(
       child: Scaffold(
         // bg-gray-50 del contenedor
-        backgroundColor: Slate.c50,
+        backgroundColor: Fondo.app,
         body: SafeArea(
           child: Stack(
             children: [
@@ -92,10 +92,9 @@ class _DashboardShellState extends State<DashboardShell> {
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s4),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Slate.c200)),
-      ),
+      // Sin franja blanca ni linea: la cabecera va sobre el mismo fondo de
+      // la app, como en las pantallas del jugador.
+      color: Fondo.app,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
