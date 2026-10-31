@@ -6,9 +6,11 @@ import '../api/rtc_api.dart';
 import '../models/booking.dart';
 import '../models/court.dart' show formatCop;
 import '../theme/palette.dart';
+import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../app/routes.dart';
+import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 
 /// Port de `Frontend/src/app/(public)/mis-reservas/page.tsx`.
 ///
@@ -80,169 +82,136 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(padding: EdgeInsets.zero, children: [_hero(), _results()]);
+    return ListView(
+      padding: const EdgeInsets.only(bottom: kBottomNavEspacio),
+      children: [_hero(), _results()],
+    );
   }
 
-  // ── HERO ─────────────────────────────────────────────────────────────
+  // ── CABECERA ─────────────────────────────────────────────────────────
   Widget _hero() {
-    return ClipRect(
-      child: Container(
-        color: Gray.c900,
-        padding: const EdgeInsets.symmetric(
-          horizontal: RtcSpace.s4,
-          vertical: RtcSpace.s12 + RtcSpace.s4, // py-16
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // El circulo lima al 10%, corrido a la esquina inferior derecha.
-            Positioned(
-              right: -120,
-              bottom: -160,
-              child: Opacity(
-                opacity: 0.10,
-                child: Container(
-                  width: 384, // w-96
-                  height: 384,
-                  decoration: const BoxDecoration(
-                    color: Lime.c400,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        RtcSpace.s5,
+        RtcSpace.s4,
+        RtcSpace.s5,
+        0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Sin necesidad de cuenta',
+            style: RtcType.sm.copyWith(
+              color: Green.c700,
+              fontWeight: RtcType.semibold,
             ),
-            Column(
-              children: [
-                Text(
-                  '✦ SIN NECESIDAD DE CUENTA',
-                  textAlign: TextAlign.center,
-                  style: RtcType.sm.copyWith(
-                    color: Lime.c400,
-                    fontWeight: RtcType.semibold,
-                    letterSpacing: 1.4, // tracking-widest
-                  ),
-                ),
-                const SizedBox(height: RtcSpace.s4),
-                Text(
-                  'MIS RESERVAS',
-                  textAlign: TextAlign.center,
-                  style: RtcType.xl4.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: RtcSpace.s4),
-                Text(
-                  'Ingresa tu email o el código de reserva para verla',
-                  textAlign: TextAlign.center,
-                  style: RtcType.sm.copyWith(color: Gray.c400),
-                ),
-                const SizedBox(height: RtcSpace.s6),
-                _searchForm(),
-              ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'Mis reservas',
+            style: RtcType.xl2.copyWith(
+              fontSize: 28,
+              height: 1.15,
+              fontWeight: FontWeight.w800,
+              color: Gray.c900,
+              letterSpacing: -0.4,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Búscalas con tu email o con el código de la reserva.',
+            style: RtcType.sm.copyWith(color: Gray.c500),
+          ),
+          const SizedBox(height: RtcSpace.s5),
+          _searchForm(),
+        ],
       ),
     );
   }
 
+  /// Una sola pildora blanca con el boton redondo adentro, como el buscador
+  /// del inicio.
   Widget _searchForm() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _controller,
-            onSubmitted: (_) => _search(),
-            style: RtcType.sm.copyWith(color: Colors.white),
-            cursorColor: Lime.c400,
-            decoration: InputDecoration(
-              isDense: true,
-              hintText: 'tu@email.com o código #XXXXXXXX',
-              hintStyle: RtcType.sm.copyWith(color: Gray.c500),
-              prefixIcon: const Icon(
-                LucideIcons.search,
-                size: 16,
-                color: Gray.c400,
-              ),
-              prefixIconConstraints: const BoxConstraints(minWidth: 44),
-              filled: true,
-              fillColor: Colors.white.withValues(alpha: 0.10),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: RtcSpace.s4,
-                vertical: RtcSpace.s3,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: RtcRadius.brXl,
-                borderSide: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.20),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: RtcRadius.brXl,
-                borderSide: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.20),
-                ),
-              ),
-              // focus:ring-2 ring-lime-400
-              focusedBorder: const OutlineInputBorder(
-                borderRadius: RtcRadius.brXl,
-                borderSide: BorderSide(color: Lime.c400, width: 2),
+    return Container(
+      height: 60,
+      padding: const EdgeInsets.only(left: RtcSpace.s5, right: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: RtcRadius.brFull,
+        boxShadow: [
+          cssShadow(
+            dy: 6,
+            blur: 20,
+            color: Colors.black.withValues(alpha: 0.07),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              onSubmitted: (_) => _search(),
+              textInputAction: TextInputAction.search,
+              style: RtcType.sm.copyWith(color: Gray.c900),
+              cursorColor: Green.c600,
+              decoration: InputDecoration(
+                isDense: true,
+                // El tema pinta borde y relleno a todos los campos: aca
+                // la pildora ya hace de campo.
+                filled: false,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                hintText: 'tu@email.com o código #XXXXXXXX',
+                hintStyle: RtcType.sm.copyWith(color: Gray.c400),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: RtcSpace.s2),
-        GestureDetector(
-          onTap: _loading ? null : _search,
-          child: Opacity(
-            opacity: _loading ? 0.6 : 1,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: RtcSpace.s5,
-                vertical: RtcSpace.s3 + 1,
-              ),
-              decoration: const BoxDecoration(
-                color: Lime.c400,
-                borderRadius: RtcRadius.brXl,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_loading)
-                    const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Gray.c900,
+          Semantics(
+            button: true,
+            label: 'Buscar reservas',
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _loading ? null : _search,
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(
+                  color: Green.c600,
+                  shape: BoxShape.circle,
+                ),
+                child: _loading
+                    ? const Padding(
+                        padding: EdgeInsets.all(15),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(
+                        LucideIcons.search,
+                        size: 18,
+                        color: Colors.white,
                       ),
-                    )
-                  else
-                    const Icon(LucideIcons.search, size: 16, color: Gray.c900),
-                  const SizedBox(width: RtcSpace.s2),
-                  Text(
-                    'Buscar',
-                    style: RtcType.sm.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: Gray.c900,
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   // ── RESULTADOS ───────────────────────────────────────────────────────
   Widget _results() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: RtcSpace.s4,
-        vertical: RtcSpace.s10,
+      padding: const EdgeInsets.fromLTRB(
+        RtcSpace.s5,
+        RtcSpace.s6,
+        RtcSpace.s5,
+        RtcSpace.s6,
       ),
       child: switch ((_searched, _loading, _bookings.isEmpty)) {
         (false, _, _) => _idleState(),
@@ -255,20 +224,45 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
 
   /// Todavia no busco nada.
   Widget _idleState() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: RtcSpace.s12 + 16),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: RtcSpace.s6,
+        vertical: RtcSpace.s8,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+      ),
       child: Column(
         children: [
-          const Icon(LucideIcons.calendarDays, size: 56, color: Gray.c200),
-          const SizedBox(height: RtcSpace.s3),
-          Text(
-            'INGRESA TU EMAIL O CÓDIGO PARA VER TUS RESERVAS',
-            textAlign: TextAlign.center,
-            style: RtcType.sm.copyWith(
-              fontWeight: FontWeight.w900,
-              color: Gray.c300,
-              letterSpacing: 1.4,
+          Container(
+            width: 64,
+            height: 64,
+            decoration: const BoxDecoration(
+              color: Fondo.app,
+              shape: BoxShape.circle,
             ),
+            child: const Icon(
+              LucideIcons.calendarSearch,
+              size: 28,
+              color: Gray.c700,
+            ),
+          ),
+          const SizedBox(height: RtcSpace.s4),
+          Text(
+            'Aquí verás tus reservas',
+            textAlign: TextAlign.center,
+            style: RtcType.base.copyWith(
+              fontWeight: FontWeight.w700,
+              color: Gray.c900,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Escribe el email con el que reservaste o el código que te llegó '
+            'al correo.',
+            textAlign: TextAlign.center,
+            style: RtcType.sm.copyWith(color: Gray.c500),
           ),
         ],
       ),
@@ -283,8 +277,8 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
             height: 96,
             margin: const EdgeInsets.only(bottom: RtcSpace.s3),
             decoration: BoxDecoration(
-              color: Gray.c100,
-              borderRadius: RtcRadius.brXxl,
+              color: Fondo.suave,
+              borderRadius: BorderRadius.circular(24),
             ),
           ),
       ],
@@ -444,8 +438,7 @@ class _BookingCard extends StatelessWidget {
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Gray.c100),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

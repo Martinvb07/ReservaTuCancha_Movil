@@ -17,11 +17,10 @@ import '../widgets/mobile_search_trigger.dart';
 import '../widgets/mobile_stack_sheet.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/price_slider.dart';
-import '../widgets/remote_image.dart';
 
 import '../app/nav_state.dart';
 import '../app/routes.dart';
-import '../widgets/rtc_navbar.dart' show kDockTrigger, kNavHeight;
+import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 
 /// Port de `Frontend/src/app/(public)/empresas/page.client.tsx`, rama movil.
 ///
@@ -218,8 +217,9 @@ class _CanchasScreenState extends State<CanchasScreen> {
       }
     }
     if (_anchorBottom == null) return;
-    const trigger = kDockTrigger - kNavHeight;
-    // El dock vive en el header, que es unico para toda la app.
+    // Sin navbar arriba: la lupa aparece junto a la barra inferior cuando el
+    // buscador ya se metio debajo de la barra de filtros fija.
+    const trigger = _FilterBarDelegate._height;
     RtcNavScope.read(context).docked = _anchorBottom! - pixels <= trigger;
   }
 
@@ -239,72 +239,52 @@ class _CanchasScreenState extends State<CanchasScreen> {
             delegate: _FilterBarDelegate(child: _filterBar()),
           ),
           SliverToBoxAdapter(child: _content()),
+          const SliverToBoxAdapter(child: SizedBox(height: kBottomNavEspacio)),
         ],
       ),
     );
   }
 
-  // ── HERO ─────────────────────────────────────────────────────────────
+  // ── CABECERA ─────────────────────────────────────────────────────────
+  // Titulo, cantidad y el buscador de siempre, sobre el fondo de la app.
   Widget _hero() {
-    return Container(
-      color: Gray.c900,
-      child: Stack(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        RtcSpace.s5,
+        RtcSpace.s4,
+        RtcSpace.s5,
+        RtcSpace.s4,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // La foto va al 20% con un degradado de gray-900/70 a gray-900.
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.2,
-              child: RemoteImage(
-                url: CanchasScreen.heroImage,
-                placeholderColor: Gray.c900,
-              ),
+          Text(
+            'Explora canchas',
+            style: RtcType.xl2.copyWith(
+              fontSize: 28,
+              height: 1.15,
+              fontWeight: FontWeight.w800,
+              color: Gray.c900,
+              letterSpacing: -0.4,
             ),
           ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Gray.c900.withValues(alpha: 0.70), Gray.c900],
-                ),
-              ),
-            ),
+          const SizedBox(height: 4),
+          Text(
+            _loadingCourts
+                ? 'Buscando…'
+                : '$_total canchas disponibles en Colombia',
+            style: RtcType.sm.copyWith(color: Gray.c500),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: RtcSpace.s4,
-              vertical: RtcSpace.s12,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Encuentra tu cancha',
-                  style: RtcType.xl3.copyWith(
-                    color: Colors.white,
-                    fontWeight: RtcType.bold,
-                  ),
-                ),
-                const SizedBox(height: RtcSpace.s2),
-                Text(
-                  _loadingCourts
-                      ? 'Buscando…'
-                      : '$_total canchas disponibles en Colombia',
-                  style: RtcType.sm.copyWith(color: Gray.c300),
-                ),
-                const SizedBox(height: RtcSpace.s6),
-                MobileSearchTrigger(
-                  key: _anchorKey,
-                  onTap: () => showMobileSearchSheet(
-                    context,
-                    sport: _deporte,
-                    city: _ciudad,
-                    date: _fecha,
-                    time: _hora,
-                  ),
-                ),
-              ],
+          const SizedBox(height: RtcSpace.s5),
+          MobileSearchTrigger(
+            key: _anchorKey,
+            suave: true,
+            onTap: () => showMobileSearchSheet(
+              context,
+              sport: _deporte,
+              city: _ciudad,
+              date: _fecha,
+              time: _hora,
             ),
           ),
         ],
@@ -316,12 +296,9 @@ class _CanchasScreenState extends State<CanchasScreen> {
   Widget _filterBar() {
     final count = _filtered.length;
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.95),
-        border: const Border(bottom: BorderSide(color: Gray.c100)),
-      ),
+      color: Fondo.app,
       padding: const EdgeInsets.symmetric(
-        horizontal: RtcSpace.s4,
+        horizontal: RtcSpace.s5,
         vertical: RtcSpace.s3,
       ),
       child: Row(
@@ -959,7 +936,6 @@ class _FilterPill extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: active ? Green.c600 : Colors.white,
-          border: Border.all(color: active ? Green.c600 : Gray.c200),
           borderRadius: RtcRadius.brFull,
         ),
         child: Row(
@@ -997,9 +973,9 @@ class _ViewToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(2), // p-0.5
+      padding: const EdgeInsets.all(3),
       decoration: const BoxDecoration(
-        color: Gray.c100,
+        color: Fondo.suave,
         borderRadius: RtcRadius.brFull,
       ),
       child: Row(

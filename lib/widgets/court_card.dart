@@ -5,7 +5,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../models/court.dart';
 import 'icons/sport_icon.dart';
 import '../theme/palette.dart';
-import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'remote_image.dart';
@@ -47,66 +46,74 @@ class _CourtCardState extends State<CourtCard> {
         duration: const Duration(milliseconds: 140),
         curve: Curves.easeOut,
         child: Container(
+          // Tarjeta blanca sobre el fondo gris de la app, sin borde ni
+          // sombra; la foto va adentro con su propio redondeo.
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: RtcRadius.brXxl, // rounded-2xl
-            border: Border.all(color: Gray.c100),
-            boxShadow: RtcShadows.card,
+            borderRadius: BorderRadius.circular(28),
           ),
-          clipBehavior: Clip.antiAlias,
+          padding: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Imagen aspect-[4/3] con los dos badges ──────────────
-              AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    RemoteImage(
-                      url: court.photos.isNotEmpty
-                          ? court.photos.first
-                          : sport.image,
-                      sport: court.sport,
-                    ),
-                    Positioned(
-                      top: 12,
-                      left: 12,
-                      child: _Badge(
-                        background: Colors.white.withValues(alpha: 0.95),
-                        foreground: Gray.c800,
-                        leading: SportIcon(
-                          sport: court.sport,
-                          size: 14,
-                          color: Gray.c800,
-                        ),
-                        label: sport.label,
+              // ── Foto con los dos badges ──────────────────────────────
+              ClipRRect(
+                borderRadius: BorderRadius.circular(22),
+                child: AspectRatio(
+                  aspectRatio: 16 / 11,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      RemoteImage(
+                        url: court.photos.isNotEmpty
+                            ? court.photos.first
+                            : sport.image,
+                        sport: court.sport,
                       ),
-                    ),
-                    if (court.totalReviews > 0)
                       Positioned(
                         top: 12,
-                        right: 12,
+                        left: 12,
                         child: _Badge(
-                          background: Gray.c900.withValues(alpha: 0.80),
-                          foreground: Colors.white,
-                          // `fill-yellow-400` del web: una estrella RELLENA,
-                          // y el icono de lucide es solo contorno.
-                          leading: SvgPicture.string(
-                            _filledStar,
-                            width: 12,
-                            height: 12,
+                          background: Colors.white.withValues(alpha: 0.95),
+                          foreground: Gray.c800,
+                          leading: SportIcon(
+                            sport: court.sport,
+                            size: 14,
+                            color: Gray.c800,
                           ),
-                          label: court.averageRating.toStringAsFixed(1),
+                          label: sport.label,
                         ),
                       ),
-                  ],
+                      if (court.totalReviews > 0)
+                        Positioned(
+                          top: 12,
+                          right: 12,
+                          child: _Badge(
+                            background: Gray.c900.withValues(alpha: 0.80),
+                            foreground: Colors.white,
+                            // `fill-yellow-400` del web: una estrella RELLENA,
+                            // y el icono de lucide es solo contorno.
+                            leading: SvgPicture.string(
+                              _filledStar,
+                              width: 12,
+                              height: 12,
+                            ),
+                            label: court.averageRating.toStringAsFixed(1),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
 
               // ── Contenido ───────────────────────────────────────────
               Padding(
-                padding: const EdgeInsets.all(RtcSpace.s4),
+                padding: const EdgeInsets.fromLTRB(
+                  RtcSpace.s3,
+                  RtcSpace.s4,
+                  RtcSpace.s3,
+                  RtcSpace.s2,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -114,10 +121,10 @@ class _CourtCardState extends State<CourtCard> {
                       court.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: RtcType.base.copyWith(
-                        fontWeight: RtcType.semibold,
+                      style: RtcType.lg.copyWith(
+                        fontWeight: FontWeight.w700,
                         color: Gray.c900,
-                        height: 1.375, // leading-snug
+                        height: 1.3,
                       ),
                     ),
                     const SizedBox(height: RtcSpace.s1),
@@ -146,16 +153,16 @@ class _CourtCardState extends State<CourtCard> {
                         children: [
                           for (final a in shown) ...[
                             Container(
-                              width: 28,
-                              height: 28,
+                              width: 32,
+                              height: 32,
                               decoration: BoxDecoration(
-                                color: Green.c50,
-                                borderRadius: RtcRadius.brMd,
+                                color: Fondo.app,
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(
                                 amenityIcon(a),
-                                size: 14,
-                                color: Green.c600,
+                                size: 16,
+                                color: Gray.c800,
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -174,51 +181,45 @@ class _CourtCardState extends State<CourtCard> {
                     ] else
                       const SizedBox(height: RtcSpace.s3),
 
-                    // ── Precio + CTA, separados por la linea de arriba ──
-                    Container(
-                      padding: const EdgeInsets.only(top: 14),
-                      decoration: const BoxDecoration(
-                        border: Border(top: BorderSide(color: Gray.c100)),
-                      ),
-                      child: Row(
-                        children: [
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '\$${formatCop(court.pricePerHour)}',
-                                  style: RtcType.lg.copyWith(
-                                    fontWeight: RtcType.bold,
-                                    color: Gray.c900,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' COP / hora',
-                                  style: RtcType.xs.copyWith(color: Gray.c400),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                          Row(
+                    // ── Precio + boton de reservar ──
+                    Row(
+                      children: [
+                        Text.rich(
+                          TextSpan(
                             children: [
-                              Text(
-                                'Reservar',
-                                style: RtcType.sm.copyWith(
-                                  fontWeight: RtcType.semibold,
-                                  color: Green.c700,
+                              TextSpan(
+                                text: '\$${formatCop(court.pricePerHour)}',
+                                style: RtcType.lg.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: Gray.c900,
                                 ),
                               ),
-                              const SizedBox(width: RtcSpace.s1),
-                              const Icon(
-                                LucideIcons.arrowRight,
-                                size: 16,
-                                color: Green.c700,
+                              TextSpan(
+                                text: ' /hora',
+                                style: RtcType.xs.copyWith(color: Gray.c500),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: RtcSpace.s5,
+                            vertical: 10,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Green.c600,
+                            borderRadius: RtcRadius.brFull,
+                          ),
+                          child: Text(
+                            'Reservar',
+                            style: RtcType.sm.copyWith(
+                              fontWeight: RtcType.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

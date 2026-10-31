@@ -8,6 +8,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/faq_accordion.dart';
 import '../widgets/pill_tabs.dart';
+import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 
 /// Port de `Frontend/src/app/(public)/soporte/page.tsx`.
 ///
@@ -189,78 +190,48 @@ class _SoporteScreenState extends State<SoporteScreen> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.only(bottom: kBottomNavEspacio),
       children: [_hero(), _canalesSection(), _faqSection(), _cierre()],
     );
   }
 
-  // ── HERO ─────────────────────────────────────────────────────────────
+  // ── CABECERA ─────────────────────────────────────────────────────────
   Widget _hero() {
-    return ClipRect(
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          // bg-gradient-to-br from-gray-900 to-gray-800
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Gray.c900, Gray.c800],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        RtcSpace.s5,
+        RtcSpace.s4,
+        RtcSpace.s5,
+        0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Soporte',
+            style: RtcType.sm.copyWith(
+              color: Green.c700,
+              fontWeight: RtcType.semibold,
+            ),
           ),
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              right: -106,
-              top: -106,
-              child: Opacity(
-                opacity: 0.10,
-                child: Container(
-                  width: 320, // w-80
-                  height: 320,
-                  decoration: const BoxDecoration(
-                    color: Lime.c400,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
+          const SizedBox(height: 2),
+          Text(
+            '¿En qué te\nayudamos?',
+            style: RtcType.xl2.copyWith(
+              fontSize: 28,
+              height: 1.15,
+              fontWeight: FontWeight.w800,
+              color: Gray.c900,
+              letterSpacing: -0.4,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: RtcSpace.s4,
-                vertical: RtcSpace.s12 + RtcSpace.s2, // py-14
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'SOPORTE',
-                    style: RtcType.xs.copyWith(
-                      color: Lime.c400,
-                      fontWeight: RtcType.semibold,
-                      letterSpacing: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: RtcSpace.s3),
-                  Text(
-                    '¿EN QUÉ TE AYUDAMOS?',
-                    textAlign: TextAlign.center,
-                    style: RtcType.xl3.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      height: 1.25,
-                    ),
-                  ),
-                  const SizedBox(height: RtcSpace.s4),
-                  Text(
-                    'Resuelve tu duda acá mismo o escríbenos. Si es sobre una '
-                    'reserva, ten a mano tu código.',
-                    textAlign: TextAlign.center,
-                    style: RtcType.sm.copyWith(color: Gray.c300),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: RtcSpace.s2),
+          Text(
+            'Resuelve tu duda acá mismo o escríbenos. Si es sobre una reserva, '
+            'ten a mano tu código.',
+            style: RtcType.sm.copyWith(color: Gray.c500),
+          ),
+        ],
       ),
     );
   }
@@ -425,8 +396,7 @@ class _CanalCard extends StatelessWidget {
         padding: const EdgeInsets.all(RtcSpace.s5),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Gray.c200),
-          borderRadius: RtcRadius.brXxl,
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
