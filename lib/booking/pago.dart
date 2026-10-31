@@ -7,8 +7,7 @@
 /// resultado:
 ///
 ///  1. El deep link `reservatucancha://pago?bookingId=X`, que trae de vuelta a
-///     la app apenas termina el pago. Necesita la pagina trampolin en el VPS
-///     (ver `docs_pago` mas abajo); mientras no exista, no se dispara.
+///     la app apenas termina el pago, por medio de `/app/volver` de la web.
 ///  2. Preguntarle al backend por la reserva. Esto anda SIEMPRE y es la red de
 ///     seguridad: cubre que el rebote falle, que cierren el navegador o que
 ///     vuelvan media hora despues.
@@ -19,16 +18,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../app/routes.dart';
 
-/// A donde manda ePayco al terminar. Por defecto la pagina de confirmacion que
-/// ya existe en el sitio: se ve el "¡Todo listo!" en el navegador y la app se
-/// entera por su cuenta.
-///
-/// Cuando este publicada la pagina trampolin, se cambia por ella y ahi si el
-/// telefono salta solo de vuelta a la app:
-///   --dart-define=RTC_PAGO_RETORNO=https://reservatucancha.site/app/volver
+/// A donde manda ePayco al terminar: `/app/volver` de la web, que salta de
+/// vuelta a la app con `reservatucancha://pago?bookingId=X`. Si alguien no
+/// tiene la app (o el salto se bloquea), esa pagina deja un boton y la
+/// confirmacion web. Se puede cambiar al compilar:
+///   --dart-define=RTC_PAGO_RETORNO=https://reservatucancha.site/reservas/confirmacion
 const _retorno = String.fromEnvironment(
   'RTC_PAGO_RETORNO',
-  defaultValue: 'https://reservatucancha.site/reservas/confirmacion',
+  defaultValue: 'https://reservatucancha.site/app/volver',
 );
 
 /// El esquema propio de la app. Un esquema si saca de Chrome aunque la
@@ -66,36 +63,8 @@ class DeepLinksDePago {
   }
 }
 
-/// Lo que hay que dejar servido en el VPS para que el salto de vuelta a la app
-/// funcione. Son dos archivos estaticos; no toca ni el Frontend ni el Backend.
-///
-/// En `/etc/nginx/sites-available/reservatucancha`, dentro del server 443:
-///
-///     location = /app/volver {
-///       default_type text/html;
-///       alias /var/www/rtc-app/volver.html;
-///     }
-///     location = /.well-known/assetlinks.json {
-///       default_type application/json;
-///       alias /var/www/rtc-app/assetlinks.json;
-///     }
-///
-/// `volver.html` rebota al esquema de la app y deja un boton por si el rebote
-/// se bloquea:
-///
-///     <!doctype html><meta charset="utf-8">
-///     <meta name="viewport" content="width=device-width,initial-scale=1">
-///     <title>Volviendo a la app…</title>
-///     <script>
-///       var id = new URLSearchParams(location.search).get('bookingId') || '';
-///       var destino = 'reservatucancha://pago?bookingId=' + id;
-///       location.replace(destino);
-///     </script>
-///     <a href="#" id="b">Volver a la app</a>
-///     <script>
-///       document.getElementById('b').href = destino;
-///     </script>
-///
-/// `assetlinks.json` sirve para que los links de los correos abran la app; hay
-/// que poner ahi el SHA-256 del certificado con el que se firme el APK.
+/// `/app/volver` vive en el Frontend (`src/app/app/volver/page.tsx`): no hay
+/// que tocar nginx. Para que los links de los correos abran la app falta
+/// `/.well-known/assetlinks.json` con el SHA-256 del certificado con el que se
+/// firme el APK; se agrega cuando exista la firma de produccion.
 const docsPago = 'ver el comentario de arriba';
