@@ -55,11 +55,38 @@ class DeepLinksDePago {
   }
 
   static void _manejar(Uri uri) {
+    if (uri.scheme == 'https') {
+      _abrirEnlaceDelSitio(uri);
+      return;
+    }
     if (uri.scheme != kEsquemaApp) return;
     if (uri.host != 'pago' && !uri.path.startsWith('/pago')) return;
     final bookingId = uri.queryParameters['bookingId'];
     if (bookingId == null || bookingId.isEmpty) return;
     rtcAbrirConfirmacion(bookingId);
+  }
+
+  /// Un enlace del sitio que Android le paso a la app (App Links): la ficha
+  /// de una cancha, el listado, Mis reservas o el panel del dueño. Lo que no
+  /// se reconoce abre el inicio.
+  static void _abrirEnlaceDelSitio(Uri uri) {
+    final ruta = uri.path;
+    if (ruta.startsWith(kCourtDetailPrefix)) {
+      final id = ruta.substring(kCourtDetailPrefix.length).split('/').first;
+      if (id.isNotEmpty) {
+        rtcOpenCourt(
+          id,
+          date: uri.queryParameters['date'],
+          start: uri.queryParameters['start'],
+        );
+        return;
+      }
+    }
+    if (ruta.startsWith('/dashboard')) {
+      rtcAbrirPanel();
+      return;
+    }
+    rtcNavigate(ruta.isEmpty ? '/' : ruta);
   }
 }
 
