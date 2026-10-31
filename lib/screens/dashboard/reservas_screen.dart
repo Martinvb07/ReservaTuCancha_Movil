@@ -523,7 +523,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
               Text.rich(
                 TextSpan(
                   children: [
-                    TextSpan(text: '\$${formatCop(b.totalPrice)}'),
+                    TextSpan(text: '\$${formatCop(b.netoParaDueno)}'),
                     TextSpan(
                       text: ' COP',
                       style: RtcType.xs.copyWith(
@@ -566,6 +566,27 @@ class _ReservasScreenState extends State<ReservasScreen> {
     );
   }
 
+  /// Una pendiente es un checkout en curso: la confirma ePayco al aprobar el
+  /// pago y, si no se paga, se libera sola. El club no la toca.
+  Widget _esperandoPago() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFBEB), // amber-50
+        borderRadius: RtcRadius.brFull,
+        border: Border.all(color: const Color(0xFFFDE68A)), // amber-200
+      ),
+      child: Text(
+        'Esperando pago',
+        style: RtcType.xs.copyWith(
+          fontSize: 10,
+          fontWeight: RtcType.bold,
+          color: const Color(0xFFD97706), // amber-600
+        ),
+      ),
+    );
+  }
+
   Widget _acciones(Booking b) {
     final botones = <Widget>[
       _redondo(
@@ -575,14 +596,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
         Gray.c400,
         () => setState(() => _detalle = b),
       ),
-      if (b.status == 'pending')
-        _redondo(
-          LucideIcons.circleCheck,
-          const Color(0xFFFDE68A), // amber-200
-          const Color(0xFFFFFBEB), // amber-50
-          const Color(0xFFF59E0B), // amber-500
-          () => _cambiarEstado(b.id, 'confirmed'),
-        ),
+      if (b.status == 'pending') _esperandoPago(),
       if (b.status == 'confirmed')
         _redondo(
           LucideIcons.trophy,
@@ -590,14 +604,6 @@ class _ReservasScreenState extends State<ReservasScreen> {
           const Color(0xFFEFF6FF), // blue-50
           const Color(0xFF3B82F6), // blue-500
           () => _cambiarEstado(b.id, 'completed'),
-        ),
-      if (b.status == 'pending' || b.status == 'confirmed')
-        _redondo(
-          LucideIcons.x,
-          Red.c200,
-          Red.c50,
-          Red.c400,
-          () => _cambiarEstado(b.id, 'cancelled'),
         ),
     ];
 

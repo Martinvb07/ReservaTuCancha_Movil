@@ -18,7 +18,7 @@ import '../rtc_toast.dart';
 
 /// Port de `Frontend/src/components/dashboard/OwnerHomeWidgets.tsx`.
 ///
-/// Es la mitad de abajo del Inicio del panel: el aviso de Wompi, la tarjeta de
+/// Es la mitad de abajo del Inicio del panel: el aviso de ePayco, la tarjeta de
 /// la pagina publica del club, la grafica de los ultimos 7 dias, las reservas
 /// por confirmar y las de hoy.
 ///
@@ -64,7 +64,6 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
   List<Booking> _reservas = const [];
   ClubInfo? _club;
   bool _cargando = true;
-  String? _confirmando;
 
   @override
   void initState() {
@@ -102,21 +101,6 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
     setState(() => _club = club);
   }
 
-  Future<void> _confirmar(Booking b) async {
-    setState(() => _confirmando = b.id);
-    try {
-      await ownerApi.cambiarEstado(b.id, 'confirmed');
-      if (!mounted) return;
-      rtcToast(context, 'Reserva confirmada');
-      await cargar(silencioso: true);
-    } on RtcApiException {
-      if (!mounted) return;
-      rtcToast(context, 'Error al confirmar', tipo: RtcToastTipo.error);
-    } finally {
-      if (mounted) setState(() => _confirmando = null);
-    }
-  }
-
   // ── DATOS DERIVADOS ──────────────────────────────────────────────────
 
   List<Booking> get _pendientes =>
@@ -152,7 +136,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
           .toList();
       final ingresos = delDia
           .where((b) => b.status == 'confirmed' || b.status == 'completed')
-          .fold<int>(0, (s, b) => s + b.totalPrice);
+          .fold<int>(0, (s, b) => s + b.netoParaDueno);
       return (
         // `format(day, 'EEE', { locale: es })`
         dia: diasCortos[d.weekday % 7].toLowerCase(),
@@ -171,8 +155,8 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (club != null && !club.wompiConfigured) ...[
-          _avisoWompi(),
+        if (club != null && !club.epaycoConectado) ...[
+          _avisoEpayco(),
           const SizedBox(height: RtcSpace.s5),
         ],
         if (club?.slug != null && club!.slug!.isNotEmpty) ...[
@@ -188,7 +172,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
     );
   }
 
-  Widget _avisoWompi() {
+  Widget _avisoEpayco() {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => rtcIrAlPanel('/dashboard/propetario/pagos'),
@@ -221,7 +205,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Wompi no configurado',
+                    'Conecta tu cuenta de ePayco',
                     style: RtcType.sm.copyWith(
                       fontWeight: FontWeight.w900,
                       color: const Color(0xFF78350F), // amber-900
@@ -229,8 +213,8 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Tus clientes no pueden pagar online. Agrega tus '
-                    'credenciales para activar los pagos.',
+                    'Sin ella tus canchas no pueden recibir reservas pagadas '
+                    'en línea: no hay a dónde consignarte.',
                     style: RtcType.xs.copyWith(
                       color: const Color(0xFFB45309), // amber-700
                     ),
@@ -595,7 +579,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                       ),
                       const SizedBox(width: 3),
                       Text(
-                        efectivo ? 'Efectivo' : 'Wompi',
+                        efectivo ? 'Efectivo' : 'ePayco',
                         style: RtcType.xs.copyWith(
                           fontSize: 9,
                           fontWeight: RtcType.bold,
@@ -611,24 +595,14 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
             ),
           ),
           const SizedBox(width: RtcSpace.s3),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _confirmando == null ? () => _confirmar(b) : null,
-            child: Container(
-              width: 32,
-              height: 32,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: _confirmando == null
-                    ? const Color(0xFF22C55E) // green-500
-                    : Gray.c300,
-                borderRadius: RtcRadius.brLg,
-              ),
-              child: const Icon(
-                LucideIcons.circleCheck,
-                size: 16,
-                color: Colors.white,
-              ),
+          // La confirma ePayco al aprobar el pago, no el club: si el club
+          // pudiera, una reserva sin pagar le llegaria al jugador confirmada.
+          Text(
+            'Esperando pago',
+            style: RtcType.xs.copyWith(
+              fontSize: 10,
+              fontWeight: RtcType.bold,
+              color: const Color(0xFFB45309), // amber-700
             ),
           ),
         ],
@@ -641,7 +615,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
     final hoy = _deHoy;
     final confirmados = hoy
         .where((b) => b.status == 'confirmed' || b.status == 'completed')
-        .fold<int>(0, (s, b) => s + b.totalPrice);
+        .fold<int>(0, (s, b) => s + b.netoParaDueno);
 
     return _tarjeta(
       titulo: 'Reservas de hoy',
@@ -804,7 +778,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                   borderRadius: RtcRadius.brFull,
                 ),
                 child: Text(
-                  '\$${formatCop(b.totalPrice)}',
+                  '\$${formatCop(b.netoParaDueno)}',
                   style: RtcType.xs.copyWith(
                     fontWeight: RtcType.bold,
                     color: Gray.c500,

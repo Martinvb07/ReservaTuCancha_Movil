@@ -29,14 +29,17 @@ const _faq = [
   ),
   FaqItem(
     '¿Cuándo recibo el dinero de mis reservas?',
-    'Los pagos se procesan en 1-3 días hábiles tras confirmar la reserva. '
-        'Puedes ver el estado en la sección Pagos.',
+    'Al instante. Cuando el pago se aprueba, ePayco te consigna tu parte '
+        'directo a tu cuenta, ya con los costos descontados. Puedes ver el '
+        'detalle de cada reserva en la sección Pagos.',
   ),
   FaqItem(
-    '¿Cómo cancelo una reserva de un cliente?',
-    'Ve a Reservas → busca la reserva → haz click en "Cancelar". El cliente '
-        'recibirá un email automático y el reembolso se procesará en 5-7 días '
-        'hábiles.',
+    '¿Qué pasa si un cliente no puede ir?',
+    'Las reservas no se reembolsan: el cliente puede mover su reserva a otro '
+        'horario disponible hasta 24 horas antes del turno, y tu parte se '
+        'conserva. Si eres tú quien no puede atender un turno ya pagado, '
+        'escríbenos a soporte: en ese caso se le devuelve el total al cliente '
+        'y se descuenta tu parte de esa reserva.',
   ),
   FaqItem(
     '¿Puedo bloquear horarios para mantenimiento?',

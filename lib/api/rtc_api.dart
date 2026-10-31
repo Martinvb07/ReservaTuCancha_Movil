@@ -19,7 +19,7 @@ class RtcApiException implements Exception {
   final String message;
   final int? statusCode;
 
-  /// El webhook de Wompi BORRA la reserva cuando el pago se rechaza, asi que
+  /// La confirmacion de ePayco BORRA la reserva cuando el pago se rechaza, asi que
   /// un 404 sobre una reserva que existia significa "no se pago".
   bool get notFound => statusCode == 404;
 

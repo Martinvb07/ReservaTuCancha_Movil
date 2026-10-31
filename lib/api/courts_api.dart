@@ -37,10 +37,11 @@ class CourtsApi {
     return Court.fromJson(data as Map<String, dynamic>);
   }
 
-  /// `GET /courts/:id/wompi-config` — si el club puede cobrar en linea.
-  Future<WompiConfig> wompiConfig(String courtId) async {
-    final data = await RtcApi.instance.get('/courts/$courtId/wompi-config');
-    return WompiConfig.fromJson((data as Map<String, dynamic>?) ?? const {});
+  /// `GET /courts/:id/pagos-config` — si se puede pagar en linea y cuanto es
+  /// la tarifa de servicio que se le suma al jugador.
+  Future<PagosConfig> pagosConfig(String courtId) async {
+    final data = await RtcApi.instance.get('/courts/$courtId/pagos-config');
+    return PagosConfig.fromJson((data as Map<String, dynamic>?) ?? const {});
   }
 
   /// `GET /courts/:id/blocked-slots?date=` — los bloqueos que pone el dueno.
@@ -79,16 +80,23 @@ class BlockedSlot {
 
 const courtsApi = CourtsApi();
 
-/// Lo que devuelve `/courts/:id/wompi-config`. Al formulario solo le importa
-/// `configured`: cuando es false esconde el boton de pagar y avisa.
-class WompiConfig {
-  const WompiConfig({required this.configured, this.publicKey});
+/// Lo que devuelve `/courts/:id/pagos-config`. Cuando `configured` es false
+/// el formulario esconde el boton de pagar y avisa.
+class PagosConfig {
+  const PagosConfig({required this.configured, required this.tarifaServicio});
+
+  /// Tarifa por defecto mientras llega la del servidor. El cobro nunca sale de
+  /// aca: el total lo arma el backend con el precio de la cancha.
+  static const tarifaPorDefecto = 2000;
 
   final bool configured;
-  final String? publicKey;
 
-  factory WompiConfig.fromJson(Map<String, dynamic> json) => WompiConfig(
+  /// Lo que se le suma al jugador por reserva, sin importar el precio.
+  final int tarifaServicio;
+
+  factory PagosConfig.fromJson(Map<String, dynamic> json) => PagosConfig(
     configured: (json['configured'] as bool?) ?? false,
-    publicKey: json['wompiPublicKey'] as String?,
+    tarifaServicio:
+        (json['tarifaServicio'] as num?)?.toInt() ?? tarifaPorDefecto,
   );
 }

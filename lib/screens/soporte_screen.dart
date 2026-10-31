@@ -11,7 +11,7 @@ import '../widgets/pill_tabs.dart';
 
 /// Port de `Frontend/src/app/(public)/soporte/page.tsx`.
 ///
-/// Es el soporte de quien RESERVA: administrar canchas y liquidaciones vive
+/// Es el soporte de quien RESERVA: administrar canchas y pagos vive
 /// en /que-ofrecemos y en el panel del club.
 class SoporteScreen extends StatefulWidget {
   const SoporteScreen({super.key});
@@ -114,8 +114,9 @@ const _faq = <String, List<(String, String)>>{
   'Pagos': [
     (
       '¿Cómo puedo pagar?',
-      'Con tarjeta de crédito o débito, PSE, Nequi o Daviplata. El pago se '
-          'procesa con Wompi, la pasarela de Bancolombia.',
+      'Con tarjeta de crédito o débito, PSE, Nequi o DaviPlata. El pago se '
+          'procesa con ePayco. Al precio de la cancha se le suma una tarifa de '
+          'servicio de \$2.000 por reserva, que ves desglosada antes de pagar.',
     ),
     (
       '¿Puedo pagar en efectivo en la cancha?',
@@ -124,8 +125,9 @@ const _faq = <String, List<(String, String)>>{
     ),
     (
       '¿A nombre de quién aparece el cobro?',
-      'Aparece como ReservaTuCancha, no como el club. Nosotros recibimos el '
-          'pago y le transferimos al club lo que le corresponde.',
+      'El pago lo procesa ePayco a través de ReservaTuCancha. En el mismo '
+          'momento se reparte: el club recibe su parte y nosotros la tarifa de '
+          'servicio.',
     ),
     (
       'Me cobraron pero no me llegó la confirmación',

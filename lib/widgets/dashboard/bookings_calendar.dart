@@ -484,7 +484,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                       ),
                       const SizedBox(width: RtcSpace.s3),
                       Text(
-                        '\$${formatCop(b.totalPrice)}',
+                        '\$${formatCop(b.netoParaDueno)}',
                         style: RtcType.xs.copyWith(
                           fontWeight: FontWeight.w900,
                           color: Green.c700,
@@ -503,6 +503,27 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     );
   }
 
+  /// Una pendiente es un checkout en curso: la confirma ePayco al aprobar el
+  /// pago y, si no se paga, se libera sola. El club no la toca.
+  Widget _esperandoPago() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFBEB), // amber-50
+        borderRadius: RtcRadius.brFull,
+        border: Border.all(color: const Color(0xFFFDE68A)), // amber-200
+      ),
+      child: Text(
+        'Esperando pago',
+        style: RtcType.xs.copyWith(
+          fontSize: 10,
+          fontWeight: RtcType.bold,
+          color: const Color(0xFFD97706), // amber-600
+        ),
+      ),
+    );
+  }
+
   Widget _acciones(Booking b) {
     final botones = <Widget>[
       _redondo(
@@ -512,22 +533,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
         Gray.c400,
         () => setState(() => _detalle = b),
       ),
-      if (b.status == 'pending')
-        _redondo(
-          LucideIcons.circleCheck,
-          const Color(0xFFFDE68A), // amber-200
-          const Color(0xFFFFFBEB), // amber-50
-          const Color(0xFFF59E0B), // amber-500
-          () => widget.onCambiarEstado(b.id, 'confirmed'),
-        ),
-      if (b.status == 'pending' || b.status == 'confirmed')
-        _redondo(
-          LucideIcons.x,
-          Red.c200,
-          Red.c50,
-          Red.c400,
-          () => widget.onCambiarEstado(b.id, 'cancelled'),
-        ),
+      if (b.status == 'pending') _esperandoPago(),
     ];
 
     return Row(

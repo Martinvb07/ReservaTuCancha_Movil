@@ -1,8 +1,10 @@
-/// El pago con Wompi, que en la app no puede ser lo mismo que en la web.
+/// El pago con ePayco, que en la app no puede ser lo mismo que en la web.
 ///
-/// La web hace `window.location.href = checkoutUrl` y vuelve sola porque todo
-/// pasa en la misma pestaña. Aca el checkout se abre en el navegador del
-/// sistema y hay dos maneras de enterarse del resultado:
+/// La web abre el checkout de ePayco con su script y vuelve sola porque todo
+/// pasa en la misma pestaña. La app no puede cargar ese script: abre en el
+/// navegador del sistema la pagina `/pagar` de la web, que abre el checkout
+/// con la sesion que ya creo el backend. Hay dos maneras de enterarse del
+/// resultado:
 ///
 ///  1. El deep link `reservatucancha://pago?bookingId=X`, que trae de vuelta a
 ///     la app apenas termina el pago. Necesita la pagina trampolin en el VPS
@@ -17,7 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../app/routes.dart';
 
-/// A donde manda Wompi al terminar. Por defecto la pagina de confirmacion que
+/// A donde manda ePayco al terminar. Por defecto la pagina de confirmacion que
 /// ya existe en el sitio: se ve el "¡Todo listo!" en el navegador y la app se
 /// entera por su cuenta.
 ///
@@ -35,7 +37,8 @@ const kEsquemaApp = 'reservatucancha';
 
 String redirectUrlDePago(String bookingId) => '$_retorno?bookingId=$bookingId';
 
-/// Abre el checkout de Wompi en el navegador del sistema.
+/// Abre `/pagar` (y con ella el checkout de ePayco) en el navegador del
+/// sistema.
 Future<bool> abrirCheckout(String url) =>
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 

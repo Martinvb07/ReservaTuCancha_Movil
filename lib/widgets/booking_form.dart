@@ -12,6 +12,7 @@ import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'medios_pago.dart';
 import 'motion/rtc_motion.dart';
 
 /// Port de `Frontend/src/components/bookings/BookingForm.tsx`.
@@ -61,7 +62,7 @@ class _BookingFormState extends State<BookingForm> {
   int _dateOffset = 0;
   bool _processing = false;
 
-  WompiConfig? _wompi;
+  PagosConfig? _pagos;
   List<BlockedSlot> _booked = const [];
   List<BlockedSlot> _blocked = const [];
 
@@ -77,7 +78,7 @@ class _BookingFormState extends State<BookingForm> {
   @override
   void initState() {
     super.initState();
-    _cargarWompi();
+    _cargarPagos();
     _aplicarPreseleccion();
   }
 
@@ -90,13 +91,13 @@ class _BookingFormState extends State<BookingForm> {
     super.dispose();
   }
 
-  Future<void> _cargarWompi() async {
+  Future<void> _cargarPagos() async {
     try {
-      final config = await courtsApi.wompiConfig(widget.courtId);
+      final config = await courtsApi.pagosConfig(widget.courtId);
       if (!mounted) return;
-      setState(() => _wompi = config);
+      setState(() => _pagos = config);
     } on RtcApiException {
-      // La web deja `wompiConfig` en undefined y muestra el metodo igual: solo
+      // La web deja la config en undefined y muestra el metodo igual: solo
       // esconde el pago cuando el backend dice explicitamente que no.
     }
   }
@@ -161,11 +162,18 @@ class _BookingFormState extends State<BookingForm> {
         );
 
   /// `Math.round(pricePerHour * slotDurationH * (selectedSlots.length || 1))`.
-  int get _totalPrice {
+  int get _precioCancha {
     final horas = _slotDuration / 60;
     final n = _selectedSlots.isEmpty ? 1 : _selectedSlots.length;
     return (widget.pricePerHour * horas * n).round();
   }
+
+  int get _tarifaServicio =>
+      _pagos?.tarifaServicio ?? PagosConfig.tarifaPorDefecto;
+
+  /// Lo que se ve antes de pagar. El backend arma el cobro real con el precio
+  /// de la cancha: lo que se manda en `totalPrice` no decide nada.
+  int get _totalPrice => _precioCancha + _tarifaServicio;
 
   /// `expandUnavailable`: una franja ocupada tapa todas las horas que abarca.
   Set<String> _expandir(List<BlockedSlot> slots) {
@@ -747,7 +755,7 @@ class _BookingFormState extends State<BookingForm> {
 
   // ── PASO 2 ───────────────────────────────────────────────────────────
   Widget _pasoCheckout() {
-    final sinPago = _wompi != null && !_wompi!.configured;
+    final sinPago = _pagos != null && !_pagos!.configured;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -808,8 +816,20 @@ class _BookingFormState extends State<BookingForm> {
         const SizedBox(height: RtcSpace.s5),
         _etiqueta(LucideIcons.lock, 'Método de pago'),
         const SizedBox(height: 10),
-        if (sinPago) _pagoNoDisponible() else _metodoWompi(),
+        if (!sinPago) ...[const MediosPago(), const SizedBox(height: 10)],
+        if (sinPago) _pagoNoDisponible() else _metodoEpayco(),
         const SizedBox(height: RtcSpace.s5),
+        // El desglose va completo a proposito: la tarifa de servicio se ve
+        // antes de pagar, no como una sorpresa en ePayco.
+        _lineaDesglose(
+          'Cancha · ${_slotDuration * _selectedSlots.length} min',
+          _precioCancha,
+        ),
+        const SizedBox(height: 6),
+        _lineaDesglose('Tarifa de servicio', _tarifaServicio),
+        const SizedBox(height: RtcSpace.s2),
+        const Divider(height: 1, color: Gray.c100),
+        const SizedBox(height: RtcSpace.s2),
         Row(
           children: [
             Text('Total', style: RtcType.sm.copyWith(color: Gray.c500)),
@@ -913,7 +933,23 @@ class _BookingFormState extends State<BookingForm> {
     );
   }
 
-  Widget _metodoWompi() {
+  Widget _lineaDesglose(String label, int valor) {
+    return Row(
+      children: [
+        Text(label, style: RtcType.sm.copyWith(color: Gray.c500)),
+        const Spacer(),
+        Text(
+          '\$${formatCop(valor)}',
+          style: RtcType.sm.copyWith(
+            fontWeight: RtcType.medium,
+            color: Gray.c900,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _metodoEpayco() {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
@@ -947,14 +983,14 @@ class _BookingFormState extends State<BookingForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Pago en línea',
+                  'Pago seguro con ePayco',
                   style: RtcType.sm.copyWith(
                     fontWeight: RtcType.semibold,
                     color: Gray.c900,
                   ),
                 ),
                 Text(
-                  'Nequi · Daviplata · PSE · Tarjeta (Wompi)',
+                  'Tarjeta débito o crédito, Nequi, PSE y DaviPlata',
                   style: RtcType.xs.copyWith(color: Gray.c500),
                 ),
               ],

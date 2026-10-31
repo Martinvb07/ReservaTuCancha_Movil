@@ -189,7 +189,7 @@ class _RealtimeNotificationsState extends State<RealtimeNotifications> {
           '${fecha.isNotEmpty ? '${_fechaCorta(fecha)} · ' : ''}'
           '${inicio.isNotEmpty ? hora12(inicio) : ''} '
           '${fin.isNotEmpty ? '- ${hora12(fin)}' : ''} · '
-          '\$${_precio(b['totalPrice'])}',
+          '\$${_precio(b['netoDueno'] ?? b['totalPrice'])}',
       tipo: RtcToastTipo.exito,
       icono: LucideIcons.calendarDays,
       color: const Color(0xFF22C55E), // green-500
@@ -215,7 +215,7 @@ class _RealtimeNotificationsState extends State<RealtimeNotifications> {
     _avisar(
       'Pago confirmado',
       '${_s(b, 'guestName')} — ${_s(b, 'courtName')} · '
-          '\$${_precio(b['totalPrice'])} · ${_s(b, 'bookingCode')}',
+          '\$${_precio(b['netoDueno'] ?? b['totalPrice'])} · ${_s(b, 'bookingCode')}',
       tipo: RtcToastTipo.exito,
       icono: LucideIcons.creditCard,
       color: const Color(0xFF3B82F6), // blue-500

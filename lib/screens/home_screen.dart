@@ -483,8 +483,8 @@ const _razones = <(IconData, String, String)>[
   (
     LucideIcons.shield,
     'PAGO 100% SEGURO',
-    'Procesamos pagos con Wompi, la plataforma mas segura de Colombia. '
-        'Nequi, Daviplata y tarjetas.',
+    'Procesamos pagos con ePayco, de Davivienda. Tarjetas, Nequi, PSE y '
+        'DaviPlata.',
   ),
   (
     LucideIcons.users,
@@ -600,8 +600,10 @@ const _faq = <(String, String)>[
   ),
   (
     'Cuales son los metodos de pago?',
-    'Aceptamos tarjetas de credito/debito, Nequi, Daviplata y PSE a traves de '
-        'Wompi, la plataforma de pagos mas segura de Colombia.',
+    'Aceptamos tarjetas de credito/debito, Nequi, DaviPlata y PSE a traves de '
+        'ePayco, una de las pasarelas mas usadas de Colombia. Al precio de la '
+        'cancha se le suma una tarifa de servicio de \$2.000 por reserva, que '
+        'ves antes de pagar.',
   ),
   (
     'Como recibo la confirmacion?',

@@ -89,8 +89,10 @@ class BookingDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final puedeAccionar =
-        booking.status == 'pending' || booking.status == 'confirmed';
+    // El club solo da por jugado un turno pagado. Confirmar le toca a ePayco
+    // y el estado "cancelada" ya no existe: lo que no se paga se borra solo.
+    final puedeAccionar = booking.status == 'confirmed';
+    final esperandoPago = booking.status == 'pending';
 
     return Positioned.fill(
       child: Stack(
@@ -145,8 +147,8 @@ class BookingDetailDialog extends StatelessWidget {
                           ],
                           const SizedBox(height: RtcSpace.s4),
                           _fila(
-                            'Total',
-                            '\$${formatCop(booking.totalPrice)} COP',
+                            'Te llega',
+                            '\$${formatCop(booking.netoParaDueno)} COP',
                             fondo: Green.c50,
                             colorValor: Green.c700,
                             grande: true,
@@ -154,6 +156,10 @@ class BookingDetailDialog extends StatelessWidget {
                           if (puedeAccionar) ...[
                             const SizedBox(height: RtcSpace.s4),
                             _acciones(),
+                          ],
+                          if (esperandoPago) ...[
+                            const SizedBox(height: RtcSpace.s4),
+                            _avisoEsperandoPago(),
                           ],
                           const SizedBox(height: RtcSpace.s4),
                           GestureDetector(
@@ -275,40 +281,33 @@ class BookingDetailDialog extends StatelessWidget {
   }
 
   Widget _acciones() {
-    return Row(
-      children: [
-        if (booking.status == 'pending')
-          Expanded(
-            child: _boton(
-              LucideIcons.circleCheck,
-              'Confirmar',
-              fondo: Green.c600,
-              color: Colors.white,
-              onTap: () => onCambiarEstado('confirmed'),
-            ),
-          ),
-        if (booking.status == 'confirmed')
-          Expanded(
-            child: _boton(
-              LucideIcons.trophy,
-              'Completar',
-              fondo: const Color(0xFF2563EB), // blue-600
-              color: Colors.white,
-              onTap: () => onCambiarEstado('completed'),
-            ),
-          ),
-        const SizedBox(width: RtcSpace.s2),
-        Expanded(
-          child: _boton(
-            LucideIcons.x,
-            'Cancelar',
-            fondo: null,
-            color: Red.c500,
-            borde: Red.c200,
-            onTap: () => onCambiarEstado('cancelled'),
-          ),
+    return _boton(
+      LucideIcons.trophy,
+      'Completar',
+      fondo: const Color(0xFF2563EB), // blue-600
+      color: Colors.white,
+      onTap: () => onCambiarEstado('completed'),
+    );
+  }
+
+  Widget _avisoEsperandoPago() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: RtcSpace.s4,
+        vertical: RtcSpace.s3,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFBEB), // amber-50
+        borderRadius: RtcRadius.brXl,
+      ),
+      child: Text(
+        'Esperando el pago. Se confirma sola cuando ePayco lo apruebe; si no '
+        'se paga, el horario se libera.',
+        style: RtcType.xs.copyWith(
+          color: const Color(0xFFB45309), // amber-700
+          height: 1.35,
         ),
-      ],
+      ),
     );
   }
 

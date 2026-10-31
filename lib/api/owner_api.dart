@@ -195,22 +195,14 @@ class OwnerApi {
     auth: true,
   );
 
-  /// `GET /liquidaciones/mias` — lo que la plataforma le gira al club cada
-  /// lunes, ya con la comision descontada.
-  Future<Liquidaciones?> liquidaciones() async {
-    try {
-      final data = await RtcApi.instance.get('/liquidaciones/mias', auth: true);
-      return Liquidaciones.fromJson(
-        (data as Map<String, dynamic>?) ?? const {},
+  /// `PATCH /clubs/:id/epayco` — el id del club como receptor en ePayco.
+  /// Con pagos divididos, ePayco le consigna ahi su parte de cada reserva.
+  Future<void> guardarCuentaEpayco(String clubId, String receptorId) =>
+      RtcApi.instance.patch(
+        '/clubs/$clubId/epayco',
+        body: {'epaycoReceptorId': receptorId},
+        auth: true,
       );
-    } on RtcApiException {
-      return null;
-    }
-  }
-
-  /// `PATCH /clubs/:id/banco` — la cuenta donde el club recibe el giro.
-  Future<void> guardarCuentaBanco(String clubId, Map<String, dynamic> datos) =>
-      RtcApi.instance.patch('/clubs/$clubId/banco', body: datos, auth: true);
 
   /// `GET /clubs/my-club` completo, para la pantalla de Mi Club.
   Future<ClubPerfil?> perfilClub() async {
@@ -341,81 +333,11 @@ class OwnerApi {
 
 const ownerApi = OwnerApi();
 
-/// `GET /liquidaciones/mias` — ver `liquidaciones.service.ts:227`.
-class Liquidaciones {
-  const Liquidaciones({
-    required this.comisionPorcentaje,
-    required this.semanas,
-  });
-
-  final int comisionPorcentaje;
-  final List<SemanaLiquidacion> semanas;
-
-  factory Liquidaciones.fromJson(Map<String, dynamic> json) => Liquidaciones(
-    comisionPorcentaje: (json['comisionPorcentaje'] as num?)?.toInt() ?? 9,
-    semanas:
-        (json['semanas'] as List?)
-            ?.whereType<Map<String, dynamic>>()
-            .map(SemanaLiquidacion.fromJson)
-            .toList() ??
-        const [],
-  );
-}
-
-class SemanaLiquidacion {
-  const SemanaLiquidacion({
-    required this.etiqueta,
-    required this.inicio,
-    required this.giro,
-    required this.enCurso,
-    required this.reservas,
-    required this.bruto,
-    required this.comision,
-    required this.neto,
-    required this.estado,
-    required this.giradaAt,
-  });
-
-  final String etiqueta;
-  final String inicio;
-  final DateTime? giro;
-  final bool enCurso;
-  final int reservas;
-  final int bruto;
-  final int comision;
-  final int neto;
-
-  /// `pendiente` | `girada`.
-  final String estado;
-
-  final DateTime? giradaAt;
-
-  bool get girada => estado == 'girada';
-
-  factory SemanaLiquidacion.fromJson(Map<String, dynamic> json) {
-    int n(String k) => (json[k] as num?)?.toInt() ?? 0;
-    DateTime? f(String k) =>
-        DateTime.tryParse((json[k] as String?) ?? '')?.toLocal();
-    return SemanaLiquidacion(
-      etiqueta: (json['etiqueta'] as String?) ?? '',
-      inicio: (json['inicio'] as String?) ?? '',
-      giro: f('giro'),
-      enCurso: (json['enCurso'] as bool?) ?? false,
-      reservas: n('reservas'),
-      bruto: n('bruto'),
-      comision: n('comision'),
-      neto: n('neto'),
-      estado: (json['estado'] as String?) ?? 'pendiente',
-      giradaAt: f('giradaAt'),
-    );
-  }
-}
-
 /// `GET /clubs/my-club` completo — lo que edita la pantalla de Mi Club.
 class ClubPerfil {
   const ClubPerfil({
     required this.id,
-    required this.banco,
+    required this.epaycoReceptorId,
     required this.slug,
     required this.nombre,
     required this.slogan,
@@ -433,11 +355,11 @@ class ClubPerfil {
     required this.fotos,
   });
 
-  /// Hace falta para `PATCH /clubs/:id/banco`.
+  /// Hace falta para `PATCH /clubs/:id/epayco`.
   final String id;
 
-  /// La cuenta donde se recibe el giro semanal. `null` si no se configuro.
-  final Map<String, dynamic>? banco;
+  /// Id del club como receptor en ePayco. `null` si no lo ha conectado.
+  final String? epaycoReceptorId;
 
   final String? slug;
   final String nombre;
@@ -458,10 +380,12 @@ class ClubPerfil {
   factory ClubPerfil.fromJson(Map<String, dynamic> json) {
     final redes = (json['socialLinks'] as Map<String, dynamic>?) ?? const {};
     String s(Map<String, dynamic> m, String k) => (m[k] as String?) ?? '';
-    final banco = json['banco'] as Map<String, dynamic>?;
     return ClubPerfil(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
-      banco: (banco?['metodo'] as String?)?.isNotEmpty ?? false ? banco : null,
+      epaycoReceptorId:
+          (json['epaycoReceptorId'] as String?)?.trim().isEmpty ?? true
+          ? null
+          : (json['epaycoReceptorId'] as String).trim(),
       slug: json['slug'] as String?,
       nombre: s(json, 'name'),
       slogan: s(json, 'slogan'),
@@ -514,20 +438,24 @@ class BloqueoHorario {
 }
 
 /// `GET /clubs/my-club`. Al panel solo le importan el slug (para la pagina
-/// publica del club) y si Wompi quedo configurado.
+/// publica del club) y si ya conecto su cuenta de ePayco.
 class ClubInfo {
-  const ClubInfo({required this.slug, required this.wompiConfigured});
+  const ClubInfo({required this.slug, required this.epaycoConectado});
 
   final String? slug;
-  final bool wompiConfigured;
+
+  /// Sin cuenta de ePayco el club no puede recibir reservas pagadas en linea.
+  final bool epaycoConectado;
 
   factory ClubInfo.fromJson(Map<String, dynamic> json) => ClubInfo(
     slug: json['slug'] as String?,
-    wompiConfigured: (json['wompiConfigured'] as bool?) ?? false,
+    epaycoConectado: ((json['epaycoReceptorId'] as String?) ?? '')
+        .trim()
+        .isNotEmpty,
   );
 
   ClubInfo conSlug(String? nuevo) =>
-      ClubInfo(slug: nuevo, wompiConfigured: wompiConfigured);
+      ClubInfo(slug: nuevo, epaycoConectado: epaycoConectado);
 }
 
 /// `GET /analytics/owner` completo, con lo que solo usa la pantalla de

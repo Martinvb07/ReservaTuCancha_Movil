@@ -13,10 +13,11 @@ class Booking {
     required this.startTime,
     required this.endTime,
     required this.totalPrice,
+    this.netoDueno,
     required this.status,
     this.guestEmail = '',
     this.guestName = '',
-    this.paymentMethod = 'wompi',
+    this.paymentMethod = 'epayco',
     this.guestPhone = '',
     this.notes,
     this.cancelToken,
@@ -29,7 +30,17 @@ class Booking {
   final DateTime date;
   final String startTime;
   final String endTime;
+
+  /// Lo que pago el jugador: precio de la cancha + tarifa de servicio.
   final int totalPrice;
+
+  /// Lo que le llega al club: el total menos la pasarela y la parte de la
+  /// plataforma. Las reservas anteriores a ePayco no lo traen.
+  final int? netoDueno;
+
+  /// Lo que se le muestra al dueno. Para las reservas viejas, sin desglose,
+  /// cae al total, que es lo que el panel mostraba entonces.
+  int get netoParaDueno => netoDueno ?? totalPrice;
 
   /// pending | confirmed | reagendada | completed
   final String status;
@@ -39,8 +50,8 @@ class Booking {
   /// Lo necesita el panel del propietario: en /mis-reservas no se muestra.
   final String guestName;
 
-  /// 'wompi' o 'efectivo'. El efectivo se retiro del sitio publico, pero
-  /// quedan reservas viejas con ese metodo.
+  /// 'epayco'. Quedan reservas viejas con 'wompi' o 'efectivo', de antes de
+  /// que el cobro pasara a ePayco.
   final String paymentMethod;
 
   /// Los dos ultimos solo los usa el panel del propietario.
@@ -63,10 +74,11 @@ class Booking {
       startTime: json['startTime'] as String,
       endTime: json['endTime'] as String,
       totalPrice: (json['totalPrice'] as num?)?.toInt() ?? 0,
+      netoDueno: (json['netoDueno'] as num?)?.toInt(),
       status: (json['status'] as String?) ?? 'pending',
       guestEmail: (json['guestEmail'] as String?) ?? '',
       guestName: (json['guestName'] as String?) ?? '',
-      paymentMethod: (json['paymentMethod'] as String?) ?? 'wompi',
+      paymentMethod: (json['paymentMethod'] as String?) ?? 'epayco',
       guestPhone: (json['guestPhone'] as String?) ?? '',
       notes: (json['notes'] as String?)?.trim().isEmpty ?? true
           ? null

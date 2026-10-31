@@ -11,14 +11,15 @@ import '../../theme/motion.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
-import '../../widgets/dashboard/cuenta_pagos_wizard.dart';
+import '../../widgets/dashboard/cuenta_epayco.dart';
 import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_toast.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/pagos/page.tsx`.
 ///
-/// Tres pestanas: historial de cobros con filtros y paginacion, las
-/// liquidaciones semanales, y la cuenta donde se recibe el giro.
+/// Dos pestanas: historial de cobros con filtros y paginacion, y la cuenta de
+/// ePayco del club. Los montos son lo que le llega al club, no lo que pago el
+/// jugador: la tarifa de servicio y la comision nunca son plata suya.
 class PagosScreen extends StatefulWidget {
   const PagosScreen({super.key});
 
@@ -52,6 +53,12 @@ const _estados = <String, ({Color fondo, Color texto, String etiqueta})>{
 
 /// `METHOD_LABEL`.
 const _metodos = <String, ({String etiqueta, Color texto, Color fondo})>{
+  'epayco': (
+    etiqueta: 'ePayco',
+    texto: Color(0xFF2563EB),
+    fondo: Color(0xFFEFF6FF),
+  ),
+  // Reservas de antes del cambio a ePayco.
   'wompi': (
     etiqueta: 'Wompi',
     texto: Color(0xFF2563EB),
@@ -110,13 +117,11 @@ class _PagosScreenState extends State<PagosScreen> {
   int _pagina = 1;
 
   List<Booking> _reservas = const [];
-  Liquidaciones? _liquidaciones;
   ClubPerfil? _club;
 
   bool _cargandoReservas = true;
-  bool _cargandoLiq = true;
   bool _cargandoClub = true;
-  bool _guardandoBanco = false;
+  bool _guardandoCuenta = false;
 
   final _buscador = TextEditingController();
 
@@ -149,10 +154,9 @@ class _PagosScreenState extends State<PagosScreen> {
   Future<void> _cargar() async {
     setState(() {
       _cargandoReservas = true;
-      _cargandoLiq = true;
       _cargandoClub = true;
     });
-    // Las tres queries de la web, en paralelo.
+    // Las dos queries de la web, en paralelo.
     final futuros = [
       ownerApi
           .reservas()
@@ -170,13 +174,6 @@ class _PagosScreenState extends State<PagosScreen> {
               rtcToast(context, e.message, tipo: RtcToastTipo.error);
             }
           }),
-      ownerApi.liquidaciones().then((l) {
-        if (!mounted) return;
-        setState(() {
-          _liquidaciones = l;
-          _cargandoLiq = false;
-        });
-      }),
       ownerApi.perfilClub().then((c) {
         if (!mounted) return;
         setState(() {
@@ -228,7 +225,6 @@ class _PagosScreenState extends State<PagosScreen> {
           _tabs(),
           const SizedBox(height: RtcSpace.s5),
           switch (_tab) {
-            'liquidaciones' => _tabLiquidaciones(),
             'cuenta' => _tabCuenta(),
             _ => _tabHistorial(),
           },
@@ -266,7 +262,7 @@ class _PagosScreenState extends State<PagosScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Historial de cobros, liquidaciones semanales y tu cuenta',
+          'Historial de cobros y tu cuenta de ePayco',
           style: RtcType.sm.copyWith(color: Gray.c500),
         ),
         // `Exportar CSV` no se porta: el navegador arma el archivo con un
@@ -283,7 +279,6 @@ class _PagosScreenState extends State<PagosScreen> {
       children: [
         for (final (clave, etiqueta, icono) in const [
           ('historial', 'Historial de pagos', LucideIcons.chartColumn),
-          ('liquidaciones', 'Mis liquidaciones', LucideIcons.banknote),
           ('cuenta', 'Cuenta de pagos', LucideIcons.landmark),
         ])
           _pastilla(
@@ -346,10 +341,10 @@ class _PagosScreenState extends State<PagosScreen> {
     final filtradas = _filtradas;
     final ingresos = filtradas
         .where(_esConfirmada)
-        .fold<int>(0, (s, b) => s + b.totalPrice);
+        .fold<int>(0, (s, b) => s + b.netoParaDueno);
     final pendiente = filtradas
         .where((b) => b.status == 'pending')
-        .fold<int>(0, (s, b) => s + b.totalPrice);
+        .fold<int>(0, (s, b) => s + b.netoParaDueno);
     final canceladas = filtradas.where((b) => b.status == 'cancelled').length;
     final confirmadas = filtradas.where(_esConfirmada).length;
     final pendientes = filtradas.where((b) => b.status == 'pending').length;
@@ -461,7 +456,7 @@ class _PagosScreenState extends State<PagosScreen> {
         const Color(0xFFECFDF5), // emerald-50
       ),
       (
-        'Pendiente de cobro',
+        'Esperando pago',
         _fmtBig(pendiente),
         '$pendientes pendiente${pendientes != 1 ? 's' : ''}',
         LucideIcons.clock,
@@ -786,7 +781,7 @@ class _PagosScreenState extends State<PagosScreen> {
   Widget _fila(Booking b, bool conBorde) {
     final confirmada = _esConfirmada(b);
     final pendiente = b.status == 'pending';
-    final metodo = _metodos[b.paymentMethod] ?? _metodos['wompi']!;
+    final metodo = _metodos[b.paymentMethod] ?? _metodos['epayco']!;
     final estado = _estados[b.status] ?? _estados['pending']!;
 
     return DecoratedBox(
@@ -900,7 +895,7 @@ class _PagosScreenState extends State<PagosScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '\$${formatCop(b.totalPrice)}',
+                  '\$${formatCop(b.netoParaDueno)}',
                   style: RtcType.sm.copyWith(
                     fontWeight: FontWeight.w900,
                     color: Gray.c900,
@@ -1061,333 +1056,6 @@ class _PagosScreenState extends State<PagosScreen> {
     );
   }
 
-  // ── TAB LIQUIDACIONES ────────────────────────────────────────────────
-
-  Widget _tabLiquidaciones() {
-    if (_cargandoLiq) {
-      return Column(
-        children: [
-          RtcSkeletonPulse(
-            child: Container(
-              height: 160,
-              decoration: BoxDecoration(
-                color: Gray.c100,
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
-          ),
-          for (var i = 0; i < 3; i++) ...[
-            const SizedBox(height: RtcSpace.s2),
-            RtcSkeletonPulse(
-              child: Container(
-                height: 64,
-                decoration: BoxDecoration(
-                  color: Gray.c100,
-                  borderRadius: RtcRadius.brXxl,
-                ),
-              ),
-            ),
-          ],
-        ],
-      );
-    }
-
-    final semanas = _liquidaciones?.semanas ?? const <SemanaLiquidacion>[];
-    if (semanas.isEmpty) return _sinLiquidaciones();
-
-    final proxima = semanas.first;
-    final anteriores = semanas.skip(1).toList();
-    final comision = _liquidaciones?.comisionPorcentaje ?? 9;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _proximoGiro(proxima, comision),
-        if (anteriores.isNotEmpty) ...[
-          const SizedBox(height: RtcSpace.s5),
-          Text(
-            'SEMANAS ANTERIORES',
-            style: RtcType.xs.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
-              color: Gray.c400,
-              letterSpacing: 1.6,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: RtcRadius.brXxl,
-              border: Border.all(color: Gray.c200),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var i = 0; i < anteriores.length; i++)
-                  _filaSemana(anteriores[i], i > 0),
-              ],
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _sinLiquidaciones() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 64),
-      decoration: BoxDecoration(
-        color: Gray.c50,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Gray.c100),
-      ),
-      child: Column(
-        children: [
-          const Icon(LucideIcons.banknote, size: 40, color: Gray.c300),
-          const SizedBox(height: RtcSpace.s3),
-          Text(
-            'Todavía no hay liquidaciones',
-            style: RtcType.base.copyWith(
-              fontWeight: RtcType.semibold,
-              color: Gray.c900,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s6),
-            child: Text(
-              'Aparecen apenas recibas tu primera reserva pagada en línea.',
-              textAlign: TextAlign.center,
-              style: RtcType.sm.copyWith(color: Gray.c500),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _proximoGiro(SemanaLiquidacion s, int comision) {
-    return Container(
-      padding: const EdgeInsets.all(RtcSpace.s5),
-      decoration: BoxDecoration(
-        color: Gray.c900,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            s.enCurso ? 'SEMANA EN CURSO' : 'PRÓXIMO GIRO',
-            style: RtcType.xs.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
-              color: const Color(0xFF4ADE80), // green-400
-              letterSpacing: 1.6,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '\$${formatCop(s.neto)}',
-            style: RtcType.xl3.copyWith(
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '${s.etiqueta} · ${s.reservas} '
-            '${s.reservas == 1 ? 'reserva' : 'reservas'}',
-            style: RtcType.sm.copyWith(color: Gray.c400),
-          ),
-          if (s.giro != null) ...[
-            const SizedBox(height: RtcSpace.s4),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: RtcRadius.brXxl,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      LucideIcons.calendarDays,
-                      size: 16,
-                      color: Color(0xFF4ADE80),
-                    ),
-                    const SizedBox(width: RtcSpace.s2),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Te llega el',
-                          style: RtcType.xs.copyWith(color: Gray.c400),
-                        ),
-                        Text(
-                          // `format(giro, "EEEE d 'de' MMM")` con `capitalize`.
-                          _fechaGiro(s.giro!),
-                          style: RtcType.xs.copyWith(
-                            fontWeight: RtcType.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: RtcSpace.s5),
-          Container(height: 1, color: Colors.white.withValues(alpha: 0.10)),
-          const SizedBox(height: RtcSpace.s4),
-          Row(
-            children: [
-              for (final (etiqueta, valor) in [
-                ('Recaudado', s.bruto),
-                ('Comisión $comision%', -s.comision),
-                ('Te giramos', s.neto),
-              ])
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        etiqueta.toUpperCase(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: RtcType.xs.copyWith(
-                          fontSize: 10,
-                          color: Gray.c400,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '${valor < 0 ? '−' : ''}\$${formatCop(valor.abs())}',
-                        style: RtcType.sm.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: valor < 0
-                              ? const Color(0xFFF87171) // red-400
-                              : Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: RtcSpace.s4),
-          Text(
-            'La semana cierra el domingo al mediodía y giramos el lunes a las '
-            '2:00 PM. Lo que se agende después del corte entra a la semana '
-            'siguiente.',
-            style: RtcType.xs.copyWith(
-              fontSize: 11,
-              color: Gray.c500,
-              height: 1.55,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// `format(d, "EEEE d 'de' MMM", { locale: es })` con la clase `capitalize`.
-  String _fechaGiro(DateTime d) {
-    final texto =
-        '${diasLargos[d.weekday % 7]} ${d.day} de '
-        '${mesesCortos[d.month - 1]}';
-    return texto
-        .split(' ')
-        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
-        .join(' ');
-  }
-
-  Widget _filaSemana(SemanaLiquidacion s, bool conBorde) {
-    final detalle = s.girada
-        ? ' · girada el ${s.giradaAt == null ? '' : '${s.giradaAt!.day} de ${mesesCortos[s.giradaAt!.month - 1]}'}'
-        : s.reservas > 0
-        ? ' · pendiente de giro'
-        : ' · sin movimiento';
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: conBorde
-            ? const Border(top: BorderSide(color: Gray.c100))
-            : null,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: RtcSpace.s4,
-          vertical: 14,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    s.etiqueta,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: RtcType.sm.copyWith(
-                      fontWeight: RtcType.bold,
-                      color: Gray.c900,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${s.reservas} '
-                    '${s.reservas == 1 ? 'reserva' : 'reservas'}$detalle',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: RtcType.xs.copyWith(color: Gray.c500),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '\$${formatCop(s.neto)}',
-                  style: RtcType.sm.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: Gray.c900,
-                  ),
-                ),
-                Text(
-                  'de \$${formatCop(s.bruto)}',
-                  style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
-                ),
-              ],
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 16,
-              child: s.girada
-                  ? const Icon(
-                      LucideIcons.circleCheck,
-                      size: 16,
-                      color: Color(0xFF22C55E), // green-500
-                    )
-                  : null,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // ── TAB CUENTA ───────────────────────────────────────────────────────
 
   Widget _tabCuenta() {
@@ -1403,18 +1071,17 @@ class _PagosScreenState extends State<PagosScreen> {
       );
     }
 
-    final club = _club;
-    return CuentaPagosWizard(
-      // `key={clubInfo?.banco?.metodo ?? 'sin-cuenta'}`: al cambiar el metodo
-      // guardado, el asistente se rehace con los datos nuevos.
-      key: ValueKey(club?.banco?['metodo'] ?? 'sin-cuenta'),
-      actual: club?.banco,
-      guardando: _guardandoBanco,
-      onGuardar: (datos) => _guardarBanco(datos),
+    final actual = _club?.epaycoReceptorId;
+    return CuentaEpayco(
+      // Al cambiar el id guardado, el formulario se rehace con el nuevo.
+      key: ValueKey(actual ?? 'sin-cuenta'),
+      actual: actual,
+      guardando: _guardandoCuenta,
+      onGuardar: _guardarCuenta,
     );
   }
 
-  Future<void> _guardarBanco(Map<String, dynamic> datos) async {
+  Future<void> _guardarCuenta(String receptorId) async {
     final id = _club?.id ?? '';
     if (id.isEmpty) {
       rtcToast(
@@ -1424,20 +1091,20 @@ class _PagosScreenState extends State<PagosScreen> {
       );
       return;
     }
-    setState(() => _guardandoBanco = true);
+    setState(() => _guardandoCuenta = true);
     try {
-      await ownerApi.guardarCuentaBanco(id, datos);
+      await ownerApi.guardarCuentaEpayco(id, receptorId);
       if (!mounted) return;
-      rtcToast(context, 'Cuenta de pagos guardada');
+      rtcToast(context, 'Cuenta de ePayco conectada');
       final club = await ownerApi.perfilClub();
       if (!mounted) return;
       setState(() {
         _club = club;
-        _guardandoBanco = false;
+        _guardandoCuenta = false;
       });
     } on RtcApiException catch (e) {
       if (!mounted) return;
-      setState(() => _guardandoBanco = false);
+      setState(() => _guardandoCuenta = false);
       rtcToast(context, e.message, tipo: RtcToastTipo.error);
     }
   }

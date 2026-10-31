@@ -17,11 +17,12 @@ import '../widgets/motion/rtc_motion.dart';
 /// Port de `Frontend/src/app/(public)/reservas/confirmacion/page.tsx`, con una
 /// diferencia deliberada.
 ///
-/// La web da el pago por bueno leyendo la URL: Wompi redirige ahi pase lo que
+/// La web da el pago por bueno leyendo la URL: ePayco redirige ahi pase lo que
 /// pase, asi que una tarjeta rechazada tambien ve "¡Todo listo!". La app
-/// pregunta de verdad. El webhook pone la reserva en `confirmed` cuando
-/// aprueban y la BORRA cuando rechazan (`wompi-webhook.controller.ts:61`), asi
-/// que hay tres respuestas posibles:
+/// pregunta de verdad. La confirmacion de ePayco pone la reserva en
+/// `confirmed` cuando aprueban y la BORRA cuando rechazan
+/// (`epayco-confirmation.controller.ts`), asi que hay tres respuestas
+/// posibles:
 ///
 ///   confirmed        -> pagado
 ///   404 / no existe  -> rechazado
@@ -38,8 +39,8 @@ class ConfirmacionScreen extends StatefulWidget {
 /// Cada cuanto se le pregunta al backend.
 const _intervalo = Duration(seconds: 2);
 
-/// Cuanto se insiste antes de decir "lo estamos verificando". El webhook de
-/// Wompi suele llegar en segundos; si a los 30 no llego, no vale seguir
+/// Cuanto se insiste antes de decir "lo estamos verificando". La
+/// confirmacion de ePayco suele llegar en segundos; si a los 30 no llego, no vale seguir
 /// mirando una pantalla girando.
 const _limite = Duration(seconds: 30);
 
@@ -162,7 +163,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     _titulo('UN MOMENTO'),
     const SizedBox(height: RtcSpace.s2),
     _bajada(
-      'Estamos esperando la respuesta de Wompi. Si ya pagaste, no cierres '
+      'Estamos esperando la respuesta de ePayco. Si ya pagaste, no cierres '
       'la app: esto se resuelve solo en unos segundos.',
     ),
   ];

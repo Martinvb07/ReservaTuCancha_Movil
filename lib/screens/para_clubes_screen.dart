@@ -34,8 +34,8 @@ const _benefits = <(IconData, String, String)>[
   (
     LucideIcons.creditCard,
     'Pagos automáticos',
-    'Tus clientes pagan online con Nequi, Daviplata, PSE o tarjeta. Te '
-        'transferimos lo recaudado cada lunes.',
+    'Tus clientes pagan online con Nequi, DaviPlata, PSE o tarjeta, y ePayco '
+        'te consigna tu parte al instante.',
   ),
   (
     LucideIcons.calendarCheck,
@@ -93,14 +93,18 @@ const _steps = <(IconData, String, String, String)>[
 const _faq = <(String, String)>[
   (
     '¿Cuánto cuesta?',
-    'No hay mensualidad ni contrato. Cobramos una comisión del 9% sobre cada '
-        'reserva pagada por la plataforma: si nadie reserva, no pagas nada.',
+    'No hay mensualidad ni contrato. Al jugador se le suma una tarifa de '
+        'servicio de \$2.000 sobre el precio de tu cancha, y de lo recaudado '
+        'salen la pasarela y nuestra parte: frente a tu precio de lista eso es '
+        'cerca de un 5%, y menos cuando la cancha es más cara. Si nadie '
+        'reserva, no pagas nada.',
   ),
   (
     '¿Cómo recibo los pagos?',
-    'Tus clientes pagan a ReservaTuCancha con Nequi, Daviplata, PSE o tarjeta. '
-        'Cada lunes te transferimos lo recaudado de la semana anterior, ya con '
-        'la comisión del 9% descontada.',
+    'Tus clientes pagan con Nequi, DaviPlata, PSE o tarjeta, y ePayco divide '
+        'el cobro en el momento: tu parte te llega directo a tu cuenta, ya con '
+        'los costos descontados. No retenemos tu dinero. Solo necesitas '
+        'conectar tu propia cuenta de ePayco una vez desde el panel.',
   ),
   (
     '¿Puedo bloquear horarios?',

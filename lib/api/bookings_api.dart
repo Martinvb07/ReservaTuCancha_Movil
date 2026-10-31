@@ -48,13 +48,15 @@ class BookingsApi {
         'endTime': endTime,
         'totalPrice': totalPrice,
         if (notes != null && notes.trim().isNotEmpty) 'notes': notes.trim(),
-        'paymentMethod': 'wompi',
+        'paymentMethod': 'epayco',
       },
     );
     return Booking.fromJson(data as Map<String, dynamic>);
   }
 
-  /// `POST /bookings/:id/payment` — devuelve la URL del checkout de Wompi.
+  /// `POST /bookings/:id/payment` — crea la sesion de ePayco y devuelve el
+  /// link a `/pagar` de la web, que abre el checkout con esa sesion (el
+  /// checkout es un script de navegador y la app no lo puede cargar).
   ///
   /// `redirectUrl` es a donde vuelve el navegador cuando termina de pagar.
   Future<String> initPayment(String bookingId, String redirectUrl) async {
@@ -62,7 +64,9 @@ class BookingsApi {
       '/bookings/$bookingId/payment',
       body: {'redirectUrl': redirectUrl},
     );
-    final url = (data as Map<String, dynamic>?)?['redirectUrl'] as String?;
+    final json = data as Map<String, dynamic>?;
+    final url =
+        (json?['checkoutUrl'] as String?) ?? (json?['redirectUrl'] as String?);
     if (url == null || url.isEmpty) {
       throw RtcApiException('El servidor no devolvio el link de pago');
     }
@@ -71,10 +75,10 @@ class BookingsApi {
 
   /// `GET /bookings/:id`.
   ///
-  /// Es la fuente de verdad de si el pago entro: el webhook de Wompi pone la
-  /// reserva en `confirmed` cuando aprueban, y la BORRA cuando rechazan
-  /// (`wompi-webhook.controller.ts:61`). Por eso un 404 aca no es un error de
-  /// red: es un pago rechazado.
+  /// Es la fuente de verdad de si el pago entro: la confirmacion de ePayco
+  /// pone la reserva en `confirmed` cuando aprueban, y la BORRA cuando
+  /// rechazan (`epayco-confirmation.controller.ts`). Por eso un 404 aca no es
+  /// un error de red: es un pago rechazado.
   Future<Booking> getById(String id) async {
     final data = await RtcApi.instance.get('/bookings/$id');
     return Booking.fromJson(data as Map<String, dynamic>);
