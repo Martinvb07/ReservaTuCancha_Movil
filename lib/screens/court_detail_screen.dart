@@ -159,7 +159,26 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
           _titulo(court, sport),
           if (court.amenities.isNotEmpty) ...[
             const SizedBox(height: RtcSpace.s6),
-            _seccion('Lo que ofrece'),
+            Row(
+              children: [
+                Expanded(child: _seccion('Lo que ofrece')),
+                if (court.amenities.length > 4)
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _verTodas(court.amenities),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        'Ver todas',
+                        style: RtcType.sm.copyWith(
+                          color: Gray.c500,
+                          fontWeight: RtcType.medium,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: RtcSpace.s3),
             _instalaciones(court.amenities),
           ],
@@ -510,41 +529,126 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
   }
 
   // ── INSTALACIONES ────────────────────────────────────────────────────
-  // Una fila de mosaicos blancos con el icono arriba y el nombre debajo.
+  // Cuatro mosaicos parejos en fila; si hay mas, "Ver todas" abre la lista
+  // completa.
   Widget _instalaciones(List<String> amenities) {
-    return SizedBox(
-      height: 92,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: amenities.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (context, i) {
-          final a = amenities[i];
-          return Container(
-            width: 84,
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(22),
+    final visibles = amenities.take(4).toList();
+    return Row(
+      children: [
+        for (var i = 0; i < 4; i++) ...[
+          if (i > 0) const SizedBox(width: 10),
+          Expanded(
+            child: i < visibles.length
+                ? _mosaico(visibles[i])
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _mosaico(String amenidad) {
+    return AspectRatio(
+      aspectRatio: 0.92,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              amenityIcon(amenidad),
+              size: 24,
+              color: Gray.c900,
+              semanticLabel: amenidad,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(amenityIcon(a), size: 22, color: Green.c600),
-                const SizedBox(height: 8),
-                Text(
-                  a[0].toUpperCase() + a.substring(1),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: RtcType.xs.copyWith(
-                    color: Gray.c800,
-                    fontWeight: RtcType.semibold,
+            const SizedBox(height: 10),
+            Text(
+              amenityCorta(amenidad),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: RtcType.xs.copyWith(
+                color: Gray.c700,
+                fontWeight: RtcType.medium,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Todas las comodidades en una hoja, cuando no caben en la fila.
+  void _verTodas(List<String> amenities) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (hoja) => SafeArea(
+        top: false,
+        child: Container(
+          margin: const EdgeInsets.all(12),
+          padding: const EdgeInsets.fromLTRB(
+            RtcSpace.s5,
+            RtcSpace.s4,
+            RtcSpace.s5,
+            RtcSpace.s5,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Gray.c200,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+              const SizedBox(height: RtcSpace.s4),
+              _seccion('Lo que ofrece'),
+              const SizedBox(height: RtcSpace.s3),
+              for (final a in amenities)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Fondo.app,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(amenityIcon(a), size: 20, color: Gray.c900),
+                      ),
+                      const SizedBox(width: RtcSpace.s3),
+                      Expanded(
+                        child: Text(
+                          a,
+                          style: RtcType.sm.copyWith(
+                            color: Gray.c800,
+                            fontWeight: RtcType.medium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

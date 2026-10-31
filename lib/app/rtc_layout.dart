@@ -3,7 +3,11 @@ import 'package:flutter/services.dart';
 
 import '../auth/session.dart';
 import '../widgets/floating_actions.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../theme/palette.dart';
+import '../theme/typography.dart';
 import '../widgets/rtc_bottom_nav.dart';
 import '../widgets/rtc_mobile_menu.dart';
 import 'dashboard_shell.dart';
@@ -87,6 +91,41 @@ class RtcLayout extends StatelessWidget {
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _AccesoAyuda(
+                          icono: LucideIcons.bot,
+                          titulo: 'Asistente',
+                          detalle: 'Dudas al instante',
+                          fondo: Gray.c900,
+                          colorIcono: Lime.c400,
+                          onTap: () => cerrarY(
+                            () => FloatingActions.abrirSoporte.value++,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _AccesoAyuda(
+                          icono: LucideIcons.messageCircle,
+                          titulo: 'WhatsApp',
+                          detalle: 'Escríbenos directo',
+                          fondo: const Color(0xFF22C55E), // green-500
+                          colorIcono: Colors.white,
+                          onTap: () => cerrarY(
+                            () => launchUrl(
+                              Uri.parse(kWhatsappSoporte),
+                              mode: LaunchMode.externalApplication,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 RtcMobileMenu(
                   open: true,
                   isBiz: state.isBiz,
@@ -152,7 +191,8 @@ class RtcLayout extends StatelessWidget {
                   Positioned.fill(
                     child: FloatingActions(
                       extraAbajo: conBarra ? kBottomNavEspacio - 8 : 72,
-                      botonesVisibles: state.route == '/soporte',
+                      // El asistente y WhatsApp viven en la pestaña "Más".
+                      botonesVisibles: false,
                     ),
                   ),
                   if (conBarra)
@@ -160,13 +200,20 @@ class RtcLayout extends StatelessWidget {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      // Con una hoja abierta (menu, buscador) la barra se
-                      // esconde: vive encima del Navigator y le taparia los
+                      // Con una hoja abierta (menu, buscador) o el chat del
+                      // asistente, la barra se esconde: vive encima del Navigator y le taparia los
                       // botones a la hoja.
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: FloatingActions.hojaAbierta,
-                        builder: (context, hoja, barra) => AnimatedSlide(
-                          offset: hoja ? const Offset(0, 1.5) : Offset.zero,
+                      child: ListenableBuilder(
+                        listenable: Listenable.merge([
+                          FloatingActions.hojaAbierta,
+                          FloatingActions.chatAbierto,
+                        ]),
+                        builder: (context, barra) => AnimatedSlide(
+                          offset:
+                              FloatingActions.hojaAbierta.value ||
+                                  FloatingActions.chatAbierto.value
+                              ? const Offset(0, 1.5)
+                              : Offset.zero,
                           duration: const Duration(milliseconds: 220),
                           curve: Curves.easeOutCubic,
                           child: barra,
@@ -184,6 +231,70 @@ class RtcLayout extends StatelessWidget {
             );
           },
           child: child,
+        ),
+      ),
+    );
+  }
+}
+
+/// Tarjeta de ayuda arriba de la hoja "Más": el asistente y WhatsApp, que
+/// antes flotaban sobre todas las pantallas.
+class _AccesoAyuda extends StatelessWidget {
+  const _AccesoAyuda({
+    required this.icono,
+    required this.titulo,
+    required this.detalle,
+    required this.fondo,
+    required this.colorIcono,
+    required this.onTap,
+  });
+
+  final IconData icono;
+  final String titulo;
+  final String detalle;
+  final Color fondo;
+  final Color colorIcono;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: titulo,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Fondo.app,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(color: fondo, shape: BoxShape.circle),
+                child: Icon(icono, size: 20, color: colorIcono),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                titulo,
+                style: RtcType.sm.copyWith(
+                  fontWeight: RtcType.bold,
+                  color: Gray.c900,
+                ),
+              ),
+              Text(
+                detalle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: RtcType.xs.copyWith(color: Gray.c500),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -43,6 +43,10 @@ class FloatingActions extends StatefulWidget {
   /// consigue lo mismo escondiendolos mientras haya una hoja abierta.
   static final hojaAbierta = ValueNotifier<bool>(false);
 
+  /// Si el chat del asistente esta abierto: la barra inferior de la app se
+  /// esconde mientras tanto para no taparle el campo de texto.
+  static final chatAbierto = ValueNotifier<bool>(false);
+
   @override
   State<FloatingActions> createState() => _FloatingActionsState();
 }
@@ -51,11 +55,17 @@ class FloatingActions extends StatefulWidget {
 /// telefono no existe, asi que los dos flotantes son circulos de 56.
 const _tamano = 56.0;
 
-const _whatsapp =
+const kWhatsappSoporte =
     'https://wa.me/573124352786?text=Hola%2C%20necesito%20ayuda%20con%20ReservaTuCancha';
 
 class _FloatingActionsState extends State<FloatingActions> {
-  bool _chatAbierto = false;
+  bool _chatAbiertoValor = false;
+
+  bool get _chatAbierto => _chatAbiertoValor;
+  set _chatAbierto(bool v) {
+    _chatAbiertoValor = v;
+    FloatingActions.chatAbierto.value = v;
+  }
 
   @override
   void initState() {
@@ -103,7 +113,7 @@ class _FloatingActionsState extends State<FloatingActions> {
             foreground: Colors.white,
             icon: LucideIcons.messageCircle,
             onTap: () => launchUrl(
-              Uri.parse(_whatsapp),
+              Uri.parse(kWhatsappSoporte),
               mode: LaunchMode.externalApplication,
             ),
           ),

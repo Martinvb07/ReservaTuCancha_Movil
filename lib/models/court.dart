@@ -193,22 +193,65 @@ List<SportMeta> get sports => _sports;
 SportMeta getSport(String key) =>
     _sports.firstWhere((s) => s.key == key, orElse: () => _sports.first);
 
-/// Espeja `AMEN_ICONS` de `lib/amenityIcons.ts`, con las mismas etiquetas
-/// exactas que guarda el backend y los mismos iconos de lucide.
+/// Las amenidades que ofrece el formulario de cancha (`AMENITIES` de la web),
+/// cada una con su icono de lucide y un nombre corto para los mosaicos.
 const amenityIcons = <String, IconData>{
   'Luz nocturna': LucideIcons.lightbulb,
-  'Parqueadero': LucideIcons.car,
-  'Duchas': LucideIcons.droplets,
+  'Parqueadero': LucideIcons.squareParking,
+  'Duchas': LucideIcons.showerHead,
   'Vestiarios': LucideIcons.shirt,
   'Cafetería': LucideIcons.coffee,
-  'Graderías': LucideIcons.users,
+  'Graderías': LucideIcons.armchair,
   'Wi-Fi': LucideIcons.wifi,
   'Alquiler de equipos': LucideIcons.dumbbell,
 };
 
-/// Igual que `amenityIcon()` en la web: check generico si no la conoce.
-IconData amenityIcon(String name) =>
-    amenityIcons[name] ?? LucideIcons.circleCheck;
+/// Por palabra clave y sin tildes: canchas viejas o creadas a mano guardan
+/// variantes ("iluminación", "parqueo", "wifi") que el mapa exacto no
+/// reconocia y caian todas al mismo check.
+const _amenityClaves = <(String, IconData)>[
+  ('luz', LucideIcons.lightbulb),
+  ('ilumin', LucideIcons.lightbulb),
+  ('parque', LucideIcons.squareParking),
+  ('ducha', LucideIcons.showerHead),
+  ('vesti', LucideIcons.shirt),
+  ('camerino', LucideIcons.shirt),
+  ('cafe', LucideIcons.coffee),
+  ('restaur', LucideIcons.utensils),
+  ('grader', LucideIcons.armchair),
+  ('tribuna', LucideIcons.armchair),
+  ('wi', LucideIcons.wifi),
+  ('equipo', LucideIcons.dumbbell),
+  ('bano', LucideIcons.toilet),
+  ('sanitario', LucideIcons.toilet),
+];
+
+String _sinTildes(String s) => s
+    .toLowerCase()
+    .replaceAll('á', 'a')
+    .replaceAll('é', 'e')
+    .replaceAll('í', 'i')
+    .replaceAll('ó', 'o')
+    .replaceAll('ú', 'u')
+    .replaceAll('ñ', 'n');
+
+IconData amenityIcon(String name) {
+  final exacto = amenityIcons[name];
+  if (exacto != null) return exacto;
+  final n = _sinTildes(name);
+  for (final (clave, icono) in _amenityClaves) {
+    if (n.contains(clave)) return icono;
+  }
+  return LucideIcons.circleCheck;
+}
+
+/// El nombre que cabe en un mosaico de un cuarto de pantalla.
+String amenityCorta(String name) => switch (name) {
+  'Luz nocturna' => 'Iluminación',
+  'Alquiler de equipos' => 'Equipos',
+  'Parqueadero' => 'Parqueo',
+  _ => name.isEmpty ? name : name[0].toUpperCase() + name.substring(1),
+};
 
 /// Formatea precios como `toLocaleString('es-CO')`: separador de miles con
 /// punto. Sin `intl` para no sumar una dependencia por esto.
