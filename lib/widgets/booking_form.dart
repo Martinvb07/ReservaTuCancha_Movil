@@ -238,6 +238,9 @@ class _BookingFormState extends State<BookingForm> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
+      // Las pantallas están pintadas en claro; sin esto, con el teléfono en
+      // modo oscuro la hoja salía oscura y el texto gris oscuro no se leía.
+      backgroundColor: Colors.white,
       builder: (ctx) => Padding(
         padding: EdgeInsets.fromLTRB(
           RtcSpace.s6,
