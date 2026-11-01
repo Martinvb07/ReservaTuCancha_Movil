@@ -32,6 +32,7 @@ class Preferencias {
   static const _kEmail = 'rtc.jugador.email';
   static const _kTelefono = 'rtc.jugador.telefono';
   static const _kFavoritos = 'rtc.favoritos';
+  static const _kBienvenida = 'rtc.bienvenidaVista';
 
   SharedPreferences? _prefs;
 
@@ -64,6 +65,17 @@ class Preferencias {
     await p.setString(_kEmail, d.email);
     await p.setString(_kTelefono, d.telefono);
   }
+
+  /// La bienvenida se muestra una sola vez. Si el almacenamiento no esta
+  /// disponible no se muestra: mejor eso que verla en cada apertura.
+  bool get bienvenidaVista {
+    final p = _prefs;
+    if (p == null) return true;
+    return p.getBool(_kBienvenida) ?? false;
+  }
+
+  Future<void> marcarBienvenidaVista() async =>
+      _prefs?.setBool(_kBienvenida, true);
 
   bool esFavorita(String courtId) => favoritos.value.contains(courtId);
 

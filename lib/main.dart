@@ -9,6 +9,8 @@ import 'auth/session.dart';
 import 'booking/pago.dart';
 import 'data/preferencias.dart';
 import 'theme/app_theme.dart';
+import 'widgets/aviso_sin_conexion.dart';
+import 'widgets/bienvenida.dart';
 
 Future<void> main() async {
   // La sesion se lee del almacenamiento seguro antes del primer frame: si no,
@@ -65,8 +67,45 @@ class RtcApp extends StatelessWidget {
       navigatorKey: rtcNavigatorKey,
       navigatorObservers: [RtcRouteObserver(_nav)],
       // El header envuelve al Navigator: al cambiar de pantalla no se remonta.
-      builder: (context, navigator) =>
+      builder: (context, navigator) => Stack(
+        children: [
           RtcLayout(state: _nav, child: navigator!),
+          // El aviso de sin conexion va encima de todo, panel incluido.
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AvisoSinConexion(),
+          ),
+          const _BienvenidaSiHaceFalta(),
+        ],
+      ),
+    );
+  }
+}
+
+/// La bienvenida, solo la primera vez que se abre la app.
+class _BienvenidaSiHaceFalta extends StatefulWidget {
+  const _BienvenidaSiHaceFalta();
+
+  @override
+  State<_BienvenidaSiHaceFalta> createState() => _BienvenidaSiHaceFaltaState();
+}
+
+class _BienvenidaSiHaceFaltaState extends State<_BienvenidaSiHaceFalta> {
+  late bool _mostrar = !Preferencias.instance.bienvenidaVista;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      ignoring: !_mostrar,
+      child: AnimatedOpacity(
+        opacity: _mostrar ? 1 : 0,
+        duration: const Duration(milliseconds: 300),
+        child: _mostrar
+            ? Bienvenida(onTerminar: () => setState(() => _mostrar = false))
+            : const SizedBox.shrink(),
+      ),
     );
   }
 }

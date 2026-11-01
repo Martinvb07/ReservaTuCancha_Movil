@@ -836,7 +836,9 @@ class _SinCanchas extends StatelessWidget {
           const Icon(LucideIcons.searchX, size: 32, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
-            nombre == null
+            rtcSinConexion.value
+                ? 'No pudimos cargar las canchas. Revisa tu conexión.'
+                : nombre == null
                 ? 'Todavía no hay canchas publicadas'
                 : 'No hay canchas de $nombre por ahora',
             textAlign: TextAlign.center,

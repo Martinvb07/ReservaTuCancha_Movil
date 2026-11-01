@@ -7,12 +7,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart' as http;
 
 /// Error de la API con el mensaje que manda NestJS.
 ///
 /// NestJS devuelve `message` como string o como lista (las validaciones de
 /// class-validator). La web se queda con el primero; aca igual.
+/// Si la ultima peticion fallo por falta de red. El layout lo escucha para
+/// mostrar un solo aviso arriba, en vez de que cada pantalla diga a su manera
+/// que no hay conexion; se apaga solo con la primera respuesta que llegue.
+final rtcSinConexion = ValueNotifier<bool>(false);
+
+const _sinInternet = 'Sin conexión a internet. Revisa tus datos o el WiFi.';
+
 class RtcApiException implements Exception {
   RtcApiException(this.message, {this.statusCode});
 
@@ -158,12 +167,17 @@ class RtcApi {
       final streamed = await _client.send(request).timeout(_timeout);
       response = await http.Response.fromStream(streamed);
     } on TimeoutException {
-      throw RtcApiException('El servidor tardo demasiado en responder');
+      rtcSinConexion.value = true;
+      throw RtcApiException('El servidor tardó demasiado en responder');
     } on SocketException {
-      throw RtcApiException('Error de conexión con el servidor');
+      rtcSinConexion.value = true;
+      throw RtcApiException(_sinInternet);
     } on http.ClientException {
-      throw RtcApiException('Error de conexión con el servidor');
+      rtcSinConexion.value = true;
+      throw RtcApiException(_sinInternet);
     }
+    // Llego una respuesta, aunque sea un error del servidor: hay internet.
+    rtcSinConexion.value = false;
 
     // `response.body` asume latin1 si la respuesta no declara charset, y los
     // nombres de las canchas vienen con tildes.
