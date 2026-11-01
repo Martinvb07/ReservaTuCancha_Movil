@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../api/owner_api.dart';
+import '../../auth/session.dart';
 import '../../api/rtc_api.dart';
 import '../../app/routes.dart';
 import '../../models/booking.dart';
@@ -155,7 +156,8 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (club != null && !club.epaycoConectado) ...[
+        // La cuenta de pagos la conecta el dueño, no sus empleados.
+        if (club != null && !club.epaycoConectado && RtcSession.instance.user?.esStaff != true) ...[
           _avisoEpayco(),
           const SizedBox(height: RtcSpace.s5),
         ],

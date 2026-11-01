@@ -306,6 +306,90 @@ class OwnerApi {
     auth: true,
   );
 
+  /// `POST /bookings/manual` — anotar una reserva que llegó por teléfono o al
+  /// mostrador. Devuelve cuántas fechas se anotaron.
+  Future<int> anotarReserva({
+    required String courtId,
+    required String date,
+    required String startTime,
+    required String endTime,
+    required String guestName,
+    String? guestPhone,
+    String? guestEmail,
+    String? notes,
+    int semanas = 1,
+    int? precio,
+  }) async {
+    String? limpio(String? v) => (v == null || v.trim().isEmpty) ? null : v.trim();
+    final data = await RtcApi.instance.post(
+      '/bookings/manual',
+      body: {
+        'courtId': courtId,
+        'date': date,
+        'startTime': startTime,
+        'endTime': endTime,
+        'guestName': guestName.trim(),
+        if (limpio(guestPhone) != null) 'guestPhone': limpio(guestPhone),
+        if (limpio(guestEmail) != null) 'guestEmail': limpio(guestEmail),
+        if (limpio(notes) != null) 'notes': limpio(notes),
+        'semanas': semanas,
+        'precio': ?precio,
+      },
+      auth: true,
+    );
+    return ((data as Map<String, dynamic>?)?['creadas'] as num?)?.toInt() ?? 1;
+  }
+
+  /// `DELETE /bookings/manual/:id` — anular una reserva anotada por el club
+  /// (con `serie`, también las siguientes del mismo turno fijo).
+  Future<int> anularReserva(String id, {bool serie = false}) async {
+    final data = await RtcApi.instance.delete(
+      '/bookings/manual/$id${serie ? '?serie=1' : ''}',
+      auth: true,
+    );
+    return ((data as Map<String, dynamic>?)?['anuladas'] as num?)?.toInt() ?? 1;
+  }
+
+  /// `GET /analytics/owner/ocupacion`.
+  Future<Ocupacion> ocupacion({int semanas = 8, String? courtId}) async {
+    final data = await RtcApi.instance.get(
+      '/analytics/owner/ocupacion',
+      query: {'semanas': '$semanas', 'courtId': courtId},
+      auth: true,
+    );
+    return Ocupacion.fromJson((data as Map<String, dynamic>?) ?? const {});
+  }
+
+  /// `GET /equipo`.
+  Future<List<MiembroEquipo>> equipo() async {
+    final data = await RtcApi.instance.get('/equipo', auth: true);
+    return (data as List?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(MiembroEquipo.fromJson)
+            .toList() ??
+        const [];
+  }
+
+  Future<void> invitarAlEquipo({required String nombre, required String email, String? telefono}) =>
+      RtcApi.instance.post(
+        '/equipo',
+        body: {
+          'name': nombre.trim(),
+          'email': email.trim(),
+          if (telefono != null && telefono.trim().isNotEmpty) 'phone': telefono.trim(),
+        },
+        auth: true,
+      );
+
+  Future<void> accesoEquipo(String id, bool activo) =>
+      RtcApi.instance.patch('/equipo/$id/acceso', body: {'activo': activo}, auth: true);
+
+  Future<void> nuevaClaveEquipo(String id) =>
+      RtcApi.instance.post('/equipo/$id/clave', auth: true);
+
+  Future<void> quitarDelEquipo(String id) =>
+      RtcApi.instance.delete('/equipo/$id', auth: true);
+
   /// `GET /clubs/my-club`, con el `ensure-slug` que dispara la web cuando el
   /// club todavia no tiene uno.
   Future<ClubInfo?> club() async {
@@ -535,5 +619,104 @@ class MesAnalytics {
     mesCorto: (json['monthShort'] as String?) ?? '',
     ingresos: (json['revenue'] as num?)?.toInt() ?? 0,
     reservas: (json['bookings'] as num?)?.toInt() ?? 0,
+  );
+}
+
+
+/// Una franja del mapa de ocupación (`analytics/ocupacion.ts`).
+class CeldaOcupacion {
+  const CeldaOcupacion({required this.dia, required this.hora, required this.capacidad, required this.ocupado, required this.pct});
+
+  /// 0 = domingo … 6 = sábado.
+  final int dia;
+  final int hora;
+  final double capacidad;
+  final double ocupado;
+  final double pct;
+
+  factory CeldaOcupacion.fromJson(Map<String, dynamic> j) => CeldaOcupacion(
+    dia: (j['dia'] as num?)?.toInt() ?? 0,
+    hora: (j['hora'] as num?)?.toInt() ?? 0,
+    capacidad: (j['capacidad'] as num?)?.toDouble() ?? 0,
+    ocupado: (j['ocupado'] as num?)?.toDouble() ?? 0,
+    pct: (j['pct'] as num?)?.toDouble() ?? 0,
+  );
+}
+
+class Ocupacion {
+  const Ocupacion({
+    required this.semanas,
+    required this.desde,
+    required this.hasta,
+    required this.canchas,
+    required this.celdas,
+    required this.pctTotal,
+    required this.horasOcupadas,
+    required this.horasCapacidad,
+    required this.horasVacias,
+    required this.horasPico,
+  });
+
+  final int semanas;
+  final String desde;
+  final String hasta;
+  final List<({String id, String nombre})> canchas;
+  final List<CeldaOcupacion> celdas;
+  final double pctTotal;
+  final double horasOcupadas;
+  final double horasCapacidad;
+  final List<CeldaOcupacion> horasVacias;
+  final List<CeldaOcupacion> horasPico;
+
+  List<int> get horas => (celdas.where((c) => c.capacidad > 0).map((c) => c.hora).toSet().toList())..sort();
+
+  CeldaOcupacion? celda(int dia, int hora) {
+    for (final c in celdas) {
+      if (c.dia == dia && c.hora == hora) return c;
+    }
+    return null;
+  }
+
+  factory Ocupacion.fromJson(Map<String, dynamic> j) {
+    List<CeldaOcupacion> lista(Object? v) =>
+        (v as List?)?.whereType<Map<String, dynamic>>().map(CeldaOcupacion.fromJson).toList() ?? const [];
+    final total = (j['total'] as Map<String, dynamic>?) ?? const {};
+    return Ocupacion(
+      semanas: (j['semanas'] as num?)?.toInt() ?? 8,
+      desde: (j['desde'] as String?) ?? '',
+      hasta: (j['hasta'] as String?) ?? '',
+      canchas: (j['canchas'] as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map((c) => (id: (c['_id'] ?? '').toString(), nombre: (c['name'] as String?) ?? 'Cancha'))
+              .toList() ??
+          const [],
+      celdas: lista(j['celdas']),
+      pctTotal: (total['pct'] as num?)?.toDouble() ?? 0,
+      horasOcupadas: (total['ocupado'] as num?)?.toDouble() ?? 0,
+      horasCapacidad: (total['capacidad'] as num?)?.toDouble() ?? 0,
+      horasVacias: lista(j['horasVacias']),
+      horasPico: lista(j['horasPico']),
+    );
+  }
+}
+
+/// Un empleado con acceso al panel del club.
+class MiembroEquipo {
+  const MiembroEquipo({required this.id, required this.nombre, required this.email, this.telefono, required this.activo, this.ultimoIngreso});
+
+  final String id;
+  final String nombre;
+  final String email;
+  final String? telefono;
+  final bool activo;
+  final DateTime? ultimoIngreso;
+
+  factory MiembroEquipo.fromJson(Map<String, dynamic> j) => MiembroEquipo(
+    id: (j['_id'] ?? '').toString(),
+    nombre: (j['name'] as String?) ?? '',
+    email: (j['email'] as String?) ?? '',
+    telefono: j['phone'] as String?,
+    activo: j['isActive'] != false,
+    ultimoIngreso: DateTime.tryParse((j['lastLoginAt'] as String?) ?? '')?.toLocal(),
   );
 }

@@ -8,6 +8,7 @@ import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../../widgets/dashboard/graficas.dart';
+import '../../widgets/dashboard/ocupacion_mapa.dart';
 import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_toast.dart';
 
@@ -97,6 +98,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             const SizedBox(height: RtcSpace.s4),
             _ranking(d),
           ],
+          const SizedBox(height: RtcSpace.s4),
+          const OcupacionMapa(),
         ],
       ),
     );

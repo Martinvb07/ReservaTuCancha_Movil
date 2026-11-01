@@ -22,6 +22,10 @@ class Booking {
     this.guestPhone = '',
     this.notes,
     this.cancelToken,
+    this.origen = 'online',
+    this.serieId,
+    this.serieSemanas,
+    this.serieTotal,
   });
 
   final String id;
@@ -64,6 +68,17 @@ class Booking {
 
   final String? cancelToken;
 
+  /// 'manual' si la anotó el club (teléfono, mostrador): se cobra en el club.
+  final String origen;
+  bool get esManual => origen == 'manual';
+
+  /// Turno fijo: las fechas de una misma serie comparten este id.
+  final String? serieId;
+
+  /// Solo al crear o consultar un turno fijo: cuántas semanas y el total.
+  final int? serieSemanas;
+  final int? serieTotal;
+
   factory Booking.fromJson(Map<String, dynamic> json) {
     final court = json['courtId'] is Map<String, dynamic>
         ? json['courtId'] as Map<String, dynamic>
@@ -91,6 +106,10 @@ class Booking {
           ? null
           : (json['notes'] as String).trim(),
       cancelToken: json['cancelToken'] as String?,
+      origen: (json['origen'] as String?) ?? 'online',
+      serieId: json['serieId'] as String?,
+      serieSemanas: ((json['serie'] as Map?)?['semanas'] as num?)?.toInt(),
+      serieTotal: ((json['serie'] as Map?)?['total'] as num?)?.toInt(),
     );
   }
 }

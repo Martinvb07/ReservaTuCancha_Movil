@@ -8,6 +8,7 @@ import 'app/rtc_layout.dart';
 import 'auth/session.dart';
 import 'booking/pago.dart';
 import 'data/preferencias.dart';
+import 'data/push.dart';
 import 'theme/app_theme.dart';
 import 'widgets/aviso_actualizacion.dart';
 import 'widgets/aviso_sin_conexion.dart';
@@ -26,6 +27,13 @@ Future<void> main() async {
   await Preferencias.instance.cargar();
   // El deep link del pago: `reservatucancha://pago?bookingId=X`.
   await DeepLinksDePago.escuchar();
+  // Push: confirmaciones y recordatorios al jugador, reservas nuevas al club.
+  // Sin el proyecto de Firebase en la build queda apagado.
+  await PushNotificaciones.instance.iniciar();
+  if (RtcSession.instance.isLoggedIn) {
+    // No se espera: pedir permiso no tiene por qué frenar el arranque.
+    PushNotificaciones.instance.registrarEnElClub();
+  }
 
   // Reporte de errores. Sin DSN (el caso de desarrollo) Sentry no se activa
   // y la app arranca igual; en la build de la tienda se pasa con

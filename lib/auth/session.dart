@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../api/auth_api.dart';
 import '../api/rtc_api.dart';
+import '../data/push.dart';
 import '../models/auth_user.dart';
 
 class RtcSession extends ChangeNotifier {
@@ -68,6 +69,8 @@ class RtcSession extends ChangeNotifier {
     _user = data.user;
     await _persist();
     notifyListeners();
+    // Este teléfono empieza a recibir los avisos del club.
+    PushNotificaciones.instance.registrarEnElClub();
   }
 
   /// La dispara el cliente HTTP cuando una request firmada vuelve 401.
@@ -98,6 +101,8 @@ class RtcSession extends ChangeNotifier {
   /// sigue vivo en la base hasta que expira. Si eso llega a importar, la
   /// solucion es un `/api/backend-logout` en el Next, gemelo del de login.
   Future<void> logout() async {
+    // Antes de borrar el token: la baja del teléfono va firmada.
+    if (_accessToken != null) await PushNotificaciones.instance.olvidarDelClub();
     _accessToken = null;
     _refreshToken = null;
     _user = null;

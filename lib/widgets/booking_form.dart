@@ -15,6 +15,8 @@ import '../theme/typography.dart';
 import 'medios_pago.dart';
 import 'motion/rtc_motion.dart';
 import '../data/preferencias.dart';
+import '../data/push.dart';
+import 'rtc_toast.dart';
 
 /// Port de `Frontend/src/components/bookings/BookingForm.tsx`.
 ///
@@ -49,6 +51,9 @@ class BookingForm extends StatefulWidget {
 /// `PER_PAGE`.
 const _perPage = 8;
 
+/// Turno fijo: cuántas semanas seguidas se puede repetir el mismo horario.
+const _opcionesSemanas = [1, 4, 8, 12];
+
 class _BookingFormState extends State<BookingForm> {
   // Salen llenos con lo de la ultima reserva hecha desde este telefono.
   final _nombre = TextEditingController(
@@ -82,6 +87,9 @@ class _BookingFormState extends State<BookingForm> {
 
   bool _aplicadaFecha = false;
   bool _aplicadaHora = false;
+
+  /// Turno fijo: 1 es una reserva normal.
+  int _semanas = 1;
 
   @override
   void initState() {
@@ -181,7 +189,11 @@ class _BookingFormState extends State<BookingForm> {
 
   /// Lo que se ve antes de pagar. El backend arma el cobro real con el precio
   /// de la cancha: lo que se manda en `totalPrice` no decide nada.
-  int get _totalPrice => _precioCancha + _tarifaServicio;
+  int get _totalFecha => _precioCancha + _tarifaServicio;
+
+  /// En un turno fijo cada semana lleva su propia tarifa, así que el total es
+  /// el de una fecha por las semanas (lo mismo que cobra el backend).
+  int get _totalPrice => _totalFecha * _semanas;
 
   /// `expandUnavailable`: una franja ocupada tapa todas las horas que abarca.
   Set<String> _expandir(List<BlockedSlot> slots) {
@@ -210,6 +222,61 @@ class _BookingFormState extends State<BookingForm> {
       _expandir(_booked).contains(slot) ||
       _expandir(_blocked).contains(slot) ||
       _esPasada(slot);
+
+  /// Reservada por otro (no bloqueada ni pasada): se puede pedir aviso.
+  bool _admiteEspera(String slot) =>
+      _expandir(_booked).contains(slot) &&
+      !_expandir(_blocked).contains(slot) &&
+      !_esPasada(slot);
+
+  /// Lista de espera: avisar por correo (y push) si el turno se libera.
+  Future<void> _pedirAviso(String slot) async {
+    HapticFeedback.selectionClick();
+    final email = TextEditingController(text: _email.text.trim());
+    final fin = sumarMinutos(slot, _slotDuration);
+    final ok = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          RtcSpace.s6,
+          0,
+          RtcSpace.s6,
+          MediaQuery.of(ctx).viewInsets.bottom + RtcSpace.s6,
+        ),
+        child: _AvisoTurno(
+          titulo: 'Avísame si se libera el de las ${hora12(slot)}',
+          email: email,
+          onEnviar: () async {
+            final correo = email.text.trim();
+            if (!RegExp(r'^[^@\s]+@[^@\s.]+\.[^@\s]+$').hasMatch(correo)) {
+              rtcToast(ctx, 'Escribe un correo válido', tipo: RtcToastTipo.error);
+              return;
+            }
+            try {
+              await bookingsApi.listaEspera(
+                courtId: widget.courtId,
+                date: fechaIso(_selectedDate!),
+                startTime: slot,
+                endTime: fin,
+                email: correo,
+                nombre: _nombre.text,
+                pushToken: await PushNotificaciones.instance.pedirPermiso(),
+              );
+              if (ctx.mounted) Navigator.of(ctx).pop(true);
+            } on RtcApiException catch (e) {
+              if (ctx.mounted) rtcToast(ctx, e.message, tipo: RtcToastTipo.error);
+            }
+          },
+        ),
+      ),
+    );
+    email.dispose();
+    if (ok == true && mounted) {
+      rtcToast(context, 'Listo: te avisamos si ese turno se libera');
+    }
+  }
 
   Future<void> _cargarFranjas() async {
     final date = _selectedDate;
@@ -337,6 +404,9 @@ class _BookingFormState extends State<BookingForm> {
         endTime: _endTime,
         totalPrice: _totalPrice,
         notes: _notas.text,
+        semanas: _semanas,
+        // Para avisar en este teléfono la confirmación y el recordatorio.
+        pushToken: await PushNotificaciones.instance.pedirPermiso(),
       );
 
       final checkout = await bookingsApi.initPayment(
@@ -446,7 +516,12 @@ class _BookingFormState extends State<BookingForm> {
           const SizedBox(height: 6),
           _grillaHorarios(),
         ],
-        if (listo) ...[const SizedBox(height: RtcSpace.s5), _resumenVivo()],
+        if (listo) ...[
+          const SizedBox(height: RtcSpace.s5),
+          _selectorSemanas(),
+          const SizedBox(height: RtcSpace.s5),
+          _resumenVivo(),
+        ],
         if (_errorGeneral != null) ...[
           const SizedBox(height: RtcSpace.s3),
           Text(_errorGeneral!, style: RtcType.xs.copyWith(color: Red.c500)),
@@ -648,9 +723,14 @@ class _BookingFormState extends State<BookingForm> {
             final slot = slots[i];
             final elegida = _selectedSlots.contains(slot);
             final ocupada = _noDisponible(slot);
+            final esperable = _admiteEspera(slot);
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: ocupada ? null : () => _toggleSlot(slot),
+              onTap: esperable
+                  ? () => _pedirAviso(slot)
+                  : ocupada
+                  ? null
+                  : () => _toggleSlot(slot),
               child: RtcPick(
                 trigger: elegida,
                 child: Container(
@@ -700,9 +780,65 @@ class _BookingFormState extends State<BookingForm> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Toca varias horas seguidas para reservar más tiempo.',
+          'Toca varias horas seguidas para reservar más tiempo. ¿Está ocupado '
+          'el que quieres? Tócalo y te avisamos si se libera.',
           style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400),
         ),
+      ],
+    );
+  }
+
+  /// Turno fijo: la misma hora varias semanas seguidas, en un solo pago.
+  Widget _selectorSemanas() {
+    final fechas = [
+      for (var i = 0; i < _semanas; i++) _selectedDate!.add(Duration(days: 7 * i)),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _etiqueta(LucideIcons.repeat, '¿Cada semana?'),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            for (final n in _opcionesSemanas) ...[
+              if (n != _opcionesSemanas.first) const SizedBox(width: RtcSpace.s2),
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    setState(() => _semanas = n);
+                  },
+                  child: Container(
+                    height: 38,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: _semanas == n ? Green.c50 : null,
+                      borderRadius: RtcRadius.brXl,
+                      border: Border.all(color: _semanas == n ? Green.c600 : Gray.c200),
+                    ),
+                    child: Text(
+                      n == 1 ? 'Solo esta' : '$n sem.',
+                      style: RtcType.xs.copyWith(
+                        fontWeight: RtcType.semibold,
+                        color: _semanas == n ? Green.c700 : Gray.c600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        if (_semanas > 1) ...[
+          const SizedBox(height: 6),
+          Text(
+            'Turno fijo a las ${hora12(_selectedSlots.first)}: '
+            '${fechas.map(diaMesCorto).join(' · ')}. Se paga todo junto y cada '
+            'fecha se puede mover por separado.',
+            style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
+          ),
+        ],
       ],
     );
   }
@@ -754,7 +890,8 @@ class _BookingFormState extends State<BookingForm> {
                 ),
                 Text(
                   '${hora12(_selectedSlots.first)} – ${hora12(_endTime)} · '
-                  '${_slotDuration * _selectedSlots.length} min',
+                  '${_slotDuration * _selectedSlots.length} min'
+                  '${_semanas > 1 ? ' · $_semanas semanas' : ''}',
                   style: RtcType.xs.copyWith(color: Green.c700),
                 ),
               ],
@@ -846,6 +983,10 @@ class _BookingFormState extends State<BookingForm> {
         ),
         const SizedBox(height: 6),
         _lineaDesglose('Tarifa de servicio', _tarifaServicio),
+        if (_semanas > 1) ...[
+          const SizedBox(height: 6),
+          _lineaDesglose('Turno fijo · $_semanas semanas, c/u', _totalFecha),
+        ],
         const SizedBox(height: RtcSpace.s2),
         const Divider(height: 1, color: Gray.c100),
         const SizedBox(height: RtcSpace.s2),
@@ -1213,6 +1354,77 @@ class _BookingFormState extends State<BookingForm> {
               child: boton,
             )
           : boton,
+    );
+  }
+}
+
+
+/// Hoja de "avísame si se libera": un correo y un botón.
+class _AvisoTurno extends StatefulWidget {
+  const _AvisoTurno({required this.titulo, required this.email, required this.onEnviar});
+
+  final String titulo;
+  final TextEditingController email;
+  final Future<void> Function() onEnviar;
+
+  @override
+  State<_AvisoTurno> createState() => _AvisoTurnoState();
+}
+
+class _AvisoTurnoState extends State<_AvisoTurno> {
+  bool _enviando = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const Icon(LucideIcons.bellRing, size: 18, color: Orange.c600),
+            const SizedBox(width: RtcSpace.s2),
+            Expanded(
+              child: Text(
+                widget.titulo,
+                style: RtcType.base.copyWith(fontWeight: RtcType.bold, color: Gray.c900),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: RtcSpace.s2),
+        Text(
+          'Si el pago de quien lo tiene no pasa o mueve su reserva, te '
+          'escribimos. El primero que lo pague se lo queda.',
+          style: RtcType.sm.copyWith(color: Gray.c500),
+        ),
+        const SizedBox(height: RtcSpace.s4),
+        TextField(
+          controller: widget.email,
+          keyboardType: TextInputType.emailAddress,
+          autofillHints: const [AutofillHints.email],
+          decoration: InputDecoration(
+            hintText: 'tu@correo.com',
+            border: OutlineInputBorder(borderRadius: RtcRadius.brXl),
+          ),
+        ),
+        const SizedBox(height: RtcSpace.s4),
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: Gray.c900,
+            minimumSize: const Size.fromHeight(48),
+            shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),
+          ),
+          onPressed: _enviando
+              ? null
+              : () async {
+                  setState(() => _enviando = true);
+                  await widget.onEnviar();
+                  if (mounted) setState(() => _enviando = false);
+                },
+          child: Text(_enviando ? 'Enviando…' : 'Avisarme'),
+        ),
+      ],
     );
   }
 }

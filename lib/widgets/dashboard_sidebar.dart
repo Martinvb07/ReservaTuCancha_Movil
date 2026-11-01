@@ -57,10 +57,17 @@ class DashboardSidebar extends StatelessWidget {
       'Cuenta',
       [
         ('/dashboard/propetario/mi-club', 'Mi Club', LucideIcons.building2),
+        ('/dashboard/propetario/equipo', 'Equipo', LucideIcons.usersRound),
         ('/dashboard/propetario/soporte', 'Soporte', LucideIcons.messageSquare),
       ],
     ),
   ];
+
+  /// Lo que ve el dueño pero no sus empleados (ver `SoloTitularGuard`).
+  static const soloTitular = {
+    '/dashboard/propetario/pagos',
+    '/dashboard/propetario/equipo',
+  };
 
   /// `isActive`: exacto para /dashboard, por prefijo para el resto.
   bool _activo(String href) =>
@@ -200,7 +207,7 @@ class DashboardSidebar extends StatelessWidget {
         for (final (etiqueta, items) in secciones) ...[
           if (etiqueta != null) _etiquetaSeccion(etiqueta),
           for (final (href, label, icon) in items)
-            // La web muestra las nueve secciones.
+            if (!(RtcSession.instance.user?.esStaff == true && soloTitular.contains(href)))
             _Enlace(
               href: href,
               label: label,

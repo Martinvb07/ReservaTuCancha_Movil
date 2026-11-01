@@ -14,6 +14,7 @@ import '../screens/dashboard/mis_canchas_screen.dart';
 import '../screens/dashboard/nueva_cancha_screen.dart';
 import '../screens/dashboard/pagos_screen.dart';
 import '../screens/dashboard/reservas_screen.dart';
+import '../screens/dashboard/equipo_screen.dart';
 import '../screens/dashboard/soporte_owner_screen.dart';
 import '../screens/court_detail_screen.dart';
 import '../screens/home_screen.dart';
@@ -282,6 +283,7 @@ final rtcPanelRoutes = <String, WidgetBuilder>{
   '/dashboard/propetario/mi-club': (_) => const MiClubScreen(),
   '/dashboard/propetario/pagos': (_) => const PagosScreen(),
   '/dashboard/propetario/soporte': (_) => const SoporteOwnerScreen(),
+  '/dashboard/propetario/equipo': (_) => const EquipoScreen(),
 };
 
 /// Las rutas del panel que llevan parametro y por eso no estan en el mapa.

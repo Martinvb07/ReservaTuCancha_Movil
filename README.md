@@ -1,17 +1,36 @@
-# reservatucancha
+# ReservaTuCancha — app móvil
 
-App movil de ReservaTuCancha
+App de ReservaTuCancha en Flutter (Android e iOS): buscar y reservar canchas,
+pagar con ePayco y, para los clubes, el panel del propietario.
 
-## Getting Started
+## Desarrollo
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter analyze
+flutter test
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+La CI (`.github/workflows/ci.yml`) corre `analyze` y `test` en cada push y pull request.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Build para la tienda
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Las claves van con `--dart-define`; sin ellas cada función queda apagada y la app funciona igual.
+
+| Variable | Para qué |
+| --- | --- |
+| `SENTRY_DSN` | Reporte de errores. |
+| `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_SENDER_ID`, `FIREBASE_PROJECT_ID` | Notificaciones push (confirmación, recordatorio, turno liberado y reservas nuevas del club). Salen de la configuración de la app en la consola de Firebase; no hace falta `google-services.json`. |
+
+```bash
+flutter build appbundle --release \
+  --dart-define=SENTRY_DSN=https://... \
+  --dart-define=FIREBASE_API_KEY=... \
+  --dart-define=FIREBASE_APP_ID=... \
+  --dart-define=FIREBASE_SENDER_ID=... \
+  --dart-define=FIREBASE_PROJECT_ID=...
+```
+
+El backend necesita la cuenta de servicio del mismo proyecto en `FIREBASE_SERVICE_ACCOUNT` (ver el README del repo web).
+En iOS, además, hay que subir la llave APNs del Apple Developer a Firebase (Configuración del proyecto → Cloud Messaging) y activar la capacidad *Push Notifications* en Xcode.

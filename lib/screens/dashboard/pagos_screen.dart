@@ -194,6 +194,8 @@ class _PagosScreenState extends State<PagosScreen> {
     final q = _busqueda.toLowerCase().replaceAll('#', '');
     final lista =
         _reservas
+            // Lo que el club anota y cobra en su caja no pasa por ePayco.
+            .where((b) => !b.esManual)
             .where((b) => _enPeriodo(b.date, _periodo))
             .where((b) => _estado == 'all' || b.status == _estado)
             .where(

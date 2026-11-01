@@ -9,6 +9,7 @@ class AuthUser {
     required this.email,
     required this.role,
     this.avatarUrl,
+    this.esStaff = false,
   });
 
   final String id;
@@ -20,12 +21,16 @@ class AuthUser {
 
   final String? avatarUrl;
 
+  /// Empleado del club: usa el panel del dueño, sin pagos ni equipo.
+  final bool esStaff;
+
   factory AuthUser.fromJson(Map<String, dynamic> json) => AuthUser(
     id: (json['id'] ?? json['_id'] ?? json['userId'] ?? '').toString(),
     name: (json['name'] as String?) ?? '',
     email: (json['email'] as String?) ?? '',
     role: (json['role'] as String?) ?? 'owner',
     avatarUrl: json['avatarUrl'] as String?,
+    esStaff: json['esStaff'] == true,
   );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +39,7 @@ class AuthUser {
     'email': email,
     'role': role,
     'avatarUrl': avatarUrl,
+    'esStaff': esStaff,
   };
 
   /// La inicial para el avatar del navbar cuando no hay foto.

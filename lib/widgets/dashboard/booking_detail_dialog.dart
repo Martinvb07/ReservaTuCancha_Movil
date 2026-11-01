@@ -81,11 +81,16 @@ class BookingDetailDialog extends StatelessWidget {
     required this.booking,
     required this.onCambiarEstado,
     required this.onCerrar,
+    this.onAnular,
   });
 
   final Booking booking;
   final void Function(String estado) onCambiarEstado;
   final VoidCallback onCerrar;
+
+  /// Solo para las reservas que anotó el club. `serie`: también las
+  /// siguientes del mismo turno fijo.
+  final void Function(bool serie)? onAnular;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +152,7 @@ class BookingDetailDialog extends StatelessWidget {
                           ],
                           const SizedBox(height: RtcSpace.s4),
                           _fila(
-                            'Te llega',
+                            booking.esManual ? 'Cobras en el club' : 'Te llega',
                             '\$${formatCop(booking.netoParaDueno)} COP',
                             fondo: Green.c50,
                             colorValor: Green.c700,
@@ -156,6 +161,14 @@ class BookingDetailDialog extends StatelessWidget {
                           if (puedeAccionar) ...[
                             const SizedBox(height: RtcSpace.s4),
                             _acciones(),
+                          ],
+                          if (booking.esManual && onAnular != null) ...[
+                            const SizedBox(height: RtcSpace.s4),
+                            _botonAnular('Anular', () => onAnular!(false)),
+                            if (booking.serieId != null) ...[
+                              const SizedBox(height: RtcSpace.s2),
+                              _botonAnular('Anular esta y las siguientes', () => onAnular!(true)),
+                            ],
                           ],
                           if (esperandoPago) ...[
                             const SizedBox(height: RtcSpace.s4),
@@ -194,6 +207,25 @@ class BookingDetailDialog extends StatelessWidget {
     );
   }
 
+  Widget _botonAnular(String texto, VoidCallback onTap) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: RtcRadius.brXl,
+          border: Border.all(color: const Color(0xFFFECACA)), // red-200
+        ),
+        child: Text(
+          texto,
+          style: RtcType.sm.copyWith(fontWeight: RtcType.bold, color: Red.c600),
+        ),
+      ),
+    );
+  }
+
   Widget _datos() {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
@@ -207,8 +239,8 @@ class BookingDetailDialog extends StatelessWidget {
             '${hora12(booking.startTime)} – ${hora12(booking.endTime)}',
           ),
           _dato(LucideIcons.user, booking.guestName),
-          _dato(LucideIcons.mail, booking.guestEmail),
-          _dato(LucideIcons.phone, booking.guestPhone),
+          if (booking.guestEmail.isNotEmpty) _dato(LucideIcons.mail, booking.guestEmail),
+          if (booking.guestPhone.isNotEmpty) _dato(LucideIcons.phone, booking.guestPhone),
           if (booking.notes != null) ...[
             const SizedBox(height: RtcSpace.s2),
             Container(height: 1, color: Gray.c100),

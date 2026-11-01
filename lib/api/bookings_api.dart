@@ -60,6 +60,8 @@ class BookingsApi {
     required String endTime,
     required int totalPrice,
     String? notes,
+    int semanas = 1,
+    String? pushToken,
   }) async {
     final data = await RtcApi.instance.post(
       '/bookings',
@@ -74,9 +76,39 @@ class BookingsApi {
         'totalPrice': totalPrice,
         if (notes != null && notes.trim().isNotEmpty) 'notes': notes.trim(),
         'paymentMethod': 'epayco',
+        // Turno fijo: la misma hora varias semanas, pagado en un solo cobro.
+        if (semanas > 1) 'semanas': semanas,
+        // Para avisar la confirmación y el recordatorio en este teléfono.
+        'pushToken': ?pushToken,
       },
     );
     return Booking.fromJson(data as Map<String, dynamic>);
+  }
+
+  /// `POST /bookings/lista-espera` — avisar si un turno ocupado se libera.
+  /// Devuelve cuántas personas están esperando ese turno.
+  Future<int> listaEspera({
+    required String courtId,
+    required String date,
+    required String startTime,
+    required String endTime,
+    required String email,
+    String? nombre,
+    String? pushToken,
+  }) async {
+    final data = await RtcApi.instance.post(
+      '/bookings/lista-espera',
+      body: {
+        'courtId': courtId,
+        'date': date,
+        'startTime': startTime,
+        'endTime': endTime,
+        'email': email.trim(),
+        if (nombre != null && nombre.trim().isNotEmpty) 'nombre': nombre.trim(),
+        'pushToken': ?pushToken,
+      },
+    );
+    return ((data as Map<String, dynamic>?)?['enEspera'] as num?)?.toInt() ?? 1;
   }
 
   /// `POST /bookings/:id/payment` — crea la sesion de ePayco y devuelve el

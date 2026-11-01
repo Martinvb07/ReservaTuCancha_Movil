@@ -12,6 +12,7 @@ import '../../theme/shadows.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../../widgets/dashboard/booking_detail_dialog.dart';
+import '../../widgets/dashboard/anotar_reserva.dart';
 import '../../widgets/dashboard/bookings_calendar.dart';
 import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_toast.dart';
@@ -106,6 +107,23 @@ class _ReservasScreenState extends State<ReservasScreen> {
     }
   }
 
+  Future<void> _anular(Booking b, bool serie) async {
+    try {
+      final n = await ownerApi.anularReserva(b.id, serie: serie);
+      if (!mounted) return;
+      rtcToast(context, n > 1 ? '$n fechas anuladas' : 'Reserva anulada');
+      setState(() => _detalle = null);
+      await _cargar(silencioso: true);
+    } on RtcApiException catch (e) {
+      if (!mounted) return;
+      rtcToast(context, e.message, tipo: RtcToastTipo.error);
+    }
+  }
+
+  Future<void> _anotar() async {
+    if (await abrirAnotarReserva(context)) await _cargar(silencioso: true);
+  }
+
   /// `filtered`: primero el estado, despues el texto contra nombre, email o
   /// codigo (sin el '#').
   List<Booking> get _filtradas {
@@ -174,6 +192,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
             booking: _detalle!,
             onCambiarEstado: (estado) => _cambiarEstado(_detalle!.id, estado),
             onCerrar: () => setState(() => _detalle = null),
+            onAnular: (serie) => _anular(_detalle!, serie),
           ),
       ],
     );
@@ -225,6 +244,16 @@ class _ReservasScreenState extends State<ReservasScreen> {
             ],
           ),
           style: RtcType.sm.copyWith(color: Gray.c500),
+        ),
+        const SizedBox(height: RtcSpace.s4),
+        FilledButton.icon(
+          style: FilledButton.styleFrom(
+            backgroundColor: Green.c600,
+            shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),
+          ),
+          onPressed: _anotar,
+          icon: const Icon(LucideIcons.plus, size: 18),
+          label: const Text('Anotar reserva'),
         ),
       ],
     );
@@ -480,6 +509,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
                             ),
                           ),
                         PildoraEstado(estado: b.status),
+                        if (b.esManual) const _Insignia('En el club', LucideIcons.store, Color(0xFFF3E8FF), Color(0xFF7E22CE)),
+                        if (b.serieId != null) const _Insignia('Fijo', LucideIcons.repeat, Color(0xFFE0F2FE), Color(0xFF0369A1)),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -488,7 +519,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
                       '${hora12(b.startTime)} – ${hora12(b.endTime)}',
                     ),
                     _linea(LucideIcons.user, b.guestName),
-                    _linea(LucideIcons.mail, b.guestEmail),
+                    if (b.guestEmail.isNotEmpty || b.guestPhone.isNotEmpty)
+                      _linea(LucideIcons.mail, b.guestEmail.isNotEmpty ? b.guestEmail : b.guestPhone),
                   ],
                 ),
               ),
@@ -765,6 +797,33 @@ class _ReservasScreenState extends State<ReservasScreen> {
           ),
           child: Icon(icono, size: 16, color: Gray.c700),
         ),
+      ),
+    );
+  }
+}
+
+
+/// Insignia pequeña junto al estado: "En el club", "Fijo".
+class _Insignia extends StatelessWidget {
+  const _Insignia(this.texto, this.icono, this.fondo, this.color);
+
+  final String texto;
+  final IconData icono;
+  final Color fondo;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(color: fondo, borderRadius: RtcRadius.brFull),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icono, size: 11, color: color),
+          const SizedBox(width: 3),
+          Text(texto, style: RtcType.xs.copyWith(fontSize: 10, fontWeight: RtcType.bold, color: color)),
+        ],
       ),
     );
   }
