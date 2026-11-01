@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../api/owner_api.dart';
 import '../../api/rtc_api.dart';
@@ -233,6 +236,53 @@ class _PagosScreenState extends State<PagosScreen> {
     );
   }
 
+  /// El CSV de la web (`downloadCSV`), con las reservas filtradas que se ven
+  /// en pantalla. En el telefono no se descarga: se comparte, y la persona
+  /// elige si lo manda por WhatsApp, correo o lo guarda en Drive.
+  Future<void> _exportar() async {
+    final filas = _filtradas;
+    if (filas.isEmpty) {
+      rtcToast(context, 'No hay pagos para exportar', tipo: RtcToastTipo.error);
+      return;
+    }
+    String celda(Object v) => '"${v.toString().replaceAll('"', '""')}"';
+    final lineas = [
+      [
+        'Código',
+        'Cliente',
+        'Email',
+        'Fecha',
+        'Hora',
+        'Estado',
+        'Método',
+        'Pagó el cliente COP',
+        'Te llega COP',
+      ].map(celda).join(','),
+      for (final b in filas)
+        [
+          b.bookingCode,
+          b.guestName,
+          b.guestEmail,
+          fechaIso(b.date),
+          '${b.startTime} – ${b.endTime}',
+          _estados[b.status]?.etiqueta ?? b.status,
+          _metodos[b.paymentMethod]?.etiqueta ?? b.paymentMethod,
+          b.totalPrice,
+          b.netoParaDueno,
+        ].map(celda).join(','),
+    ];
+    // Con BOM para que Excel abra bien las tildes.
+    final bytes = utf8.encode('\uFEFF${lineas.join('\n')}');
+    final nombre = 'pagos-${fechaIso(ahoraEnBogota())}.csv';
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile.fromData(bytes, mimeType: 'text/csv', name: nombre)],
+        fileNameOverrides: [nombre],
+        subject: 'Pagos ReservaTuCancha',
+      ),
+    );
+  }
+
   Widget _encabezado() {
     // `flex-col sm:flex-row`: en movil el boton va debajo.
     return Column(
@@ -246,22 +296,57 @@ class _PagosScreenState extends State<PagosScreen> {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          'Pagos',
-          style: RtcType.xl2.copyWith(
-            letterSpacing: -0.4,
-            fontWeight: FontWeight.w900,
-            color: Gray.c900,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Pagos',
+                style: RtcType.xl2.copyWith(
+                  letterSpacing: -0.4,
+                  fontWeight: FontWeight.w900,
+                  color: Gray.c900,
+                ),
+              ),
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _exportar,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: RtcSpace.s4,
+                  vertical: 10,
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: RtcRadius.brFull,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      LucideIcons.download,
+                      size: 16,
+                      color: Gray.c900,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Exportar',
+                      style: RtcType.sm.copyWith(
+                        fontWeight: RtcType.semibold,
+                        color: Gray.c900,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 4),
         Text(
           'Historial de cobros y tu cuenta de ePayco',
           style: RtcType.sm.copyWith(color: Gray.c500),
         ),
-        // `Exportar CSV` no se porta: el navegador arma el archivo con un
-        // `Blob` y un `<a download>`. En telefono eso pide escribir en disco y
-        // abrir un selector, que es otra funcion, no la misma.
       ],
     );
   }

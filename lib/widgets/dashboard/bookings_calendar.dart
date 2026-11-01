@@ -7,6 +7,7 @@ import '../../models/fechas.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
+import 'bloqueo_rapido.dart';
 import 'booking_detail_dialog.dart';
 
 /// Port de `Frontend/src/components/dashboard/BookingsCalendar.tsx`.
@@ -220,6 +221,8 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() => _diaElegido = dia),
+      // Mantener presionado: bloquear un horario ese dia sin salir de aca.
+      onLongPress: () => abrirBloqueoRapido(context, dia),
       child: Opacity(
         opacity: delMes ? 1 : 0.3,
         child: Container(
