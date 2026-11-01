@@ -9,6 +9,7 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'tile_attribution.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/map/CourtLocationMap.tsx`.
 ///
@@ -75,9 +76,7 @@ class CourtLocationMap extends StatelessWidget {
                     Text(
                       'Ubicación aproximada: el club aún no marcó el punto exacto.',
                       // text-amber-600
-                      style: RtcType.xs.copyWith(
-                        color: const Color(0xFFD97706),
-                      ),
+                      style: RtcType.xs.copyWith(color: Amber.c600),
                     ),
                   ],
                 ],
@@ -153,7 +152,7 @@ class CourtLocationMap extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 2),
-            child: Icon(LucideIcons.mapPin, size: 16, color: Gray.c400),
+            child: Icon(LucideIcons.mapPin, size: 16, color: Gray.c500),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -186,7 +185,7 @@ class CourtLocationMap extends StatelessWidget {
   }
 
   Widget _comoLlegar(double lat, double lng) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => launchUrl(
         Uri.parse(

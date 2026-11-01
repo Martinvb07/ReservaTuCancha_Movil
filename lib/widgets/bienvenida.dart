@@ -7,6 +7,7 @@ import '../data/ubicacion.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Las tres pantallas de la primera vez. La ubicacion se pide aca, en la
 /// ultima, despues de explicar para que sirve: un permiso pedido sin
@@ -74,7 +75,7 @@ class _BienvenidaState extends State<Bienvenida> {
                   onPressed: _terminar,
                   child: Text(
                     'Saltar',
-                    style: RtcType.sm.copyWith(color: Gray.c400),
+                    style: RtcType.sm.copyWith(color: Gray.c500),
                   ),
                 ),
               ),
@@ -113,7 +114,7 @@ class _BienvenidaState extends State<Bienvenida> {
                           texto,
                           textAlign: TextAlign.center,
                           style: RtcType.base.copyWith(
-                            color: Gray.c400,
+                            color: Gray.c500,
                             height: 1.45,
                           ),
                         ),
@@ -139,7 +140,7 @@ class _BienvenidaState extends State<Bienvenida> {
                 ],
               ),
               const SizedBox(height: 24),
-              GestureDetector(
+              RtcPressable(
                 onTap: ultima
                     ? () => _terminar(pedirUbicacion: true)
                     : () => _controller.nextPage(
@@ -167,7 +168,7 @@ class _BienvenidaState extends State<Bienvenida> {
                   onPressed: _terminar,
                   child: Text(
                     'Ahora no',
-                    style: RtcType.sm.copyWith(color: Gray.c400),
+                    style: RtcType.sm.copyWith(color: Gray.c500),
                   ),
                 ),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'motion/rtc_pressable.dart';
 
 /// El control de atribucion de Leaflet (`.leaflet-control-attribution`): una
 /// cajita blanca al 80% abajo a la derecha con "© OpenStreetMap".
@@ -20,7 +21,7 @@ class TileAttribution extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomRight,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () =>
             launchUrl(_copyright, mode: LaunchMode.externalApplication),

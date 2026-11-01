@@ -14,6 +14,7 @@ import '../../theme/shadows.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../tile_attribution.dart';
+import '../motion/rtc_pressable.dart';
 
 /// Direccion que el selector le devuelve al formulario.
 typedef DireccionResuelta = ({String address, String city, String department});
@@ -234,14 +235,14 @@ class _LocationPickerState extends State<LocationPicker> {
           decoration: InputDecoration(
             isDense: true,
             hintText: 'Busca la dirección en el mapa…',
-            hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+            hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(vertical: RtcSpace.s3),
             prefixIcon: const Icon(
               LucideIcons.search,
               size: 16,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 40),
             suffixIconConstraints: const BoxConstraints(minWidth: 0),
@@ -256,11 +257,11 @@ class _LocationPickerState extends State<LocationPicker> {
                       height: 16,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Gray.c400,
+                        color: Gray.c500,
                       ),
                     ),
                   if (_buscador.text.isNotEmpty && !_buscando)
-                    GestureDetector(
+                    RtcPressable(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
                         _buscador.clear();
@@ -271,10 +272,10 @@ class _LocationPickerState extends State<LocationPicker> {
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(6),
-                        child: Icon(LucideIcons.x, size: 14, color: Gray.c400),
+                        child: Icon(LucideIcons.x, size: 14, color: Gray.c500),
                       ),
                     ),
-                  GestureDetector(
+                  RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: _ubicando ? null : _miUbicacion,
                     child: Padding(
@@ -332,7 +333,7 @@ class _LocationPickerState extends State<LocationPicker> {
                 itemCount: _resultados.length,
                 itemBuilder: (context, i) {
                   final r = _resultados[i];
-                  return GestureDetector(
+                  return RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => _elegirResultado(r),
                     child: Padding(

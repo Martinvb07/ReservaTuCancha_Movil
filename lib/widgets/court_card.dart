@@ -161,7 +161,7 @@ class _CourtCardState extends State<CourtCard> {
                         const Icon(
                           LucideIcons.mapPin,
                           size: 14,
-                          color: Gray.c400,
+                          color: Gray.c500,
                         ),
                         const SizedBox(width: RtcSpace.s1),
                         Expanded(
@@ -204,7 +204,7 @@ class _CourtCardState extends State<CourtCard> {
                               '+$extra',
                               style: RtcType.xs.copyWith(
                                 fontWeight: RtcType.semibold,
-                                color: Gray.c400,
+                                color: Gray.c500,
                               ),
                             ),
                         ],

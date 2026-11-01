@@ -23,6 +23,7 @@ import '../widgets/star_rating.dart';
 import '../widgets/boton_favorito.dart';
 import '../widgets/galeria_fotos.dart';
 import '../widgets/acciones_reserva.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/canchas/[id]/page.tsx`, rama movil.
 ///
@@ -178,7 +179,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
               children: [
                 Expanded(child: _seccion('Lo que ofrece')),
                 if (court.amenities.length > 4)
-                  GestureDetector(
+                  RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => _verTodas(court.amenities),
                     child: Padding(
@@ -305,7 +306,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
           ),
           const SizedBox(width: RtcSpace.s4),
           Expanded(
-            child: GestureDetector(
+            child: RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: _irAReservar,
               child: Container(
@@ -341,7 +342,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         fit: StackFit.expand,
         children: [
           // Tocar la foto abre todas a pantalla completa.
-          GestureDetector(
+          RtcPressable(
             onTap: () =>
                 abrirGaleria(context, fotos: photos, sport: court.sport),
             child: Hero(
@@ -435,7 +436,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
     return Semantics(
       button: true,
       label: etiqueta,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: ClipOval(
@@ -559,7 +560,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         mainAxisSpacing: 10,
         childAspectRatio: 4 / 3,
       ),
-      itemBuilder: (context, i) => GestureDetector(
+      itemBuilder: (context, i) => RtcPressable(
         onTap: () => abrirGaleria(
           context,
           fotos: photos,
@@ -722,7 +723,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
             const SizedBox(height: 4),
             Text(
               '¡Sé el primero en reservar y opinar!',
-              style: RtcType.sm.copyWith(color: Gray.c400),
+              style: RtcType.sm.copyWith(color: Gray.c500),
             ),
           ],
         ),
@@ -809,7 +810,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
               ),
             ),
             const SizedBox(height: RtcSpace.s4),
-            GestureDetector(
+            RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: () => rtcNavigate('/empresas'),
               child: Container(

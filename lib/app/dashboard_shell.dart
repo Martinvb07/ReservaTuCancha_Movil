@@ -8,6 +8,7 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../widgets/dashboard_sidebar.dart';
 import 'routes.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/layout/DashboardShell.tsx`, rama movil.
 ///
@@ -98,7 +99,7 @@ class _DashboardShellState extends State<DashboardShell> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => setState(() => _abierta = !_abierta),
             child: Padding(

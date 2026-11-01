@@ -10,6 +10,7 @@ import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/motion/rtc_motion.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/auth/login/page.tsx`, rama movil.
 ///
@@ -118,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => rtcNavigate('/'),
             child: Row(
@@ -150,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           // El logo de la web es `lg:hidden`: justamente el caso del telefono.
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => rtcNavigate('/'),
             child: Row(
@@ -262,22 +263,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: '••••••••',
                       error: _passwordError,
                       obscure: !_showPass,
-                      trailing: GestureDetector(
+                      trailing: RtcPressable(
                         onTap: () => setState(() => _showPass = !_showPass),
                         child: Icon(
                           _showPass ? LucideIcons.eyeOff : LucideIcons.eye,
                           size: 16,
-                          color: Gray.c400,
+                          color: Gray.c500,
                         ),
                       ),
-                      action: GestureDetector(
+                      action: RtcPressable(
                         behavior: HitTestBehavior.opaque,
                         onTap: () => rtcNavigate('/soporte'),
                         child: Text(
                           '¿Olvidaste tu contraseña?',
                           style: RtcType.xs.copyWith(
                             fontWeight: RtcType.semibold,
-                            color: Gray.c400,
+                            color: Gray.c500,
                           ),
                         ),
                       ),
@@ -390,7 +391,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: InputDecoration(
               isDense: true,
               hintText: hint,
-              hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+              hintStyle: RtcType.sm.copyWith(color: Gray.c500),
               filled: true,
               // `border-red-300 bg-red-50/40` cuando el campo esta mal.
               fillColor: bad ? Red.c50.withValues(alpha: 0.40) : Colors.white,
@@ -439,7 +440,7 @@ class _LoginScreenState extends State<LoginScreen> {
   /// `bg-green-600 text-white font-black text-base py-4 rounded-2xl
   /// shadow-lg shadow-green-600/20`
   Widget _submitButton() {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: _submit,
       child: Opacity(
@@ -516,7 +517,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: Column(
         children: [
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => rtcNavigate('/solicitar-acceso'),
             child: Text.rich(
@@ -537,7 +538,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: RtcSpace.s2),
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => rtcNavigate('/empresas'),
             child: Text.rich(
@@ -554,7 +555,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               textAlign: TextAlign.center,
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ),
         ],

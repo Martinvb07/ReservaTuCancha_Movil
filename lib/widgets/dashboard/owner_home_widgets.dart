@@ -16,6 +16,7 @@ import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../motion/rtc_motion.dart';
 import '../rtc_toast.dart';
+import '../motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/dashboard/OwnerHomeWidgets.tsx`.
 ///
@@ -42,20 +43,10 @@ String _fmtCop(int n) {
 /// `STATUS_BORDER`, `STATUS_TIME` y `STATUS_LABEL` juntos.
 const _estados = <String, (Color, Color, Color, String)>{
   // borde, fondo, color de la hora, etiqueta
-  'confirmed': (Color(0xFFBBF7D0), Green.c50, Green.c700, 'Confirmada'),
-  'pending': (
-    Color(0xFFFDE68A),
-    Color(0xFFFFFBEB),
-    Color(0xFFB45309),
-    'Pendiente',
-  ),
+  'confirmed': (Green.c200, Green.c50, Green.c700, 'Confirmada'),
+  'pending': (Amber.c200, Amber.c50, Amber.c700, 'Pendiente'),
   'cancelled': (Red.c100, Red.c50, Red.c500, 'Cancelada'),
-  'completed': (
-    Color(0xFFBFDBFE),
-    Color(0xFFEFF6FF),
-    Color(0xFF1D4ED8),
-    'Completada',
-  ),
+  'completed': (Blue.c200, Blue.c50, Blue.c700, 'Completada'),
 };
 
 (Color, Color, Color, String) _estilo(String estado) =>
@@ -157,7 +148,9 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // La cuenta de pagos la conecta el dueño, no sus empleados.
-        if (club != null && !club.epaycoConectado && RtcSession.instance.user?.esStaff != true) ...[
+        if (club != null &&
+            !club.epaycoConectado &&
+            RtcSession.instance.user?.esStaff != true) ...[
           _avisoEpayco(),
           const SizedBox(height: RtcSpace.s5),
         ],
@@ -175,15 +168,15 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
   }
 
   Widget _avisoEpayco() {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => rtcIrAlPanel('/dashboard/propetario/pagos'),
       child: Container(
         padding: const EdgeInsets.all(RtcSpace.s4),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFFBEB), // amber-50
+          color: Amber.c50,
           borderRadius: RtcRadius.brXxl,
-          border: Border.all(color: const Color(0xFFFDE68A)), // amber-200
+          border: Border.all(color: Amber.c200), // amber-200
         ),
         child: Row(
           children: [
@@ -192,7 +185,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFF59E0B), // amber-500
+                color: Amber.c500,
                 borderRadius: RtcRadius.brXl,
               ),
               child: const Icon(
@@ -210,16 +203,14 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     'Conecta tu cuenta de ePayco',
                     style: RtcType.sm.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: const Color(0xFF78350F), // amber-900
+                      color: Amber.c900,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     'Sin ella tus canchas no pueden recibir reservas pagadas '
                     'en línea: no hay a dónde consignarte.',
-                    style: RtcType.xs.copyWith(
-                      color: const Color(0xFFB45309), // amber-700
-                    ),
+                    style: RtcType.xs.copyWith(color: Amber.c700),
                   ),
                 ],
               ),
@@ -271,7 +262,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                       'reservatucancha.site/club/$slug',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: RtcType.xs.copyWith(color: Gray.c400),
+                      style: RtcType.xs.copyWith(color: Gray.c500),
                     ),
                   ],
                 ),
@@ -281,7 +272,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
           const SizedBox(height: RtcSpace.s3),
           Row(
             children: [
-              GestureDetector(
+              RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   await Clipboard.setData(ClipboardData(text: url));
@@ -307,7 +298,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                 ),
               ),
               const SizedBox(width: RtcSpace.s2),
-              GestureDetector(
+              RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => launchUrl(
                   Uri.parse(url),
@@ -361,11 +352,11 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
             ),
           ],
         ),
-        style: RtcType.xs.copyWith(color: Gray.c400),
+        style: RtcType.xs.copyWith(color: Gray.c500),
       ),
       icono: LucideIcons.trendingUp,
-      iconoColor: const Color(0xFF4F46E5), // indigo-600
-      iconoFondo: const Color(0xFFEEF2FF), // indigo-50
+      iconoColor: Indigo.c600,
+      iconoFondo: Indigo.c50,
       hijo: Column(
         children: [
           if (_cargando)
@@ -393,7 +384,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
             children: [
               _leyenda(Green.c600, 'Hoy'),
               const SizedBox(width: RtcSpace.s4),
-              _leyenda(const Color(0xFFBBF7D0), 'Otros días'),
+              _leyenda(Green.c200, 'Otros días'),
             ],
           ),
         ],
@@ -411,7 +402,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
           decoration: BoxDecoration(color: color, borderRadius: RtcRadius.brSm),
         ),
         const SizedBox(width: 6),
-        Text(texto, style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400)),
+        Text(texto, style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500)),
       ],
     );
   }
@@ -425,11 +416,11 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
         _cargando
             ? '—'
             : '${pendientes.length} pendiente${pendientes.length != 1 ? 's' : ''}',
-        style: RtcType.xs.copyWith(color: Gray.c400),
+        style: RtcType.xs.copyWith(color: Gray.c500),
       ),
       icono: pendientes.isEmpty ? LucideIcons.circleCheck : LucideIcons.clock,
-      iconoColor: pendientes.isEmpty ? Gray.c400 : const Color(0xFFD97706),
-      iconoFondo: pendientes.isEmpty ? Gray.c100 : const Color(0xFFFEF3C7),
+      iconoColor: pendientes.isEmpty ? Gray.c400 : Amber.c600,
+      iconoFondo: pendientes.isEmpty ? Gray.c100 : Amber.c100,
       hijo: _cargando
           ? Column(
               children: [
@@ -464,7 +455,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     child: const Icon(
                       LucideIcons.circleCheck,
                       size: 24,
-                      color: Color(0xFF22C55E),
+                      color: Green.c500,
                     ),
                   ),
                   const SizedBox(height: RtcSpace.s3),
@@ -472,7 +463,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     'Todo al día',
                     style: RtcType.sm.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: Gray.c400,
+                      color: Gray.c500,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -491,7 +482,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     child: _filaPendiente(b),
                   ),
                 if (pendientes.length > 5)
-                  GestureDetector(
+                  RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => rtcIrAlPanel('/dashboard/propetario/reservas'),
                     child: Padding(
@@ -529,9 +520,9 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB), // amber-50
+        color: Amber.c50,
         borderRadius: RtcRadius.brXl,
-        border: Border.all(color: const Color(0xFFFEF3C7)), // amber-100
+        border: Border.all(color: Amber.c100), // amber-100
       ),
       child: Row(
         children: [
@@ -553,7 +544,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                   '${b.courtName.isEmpty ? '' : ' · ${b.courtName}'}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
+                  style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
                 ),
                 const SizedBox(height: 2),
                 Container(
@@ -562,9 +553,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: efectivo
-                        ? const Color(0xFFFDE68A) // amber-200
-                        : const Color(0xFFDBEAFE), // blue-100
+                    color: efectivo ? Amber.c200 : Blue.c100,
                     borderRadius: RtcRadius.brFull,
                   ),
                   child: Row(
@@ -575,19 +564,15 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                             ? LucideIcons.banknote
                             : LucideIcons.creditCard,
                         size: 10,
-                        color: efectivo
-                            ? const Color(0xFF92400E) // amber-800
-                            : const Color(0xFF1D4ED8), // blue-700
+                        color: efectivo ? Amber.c800 : Blue.c700,
                       ),
                       const SizedBox(width: 3),
                       Text(
                         efectivo ? 'Efectivo' : 'ePayco',
                         style: RtcType.xs.copyWith(
-                          fontSize: 9,
+                          fontSize: 11,
                           fontWeight: RtcType.bold,
-                          color: efectivo
-                              ? const Color(0xFF92400E)
-                              : const Color(0xFF1D4ED8),
+                          color: efectivo ? Amber.c800 : Blue.c700,
                         ),
                       ),
                     ],
@@ -602,9 +587,9 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
           Text(
             'Esperando pago',
             style: RtcType.xs.copyWith(
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: RtcType.bold,
-              color: const Color(0xFFB45309), // amber-700
+              color: Amber.c700,
             ),
           ),
         ],
@@ -623,11 +608,11 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
       titulo: 'Reservas de hoy',
       subtitulo: Text(
         fechaLargaCapitalizada(DateTime.now()),
-        style: RtcType.xs.copyWith(color: Gray.c400),
+        style: RtcType.xs.copyWith(color: Gray.c500),
       ),
       icono: LucideIcons.calendar,
-      iconoColor: hoy.isEmpty ? Gray.c400 : const Color(0xFF2563EB),
-      iconoFondo: hoy.isEmpty ? Gray.c100 : const Color(0xFFEFF6FF),
+      iconoColor: hoy.isEmpty ? Gray.c400 : Blue.c600,
+      iconoFondo: hoy.isEmpty ? Gray.c100 : Blue.c50,
       hijo: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -669,7 +654,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     'Sin reservas para hoy',
                     style: RtcType.sm.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: Gray.c400,
+                      color: Gray.c500,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -714,10 +699,10 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                         ),
                       ],
                     ),
-                    style: RtcType.xs.copyWith(color: Gray.c400),
+                    style: RtcType.xs.copyWith(color: Gray.c500),
                   ),
                 ),
-                GestureDetector(
+                RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => rtcIrAlPanel('/dashboard/propetario/reservas'),
                   child: Row(
@@ -792,7 +777,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
           const SizedBox(height: 10),
           Row(
             children: [
-              const Icon(LucideIcons.user, size: 12, color: Gray.c400),
+              const Icon(LucideIcons.user, size: 12, color: Gray.c500),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -813,7 +798,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
               b.courtName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400),
+              style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
             ),
           ],
           const SizedBox(height: RtcSpace.s2),
@@ -833,7 +818,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                 child: Text(
                   etiqueta,
                   style: RtcType.xs.copyWith(
-                    fontSize: 10,
+                    fontSize: 11,
                     fontWeight: FontWeight.w900,
                     color: Gray.c700,
                   ),
@@ -843,7 +828,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
               if (b.bookingCode.isNotEmpty)
                 Text(
                   '#${b.bookingCode}',
-                  style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c300),
+                  style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c300),
                 ),
             ],
           ),
@@ -942,7 +927,7 @@ class _BarrasPainter extends CustomPainter {
       for (var x = margenIzq; x < size.width; x += 6) {
         canvas.drawLine(Offset(x, y), Offset(x + 3, y), rejilla);
       }
-      _texto(canvas, '$i', Offset(0, y - 6), 10, const Color(0xFF9CA3AF));
+      _texto(canvas, '$i', Offset(0, y - 6), 10, Gray.c400);
     }
 
     final paso = ancho / datos.length;
@@ -964,7 +949,7 @@ class _BarrasPainter extends CustomPainter {
         );
         canvas.drawRRect(
           rect,
-          Paint()..color = d.hoy ? Green.c600 : const Color(0xFFBBF7D0),
+          Paint()..color = d.hoy ? Green.c600 : Green.c200,
         );
       }
       _texto(
@@ -972,7 +957,7 @@ class _BarrasPainter extends CustomPainter {
         d.dia,
         Offset(centro, alto + 4),
         11,
-        const Color(0xFF9CA3AF),
+        Gray.c400,
         centrado: true,
       );
     }

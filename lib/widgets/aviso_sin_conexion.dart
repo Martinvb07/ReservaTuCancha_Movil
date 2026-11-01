@@ -6,6 +6,7 @@ import '../app/routes.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Pildora arriba de la pantalla cuando no hay internet. "Reintentar" vuelve
 /// a abrir la pantalla actual, que repite sus peticiones.
@@ -59,7 +60,7 @@ class AvisoSinConexion extends StatelessWidget {
                           ),
                         ),
                       ),
-                      GestureDetector(
+                      RtcPressable(
                         onTap: _reintentar,
                         child: Container(
                           padding: const EdgeInsets.symmetric(

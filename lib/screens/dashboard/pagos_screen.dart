@@ -17,6 +17,7 @@ import '../../theme/typography.dart';
 import '../../widgets/dashboard/cuenta_epayco.dart';
 import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/pagos/page.tsx`.
 ///
@@ -32,46 +33,22 @@ class PagosScreen extends StatefulWidget {
 
 /// `STATUS_PILL` / `STATUS_LABEL`.
 const _estados = <String, ({Color fondo, Color texto, String etiqueta})>{
-  'confirmed': (
-    fondo: Color(0xFFDCFCE7),
-    texto: Color(0xFF15803D),
-    etiqueta: 'Confirmada',
-  ),
+  'confirmed': (fondo: Green.c100, texto: Green.c700, etiqueta: 'Confirmada'),
   'pending': (
     fondo: Color(0xFFFEF9C3),
     texto: Color(0xFFA16207),
     etiqueta: 'Pendiente',
   ),
-  'cancelled': (
-    fondo: Color(0xFFFEE2E2),
-    texto: Color(0xFFDC2626),
-    etiqueta: 'Cancelada',
-  ),
-  'completed': (
-    fondo: Color(0xFFDBEAFE),
-    texto: Color(0xFF1D4ED8),
-    etiqueta: 'Completada',
-  ),
+  'cancelled': (fondo: Red.c100, texto: Red.c600, etiqueta: 'Cancelada'),
+  'completed': (fondo: Blue.c100, texto: Blue.c700, etiqueta: 'Completada'),
 };
 
 /// `METHOD_LABEL`.
 const _metodos = <String, ({String etiqueta, Color texto, Color fondo})>{
-  'epayco': (
-    etiqueta: 'ePayco',
-    texto: Color(0xFF2563EB),
-    fondo: Color(0xFFEFF6FF),
-  ),
+  'epayco': (etiqueta: 'ePayco', texto: Blue.c600, fondo: Blue.c50),
   // Reservas de antes del cambio a ePayco.
-  'wompi': (
-    etiqueta: 'Wompi',
-    texto: Color(0xFF2563EB),
-    fondo: Color(0xFFEFF6FF),
-  ),
-  'efectivo': (
-    etiqueta: 'Efectivo',
-    texto: Color(0xFFD97706),
-    fondo: Color(0xFFFFFBEB),
-  ),
+  'wompi': (etiqueta: 'Wompi', texto: Blue.c600, fondo: Blue.c50),
+  'efectivo': (etiqueta: 'Efectivo', texto: Amber.c600, fondo: Amber.c50),
 };
 
 /// `PERIODS`.
@@ -310,7 +287,7 @@ class _PagosScreenState extends State<PagosScreen> {
                 ),
               ),
             ),
-            GestureDetector(
+            RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: _exportar,
               child: Container(
@@ -381,7 +358,7 @@ class _PagosScreenState extends State<PagosScreen> {
     IconData? icono,
     bool grande = false,
   }) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: AnimatedContainer(
@@ -483,7 +460,7 @@ class _PagosScreenState extends State<PagosScreen> {
                 child: Icon(
                   LucideIcons.slidersHorizontal,
                   size: 16,
-                  color: Gray.c400,
+                  color: Gray.c500,
                 ),
               ),
               Expanded(
@@ -510,7 +487,7 @@ class _PagosScreenState extends State<PagosScreen> {
             '$resultados resultado${resultados != 1 ? 's' : ''}',
             style: RtcType.xs.copyWith(
               fontWeight: RtcType.medium,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
           ),
         ],
@@ -532,16 +509,16 @@ class _PagosScreenState extends State<PagosScreen> {
         _fmtBig(ingresos),
         '$confirmadas reserva${confirmadas != 1 ? 's' : ''}',
         LucideIcons.dollarSign,
-        const Color(0xFF059669), // emerald-600
-        const Color(0xFFECFDF5), // emerald-50
+        Emerald.c600,
+        Emerald.c50,
       ),
       (
         'Esperando pago',
         _fmtBig(pendiente),
         '$pendientes pendiente${pendientes != 1 ? 's' : ''}',
         LucideIcons.clock,
-        const Color(0xFFD97706), // amber-600
-        const Color(0xFFFFFBEB), // amber-50
+        Amber.c600,
+        Amber.c50,
       ),
       (
         'Total reservas',
@@ -550,8 +527,8 @@ class _PagosScreenState extends State<PagosScreen> {
             ? 'Historial completo'
             : 'En este ${_periodo == 'hoy' ? 'día' : _periodo}',
         LucideIcons.calendarDays,
-        const Color(0xFF2563EB),
-        const Color(0xFFEFF6FF),
+        Blue.c600,
+        Blue.c50,
       ),
       (
         'Canceladas',
@@ -625,7 +602,7 @@ class _PagosScreenState extends State<PagosScreen> {
                 sub,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: RtcType.xs.copyWith(color: Gray.c400),
+                style: RtcType.xs.copyWith(color: Gray.c500),
               ),
             ],
           ),
@@ -652,12 +629,12 @@ class _PagosScreenState extends State<PagosScreen> {
           decoration: InputDecoration(
             isDense: true,
             hintText: 'Buscar por cliente, email o código (#XXXXXXXX)...',
-            hintStyle: RtcType.xs.copyWith(color: Gray.c400),
+            hintStyle: RtcType.xs.copyWith(color: Gray.c500),
             filled: true,
             fillColor: Colors.white,
             prefixIcon: const Padding(
               padding: EdgeInsets.only(left: RtcSpace.s3, right: RtcSpace.s2),
-              child: Icon(LucideIcons.search, size: 16, color: Gray.c400),
+              child: Icon(LucideIcons.search, size: 16, color: Gray.c500),
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 0),
             contentPadding: const EdgeInsets.symmetric(
@@ -703,7 +680,7 @@ class _PagosScreenState extends State<PagosScreen> {
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
         // `from-green-600 to-emerald-500`
-        gradient: const LinearGradient(colors: [Green.c600, Color(0xFF10B981)]),
+        gradient: const LinearGradient(colors: [Green.c600, Emerald.c500]),
         borderRadius: RtcRadius.brXxl,
       ),
       child: Row(
@@ -737,9 +714,7 @@ class _PagosScreenState extends State<PagosScreen> {
                 ),
                 Text(
                   '$confirmadas reservas confirmadas / completadas',
-                  style: RtcType.xs.copyWith(
-                    color: const Color(0xFFDCFCE7), // green-100
-                  ),
+                  style: RtcType.xs.copyWith(color: Green.c100),
                 ),
               ],
             ),
@@ -835,7 +810,7 @@ class _PagosScreenState extends State<PagosScreen> {
             'SIN RESULTADOS',
             style: RtcType.sm.copyWith(
               fontWeight: FontWeight.w900,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
           ),
           const SizedBox(height: 4),
@@ -846,7 +821,7 @@ class _PagosScreenState extends State<PagosScreen> {
                   ? 'Intenta con otros filtros'
                   : 'No hay pagos en este período',
               textAlign: TextAlign.center,
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ),
         ],
@@ -880,9 +855,9 @@ class _PagosScreenState extends State<PagosScreen> {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: confirmada
-                    ? const Color(0xFFDCFCE7) // green-100
+                    ? Green.c100
                     : pendiente
-                    ? const Color(0xFFFEF3C7) // amber-100
+                    ? Amber.c100
                     : Red.c100,
                 borderRadius: RtcRadius.brXl,
               ),
@@ -896,7 +871,7 @@ class _PagosScreenState extends State<PagosScreen> {
                 color: confirmada
                     ? Green.c600
                     : pendiente
-                    ? const Color(0xFFD97706)
+                    ? Amber.c600
                     : Red.c500,
               ),
             ),
@@ -918,7 +893,7 @@ class _PagosScreenState extends State<PagosScreen> {
                     b.guestEmail,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400),
+                    style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
                   ),
                   if (b.courtName.isNotEmpty)
                     Text(
@@ -926,7 +901,7 @@ class _PagosScreenState extends State<PagosScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: RtcType.xs.copyWith(
-                        fontSize: 10,
+                        fontSize: 11,
                         color: Gray.c300,
                       ),
                     ),
@@ -936,7 +911,7 @@ class _PagosScreenState extends State<PagosScreen> {
                   Text(
                     '${diaMesCorto(b.date)} ${b.date.year} · '
                     '${hora12(b.startTime)} – ${hora12(b.endTime)}',
-                    style: RtcType.xs.copyWith(color: Gray.c400),
+                    style: RtcType.xs.copyWith(color: Gray.c500),
                   ),
                   const SizedBox(height: 6),
                   Wrap(
@@ -957,7 +932,7 @@ class _PagosScreenState extends State<PagosScreen> {
                         Text(
                           '#${b.bookingCode}',
                           style: RtcType.xs.copyWith(
-                            fontSize: 10,
+                            fontSize: 11,
                             color: Gray.c300,
                           ),
                         ),
@@ -979,7 +954,7 @@ class _PagosScreenState extends State<PagosScreen> {
                 ),
                 Text(
                   'COP',
-                  style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
+                  style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
                 ),
               ],
             ),
@@ -1003,7 +978,7 @@ class _PagosScreenState extends State<PagosScreen> {
           Text(
             texto,
             style: RtcType.xs.copyWith(
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: RtcType.bold,
               color: color,
             ),
@@ -1025,14 +1000,14 @@ class _PagosScreenState extends State<PagosScreen> {
         botones.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text('…', style: RtcType.sm.copyWith(color: Gray.c400)),
+            child: Text('…', style: RtcType.sm.copyWith(color: Gray.c500)),
           ),
         );
         continue;
       }
       final actual = p == _pagina;
       botones.add(
-        GestureDetector(
+        RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: () => setState(() => _pagina = p),
           child: Container(
@@ -1110,7 +1085,7 @@ class _PagosScreenState extends State<PagosScreen> {
   }
 
   Widget _flecha(IconData icono, VoidCallback? onTap) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Opacity(

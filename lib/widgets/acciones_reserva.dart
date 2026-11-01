@@ -15,6 +15,7 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../models/fechas.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Lo que va dentro del QR. El prefijo lo distingue de cualquier otro QR que
 /// el dueño escanee por error; el escaner del panel lo lee con
@@ -191,7 +192,7 @@ class AccionesReserva extends StatelessWidget {
         Semantics(
           button: true,
           label: 'Invitar al partido',
-          child: GestureDetector(
+          child: RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => invitarAlPartido(booking),
             child: Container(
@@ -230,7 +231,7 @@ class _Accion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = oscuro ? Colors.white : Gray.c900;
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(

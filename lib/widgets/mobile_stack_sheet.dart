@@ -9,6 +9,7 @@ import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'motion/rtc_motion.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/ui/MobileStackSheet.tsx`.
 ///
@@ -94,7 +95,7 @@ class _MobileStackSheetState extends State<_MobileStackSheet> {
         children: [
           // Fondo: la pagina detras, difuminada y atenuada. Tocarlo cierra.
           Positioned.fill(
-            child: GestureDetector(
+            child: RtcPressable(
               onTap: () => Navigator.of(context).pop(),
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
@@ -143,7 +144,7 @@ class _MobileStackSheetState extends State<_MobileStackSheet> {
           Positioned(
             top: MediaQuery.paddingOf(context).top + 20,
             right: 20,
-            child: GestureDetector(
+            child: RtcPressable(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
                 width: 44,
@@ -186,7 +187,7 @@ class StackSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!open) {
       // px-5 py-4, rounded-2xl, shadow '0 2px 16px rgba(20,14,30,.10)'
-      return GestureDetector(
+      return RtcPressable(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -244,7 +245,7 @@ class StackSectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
             child: Padding(
@@ -314,7 +315,7 @@ class SheetPrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
@@ -359,7 +360,7 @@ class SheetClearButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Text(
         'Limpiar',

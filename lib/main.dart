@@ -66,8 +66,12 @@ class RtcApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: RtcTheme.light,
       darkTheme: RtcTheme.dark,
-      // La web usa next-themes, que por defecto sigue al sistema.
-      themeMode: ThemeMode.system,
+      /* Siempre claro, como la web. Las pantallas están pintadas para fondo
+         claro (blancos y grises a mano), así que siguiendo al sistema un
+         teléfono en modo oscuro mezclaba hojas y diálogos oscuros con textos
+         oscuros que no se leían. El tema oscuro queda listo para cuando las
+         pantallas usen los colores del tema. */
+      themeMode: ThemeMode.light,
       initialRoute: '/',
       routes: rtcRoutes,
       // `/canchas/<id>` no entra en el mapa: lleva parametro.

@@ -25,6 +25,7 @@ import '../../widgets/rtc_borde_punteado.dart';
 import '../../widgets/rtc_select_field.dart';
 import '../../widgets/rtc_toast.dart';
 import '../../widgets/step_wizard.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/canchas/nueva/page.tsx`.
 ///
@@ -428,7 +429,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
   Widget _volver() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => rtcIrAlPanel('/dashboard/propetario/canchas'),
         child: Row(
@@ -554,10 +555,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
         decoration: BoxDecoration(
           color: activa ? Green.c50 : Colors.white,
           borderRadius: RtcRadius.brXxl,
-          border: Border.all(
-            color: activa ? const Color(0xFF22C55E) : Gray.c200,
-            width: 2,
-          ),
+          border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
         child: Stack(
           children: [
@@ -583,7 +581,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                   child: Text(
                     d.desc,
                     textAlign: TextAlign.center,
-                    style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
+                    style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
                   ),
                 ),
               ],
@@ -648,10 +646,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
         decoration: BoxDecoration(
           color: activa ? Green.c50 : Colors.white,
           borderRadius: RtcRadius.brXl,
-          border: Border.all(
-            color: activa ? const Color(0xFF22C55E) : Gray.c200,
-            width: 2,
-          ),
+          border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
         child: Column(
           children: [
@@ -674,7 +669,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
             Text(
               m.desc,
               textAlign: TextAlign.center,
-              style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
+              style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
             ),
             const SizedBox(height: 4),
             Row(
@@ -684,7 +679,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                 const SizedBox(width: 2),
                 Text(
                   m.jugadores,
-                  style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c500),
+                  style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
                 ),
               ],
             ),
@@ -779,7 +774,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                   child: Text(
                     '\$',
                     style: RtcType.sm.copyWith(
-                      color: Gray.c400,
+                      color: Gray.c500,
                       fontWeight: RtcType.bold,
                     ),
                   ),
@@ -868,7 +863,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                   'JPG o PNG · hasta $_maxFotos fotos · la primera será la '
                   'principal',
                   textAlign: TextAlign.center,
-                  style: RtcType.xs.copyWith(color: Gray.c400),
+                  style: RtcType.xs.copyWith(color: Gray.c500),
                 ),
               ],
             ),
@@ -907,7 +902,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
               const TextSpan(text: ' en el panel.'),
             ],
           ),
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
         if (!cloudinaryConfigurado) ...[
           const SizedBox(height: RtcSpace.s2),
@@ -950,7 +945,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                   child: Text(
                     'Principal',
                     style: RtcType.xs.copyWith(
-                      fontSize: 10,
+                      fontSize: 11,
                       fontWeight: RtcType.bold,
                       color: Colors.white,
                     ),
@@ -962,7 +957,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
             Positioned(
               top: 6,
               right: 6,
-              child: GestureDetector(
+              child: RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => _quitarFoto(i),
                 child: Container(
@@ -1019,7 +1014,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
               const TextSpan(text: '.'),
             ],
           ),
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -1044,10 +1039,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
         decoration: BoxDecoration(
           color: activa ? Green.c50 : Colors.white,
           borderRadius: RtcRadius.brFull,
-          border: Border.all(
-            color: activa ? const Color(0xFF22C55E) : Gray.c200,
-            width: 2,
-          ),
+          border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -1169,7 +1161,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                       width: 84,
                       child: Text(
                         etiqueta,
-                        style: RtcType.xs.copyWith(color: Gray.c400),
+                        style: RtcType.xs.copyWith(color: Gray.c500),
                       ),
                     ),
                     const SizedBox(width: RtcSpace.s3),
@@ -1185,7 +1177,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                       ),
                     ),
                     const SizedBox(width: RtcSpace.s3),
-                    GestureDetector(
+                    RtcPressable(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => _irA(paso),
                       child: const Padding(
@@ -1354,7 +1346,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
             TextSpan(
               text: ' $opcional',
               style: RtcType.xs.copyWith(
-                color: Gray.c400,
+                color: Gray.c500,
                 fontWeight: RtcType.medium,
                 letterSpacing: 0,
               ),
@@ -1378,7 +1370,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
     return InputDecoration(
       isDense: true,
       hintText: hint,
-      hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+      hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(

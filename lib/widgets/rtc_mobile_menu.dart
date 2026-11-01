@@ -7,6 +7,7 @@ import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// `USER_LINKS` del Navbar.
 const userLinks = <(String, String)>[
@@ -209,8 +210,8 @@ class _RtcMobileMenuState extends State<RtcMobileMenu>
                   label: 'Dashboard',
                   icon: LucideIcons.layoutDashboard,
                   onTap: () => widget.onDashboard?.call(),
-                  background: const Color(0xFFEFF6FF), // blue-50
-                  foreground: const Color(0xFF2563EB), // blue-600
+                  background: Blue.c50,
+                  foreground: Blue.c600,
                 ),
                 const SizedBox(height: RtcSpace.s2),
                 _MenuButton(
@@ -269,7 +270,7 @@ class _MenuLinkState extends State<_MenuLink>
 
   @override
   Widget build(BuildContext context) {
-    final row = GestureDetector(
+    final row = RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       child: Container(
@@ -328,7 +329,7 @@ class _MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
@@ -466,7 +467,7 @@ class _ModeToggleState extends State<_ModeToggle>
                     for (var i = 0; i < _options.length; i++)
                       SizedBox(
                         width: widths[i],
-                        child: GestureDetector(
+                        child: RtcPressable(
                           behavior: HitTestBehavior.opaque,
                           onTap: () => widget.onChanged(_options[i].$2),
                           child: Center(

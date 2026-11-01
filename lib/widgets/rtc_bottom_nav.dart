@@ -9,6 +9,7 @@ import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Alto que ocupa la barra, para que las pantallas dejen ese espacio libre
 /// al final de su scroll y el contenido no quede tapado.
@@ -142,7 +143,7 @@ class _Lupa extends StatelessWidget {
             child: Semantics(
               button: true,
               label: 'Buscar canchas',
-              child: GestureDetector(
+              child: RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: visible
                     ? () {
@@ -192,7 +193,7 @@ class _Item extends StatelessWidget {
       button: true,
       selected: activa,
       label: tab.etiqueta,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () {
           HapticFeedback.selectionClick();

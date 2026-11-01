@@ -164,9 +164,7 @@ class _FaqEntryState extends State<_FaqEntry> with TickerProviderStateMixin {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: RtcRadius.brXxl,
-            border: Border.all(
-              color: widget.open ? const Color(0xFF86EFAC) : Gray.c100,
-            ),
+            border: Border.all(color: widget.open ? Green.c300 : Gray.c100),
             // shadow-[0_14px_40px_-20px_rgba(22,163,74,0.55)]
             boxShadow: widget.open
                 ? [
@@ -204,9 +202,7 @@ class _FaqEntryState extends State<_FaqEntry> with TickerProviderStateMixin {
                     child: Icon(
                       LucideIcons.chevronRight,
                       size: 20,
-                      color: widget.open
-                          ? const Color(0xFF22C55E) // green-500
-                          : Gray.c400,
+                      color: widget.open ? Green.c500 : Gray.c400,
                     ),
                   ),
                 ],

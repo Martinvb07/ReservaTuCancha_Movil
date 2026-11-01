@@ -8,6 +8,7 @@ import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../motion/rtc_motion.dart';
+import '../motion/rtc_pressable.dart';
 
 /// `STATUS_STYLES` + `STATUS_LABELS` del panel de reservas.
 ///
@@ -16,19 +17,9 @@ import '../motion/rtc_motion.dart';
 /// la pildora del filtro si lleva su texto: sin el sale un boton vacio.
 const kEstadosReserva = <String, (Color, Color, Color, String)>{
   // fondo de la pildora, texto de la pildora, punto, etiqueta
-  'confirmed': (Color(0xFFDCFCE7), Green.c700, Color(0xFF22C55E), 'Confirmada'),
-  'reagendada': (
-    Color(0xFFFEF3C7),
-    Color(0xFFB45309),
-    Color(0xFFFBBF24),
-    'Reagendada',
-  ),
-  'completed': (
-    Color(0xFFDBEAFE),
-    Color(0xFF1D4ED8),
-    Color(0xFF60A5FA),
-    'Completada',
-  ),
+  'confirmed': (Green.c100, Green.c700, Green.c500, 'Confirmada'),
+  'reagendada': (Amber.c100, Amber.c700, Amber.c400, 'Reagendada'),
+  'completed': (Blue.c100, Blue.c700, Blue.c400, 'Completada'),
   'pending': (Gray.c100, Gray.c500, Gray.c400, 'Sin pagar'),
 };
 
@@ -167,7 +158,10 @@ class BookingDetailDialog extends StatelessWidget {
                             _botonAnular('Anular', () => onAnular!(false)),
                             if (booking.serieId != null) ...[
                               const SizedBox(height: RtcSpace.s2),
-                              _botonAnular('Anular esta y las siguientes', () => onAnular!(true)),
+                              _botonAnular(
+                                'Anular esta y las siguientes',
+                                () => onAnular!(true),
+                              ),
                             ],
                           ],
                           if (esperandoPago) ...[
@@ -175,7 +169,7 @@ class BookingDetailDialog extends StatelessWidget {
                             _avisoEsperandoPago(),
                           ],
                           const SizedBox(height: RtcSpace.s4),
-                          GestureDetector(
+                          RtcPressable(
                             behavior: HitTestBehavior.opaque,
                             onTap: onCerrar,
                             child: Container(
@@ -208,7 +202,7 @@ class BookingDetailDialog extends StatelessWidget {
   }
 
   Widget _botonAnular(String texto, VoidCallback onTap) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
@@ -216,7 +210,7 @@ class BookingDetailDialog extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: RtcRadius.brXl,
-          border: Border.all(color: const Color(0xFFFECACA)), // red-200
+          border: Border.all(color: Red.c200), // red-200
         ),
         child: Text(
           texto,
@@ -239,8 +233,10 @@ class BookingDetailDialog extends StatelessWidget {
             '${hora12(booking.startTime)} – ${hora12(booking.endTime)}',
           ),
           _dato(LucideIcons.user, booking.guestName),
-          if (booking.guestEmail.isNotEmpty) _dato(LucideIcons.mail, booking.guestEmail),
-          if (booking.guestPhone.isNotEmpty) _dato(LucideIcons.phone, booking.guestPhone),
+          if (booking.guestEmail.isNotEmpty)
+            _dato(LucideIcons.mail, booking.guestEmail),
+          if (booking.guestPhone.isNotEmpty)
+            _dato(LucideIcons.phone, booking.guestPhone),
           if (booking.notes != null) ...[
             const SizedBox(height: RtcSpace.s2),
             Container(height: 1, color: Gray.c100),
@@ -316,7 +312,7 @@ class BookingDetailDialog extends StatelessWidget {
     return _boton(
       LucideIcons.trophy,
       'Completar',
-      fondo: const Color(0xFF2563EB), // blue-600
+      fondo: Blue.c600,
       color: Colors.white,
       onTap: () => onCambiarEstado('completed'),
     );
@@ -328,17 +324,11 @@ class BookingDetailDialog extends StatelessWidget {
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s3,
       ),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB), // amber-50
-        borderRadius: RtcRadius.brXl,
-      ),
+      decoration: BoxDecoration(color: Amber.c50, borderRadius: RtcRadius.brXl),
       child: Text(
         'Esperando el pago. Se confirma sola cuando ePayco lo apruebe; si no '
         'se paga, el horario se libera.',
-        style: RtcType.xs.copyWith(
-          color: const Color(0xFFB45309), // amber-700
-          height: 1.35,
-        ),
+        style: RtcType.xs.copyWith(color: Amber.c700, height: 1.35),
       ),
     );
   }
@@ -351,7 +341,7 @@ class BookingDetailDialog extends StatelessWidget {
     Color? borde,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(

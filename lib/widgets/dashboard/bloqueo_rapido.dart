@@ -10,6 +10,7 @@ import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../rtc_toast.dart';
+import '../motion/rtc_pressable.dart';
 
 /// Bloquear un horario sin salir del calendario: se abre manteniendo
 /// presionado un dia. Es el mismo bloqueo de la pantalla de Bloqueos.
@@ -105,7 +106,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
           final h = _horas[i];
           final off = despuesDe != null && h.compareTo(despuesDe) <= 0;
           final activo = h == elegido;
-          return GestureDetector(
+          return RtcPressable(
             onTap: off ? null : () => onTap(h),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -237,7 +238,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
               const SizedBox(height: 16),
               Opacity(
                 opacity: _valido ? 1 : 0.4,
-                child: GestureDetector(
+                child: RtcPressable(
                   onTap: _valido ? _guardar : null,
                   child: Container(
                     height: 52,

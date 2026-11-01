@@ -13,6 +13,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'motion/rtc_motion.dart';
 import 'rtc_navbar.dart' show kNavHeight;
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/layout/SupportChat.tsx`.
 ///
@@ -327,7 +328,7 @@ class _SupportChatState extends State<SupportChat> {
                     const SizedBox(width: 6),
                     Text(
                       tree.meta.subtitulo,
-                      style: RtcType.xs.copyWith(color: Gray.c400),
+                      style: RtcType.xs.copyWith(color: Gray.c500),
                     ),
                   ],
                 ),
@@ -342,12 +343,12 @@ class _SupportChatState extends State<SupportChat> {
   }
 
   Widget _accion(IconData icon, double size, VoidCallback onTap) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(RtcSpace.s2),
-        child: Icon(icon, size: size, color: Gray.c400),
+        child: Icon(icon, size: size, color: Gray.c500),
       ),
     );
   }
@@ -462,7 +463,7 @@ class _SupportChatState extends State<SupportChat> {
       constraints: BoxConstraints(
         maxWidth: MediaQuery.sizeOf(context).width * 0.90 - RtcSpace.s4 * 4,
       ),
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => _elegirOpcion(opcion),
         child: Container(
@@ -494,7 +495,7 @@ class _SupportChatState extends State<SupportChat> {
                     ? LucideIcons.externalLink
                     : LucideIcons.chevronRight,
                 size: 14,
-                color: Gray.c400,
+                color: Gray.c500,
               ),
             ],
           ),
@@ -527,7 +528,7 @@ class _SupportChatState extends State<SupportChat> {
         color: Colors.white,
         border: Border(top: BorderSide(color: Gray.c100)),
       ),
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => _abrirExterno(_whatsapp),
         child: Text.rich(
@@ -545,7 +546,7 @@ class _SupportChatState extends State<SupportChat> {
             ],
           ),
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400),
+          style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
         ),
       ),
     );

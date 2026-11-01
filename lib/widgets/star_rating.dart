@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
+import 'motion/rtc_pressable.dart';
 
 /// La estrella de lucide, dibujada a mano porque la web la pinta con
 /// `fill-*` y el icono del paquete es solo contorno.
@@ -71,7 +72,7 @@ class StarRating extends StatelessWidget {
         for (var i = 0; i < 5; i++)
           Padding(
             padding: EdgeInsets.only(right: i == 4 ? 0 : 2), // gap-0.5
-            child: GestureDetector(
+            child: RtcPressable(
               onTap: onChanged == null ? null : () => onChanged!(i + 1),
               child: value > i
                   ? RtcStar(

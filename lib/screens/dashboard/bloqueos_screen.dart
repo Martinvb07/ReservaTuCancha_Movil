@@ -17,6 +17,7 @@ import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_borde_punteado.dart';
 import '../../widgets/rtc_select_field.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/bloqueos/page.tsx`.
 ///
@@ -350,7 +351,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
                 ),
               ),
               const SizedBox(width: RtcSpace.s3),
-              GestureDetector(
+              RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => setState(() => _formAbierto = false),
                 child: const Padding(
@@ -462,7 +463,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
 
   Widget _campoFecha() {
     // `<input type="date">`: en telefono eso es el calendario del sistema.
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: _elegirFecha,
       child: Container(
@@ -486,7 +487,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
               ),
             ),
             const SizedBox(width: RtcSpace.s2),
-            const Icon(LucideIcons.calendarDays, size: 16, color: Gray.c400),
+            const Icon(LucideIcons.calendarDays, size: 16, color: Gray.c500),
           ],
         ),
       ),
@@ -665,7 +666,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
             child: Text(
               'Los horarios bloqueados no estarán disponibles para reservas',
               textAlign: TextAlign.center,
-              style: RtcType.sm.copyWith(color: Gray.c400),
+              style: RtcType.sm.copyWith(color: Gray.c500),
             ),
           ),
         ],
@@ -749,7 +750,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
             ),
             if (!pasado) ...[
               const SizedBox(width: RtcSpace.s4),
-              GestureDetector(
+              RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => _eliminar(b.id),
                 child: Padding(
@@ -760,13 +761,13 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
                           height: 16,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Gray.c400,
+                            color: Gray.c500,
                           ),
                         )
                       : const Icon(
                           LucideIcons.trash2,
                           size: 16,
-                          color: Gray.c400,
+                          color: Gray.c500,
                         ),
                 ),
               ),
@@ -799,7 +800,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
             TextSpan(
               text: ' $opcional',
               style: RtcType.xs.copyWith(
-                color: Gray.c400,
+                color: Gray.c500,
                 fontWeight: RtcType.medium,
                 letterSpacing: 0,
               ),
@@ -822,7 +823,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
     return InputDecoration(
       isDense: true,
       hintText: hint,
-      hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+      hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(

@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../theme/motion.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de los avisos de `sonner` (`<Toaster richColors position="top-right" />`
 /// en `app/layout.tsx`), que es lo que usa todo el panel para confirmar
@@ -179,7 +180,7 @@ class _AvisoState extends State<_Aviso> with SingleTickerProviderStateMixin {
         },
         child: Material(
           color: Colors.transparent,
-          child: GestureDetector(
+          child: RtcPressable(
             onTap: _salir,
             child: Container(
               padding: const EdgeInsets.symmetric(

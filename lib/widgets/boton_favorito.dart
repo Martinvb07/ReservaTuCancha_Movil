@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../data/preferencias.dart';
 import '../theme/shadows.dart';
+import 'motion/rtc_pressable.dart';
 
 /// El corazon de lucide, con relleno cuando la cancha es favorita. La fuente
 /// de iconos de lucide solo trae contornos, asi que se dibuja el mismo trazo
@@ -57,7 +58,7 @@ class _BotonFavoritoState extends State<BotonFavorito>
           button: true,
           toggled: activa,
           label: activa ? 'Quitar de favoritas' : 'Agregar a favoritas',
-          child: GestureDetector(
+          child: RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: _alternar,
             child: Container(

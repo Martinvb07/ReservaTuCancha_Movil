@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
+import '../motion/rtc_pressable.dart';
 
 const _pasos = [
   'Crea tu cuenta en ePayco con el RUT y la Cámara de Comercio del club.',
@@ -93,7 +94,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
                   'Mientras no conectes tu cuenta, tus canchas no pueden recibir '
                   'reservas pagadas en línea.',
                   textAlign: TextAlign.center,
-                  style: RtcType.xs.copyWith(color: Gray.c400, height: 1.35),
+                  style: RtcType.xs.copyWith(color: Gray.c500, height: 1.35),
                 ),
               ],
             ],
@@ -112,7 +113,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
       decoration: BoxDecoration(
         color: Green.c50,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: const Color(0xFFBBF7D0)), // green-200
+        border: Border.all(color: Green.c200), // green-200
       ),
       child: Row(
         children: [
@@ -126,7 +127,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
                   'Tu cuenta está conectada',
                   style: RtcType.sm.copyWith(
                     fontWeight: RtcType.bold,
-                    color: const Color(0xFF14532D), // green-900
+                    color: Green.c900,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -224,7 +225,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
   Widget _abrirCuenta() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => launchUrl(
           Uri.parse('https://epayco.com/registro'),
@@ -272,7 +273,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
           decoration: InputDecoration(
             isDense: true,
             hintText: 'Ej: 1234567',
-            hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+            hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(
@@ -301,7 +302,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
   Widget _boton() {
     return Opacity(
       opacity: _puedeGuardar || widget.guardando ? 1 : 0.4,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: _puedeGuardar ? () => widget.onGuardar(_valor) : null,
         child: Container(

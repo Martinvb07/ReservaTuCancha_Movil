@@ -102,7 +102,9 @@ class RtcSession extends ChangeNotifier {
   /// solucion es un `/api/backend-logout` en el Next, gemelo del de login.
   Future<void> logout() async {
     // Antes de borrar el token: la baja del teléfono va firmada.
-    if (_accessToken != null) await PushNotificaciones.instance.olvidarDelClub();
+    if (_accessToken != null) {
+      await PushNotificaciones.instance.olvidarDelClub();
+    }
     _accessToken = null;
     _refreshToken = null;
     _user = null;

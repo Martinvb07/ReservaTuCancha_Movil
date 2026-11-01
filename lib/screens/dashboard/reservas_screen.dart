@@ -16,6 +16,7 @@ import '../../widgets/dashboard/anotar_reserva.dart';
 import '../../widgets/dashboard/bookings_calendar.dart';
 import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/reservas/page.tsx`.
 ///
@@ -282,7 +283,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
 
   Widget _opcionVista(String id, String etiqueta, IconData icono) {
     final activa = _vista == id;
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() => _vista = id),
       child: Container(
@@ -327,11 +328,11 @@ class _ReservasScreenState extends State<ReservasScreen> {
           decoration: InputDecoration(
             isDense: true,
             hintText: 'Buscar por cliente, email o código (#XXXXXXXX)...',
-            hintStyle: RtcType.xs.copyWith(color: Gray.c400),
+            hintStyle: RtcType.xs.copyWith(color: Gray.c500),
             prefixIcon: const Icon(
               LucideIcons.search,
               size: 16,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 40),
             filled: true,
@@ -361,7 +362,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
           runSpacing: RtcSpace.s2,
           children: [
             for (final (valor, etiqueta) in _filtrosEstado)
-              GestureDetector(
+              RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => setState(() {
                   _estado = valor;
@@ -430,7 +431,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
             'SIN RESERVAS',
             style: RtcType.xs.copyWith(
               fontWeight: FontWeight.w900,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
           ),
           const SizedBox(height: 4),
@@ -439,7 +440,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
                 ? 'Intenta con otros filtros'
                 : 'Las reservas de tus canchas aparecerán aquí',
             textAlign: TextAlign.center,
-            style: RtcType.xs.copyWith(color: Gray.c400),
+            style: RtcType.xs.copyWith(color: Gray.c500),
           ),
         ],
       ),
@@ -475,7 +476,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
                     Text(
                       mesesCortos[b.date.month - 1].toUpperCase(),
                       style: RtcType.xs.copyWith(
-                        fontSize: 9,
+                        fontSize: 11,
                         fontWeight: RtcType.bold,
                         color: Green.c600,
                       ),
@@ -509,8 +510,20 @@ class _ReservasScreenState extends State<ReservasScreen> {
                             ),
                           ),
                         PildoraEstado(estado: b.status),
-                        if (b.esManual) const _Insignia('En el club', LucideIcons.store, Color(0xFFF3E8FF), Color(0xFF7E22CE)),
-                        if (b.serieId != null) const _Insignia('Fijo', LucideIcons.repeat, Color(0xFFE0F2FE), Color(0xFF0369A1)),
+                        if (b.esManual)
+                          const _Insignia(
+                            'En el club',
+                            LucideIcons.store,
+                            Purple.c100,
+                            Purple.c700,
+                          ),
+                        if (b.serieId != null)
+                          const _Insignia(
+                            'Fijo',
+                            LucideIcons.repeat,
+                            Sky.c100,
+                            Sky.c700,
+                          ),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -520,7 +533,10 @@ class _ReservasScreenState extends State<ReservasScreen> {
                     ),
                     _linea(LucideIcons.user, b.guestName),
                     if (b.guestEmail.isNotEmpty || b.guestPhone.isNotEmpty)
-                      _linea(LucideIcons.mail, b.guestEmail.isNotEmpty ? b.guestEmail : b.guestPhone),
+                      _linea(
+                        LucideIcons.mail,
+                        b.guestEmail.isNotEmpty ? b.guestEmail : b.guestPhone,
+                      ),
                   ],
                 ),
               ),
@@ -540,7 +556,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
                         '#${b.bookingCode}',
                         style: RtcType.xs.copyWith(
                           fontWeight: RtcType.bold,
-                          color: Gray.c400,
+                          color: Gray.c500,
                         ),
                       ),
               ),
@@ -551,8 +567,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
                     TextSpan(
                       text: ' COP',
                       style: RtcType.xs.copyWith(
-                        fontSize: 10,
-                        color: Gray.c400,
+                        fontSize: 11,
+                        color: Gray.c500,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
@@ -596,16 +612,16 @@ class _ReservasScreenState extends State<ReservasScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB), // amber-50
+        color: Amber.c50,
         borderRadius: RtcRadius.brFull,
-        border: Border.all(color: const Color(0xFFFDE68A)), // amber-200
+        border: Border.all(color: Amber.c200), // amber-200
       ),
       child: Text(
         'Esperando pago',
         style: RtcType.xs.copyWith(
-          fontSize: 10,
+          fontSize: 11,
           fontWeight: RtcType.bold,
-          color: const Color(0xFFD97706), // amber-600
+          color: Amber.c600,
         ),
       ),
     );
@@ -624,9 +640,9 @@ class _ReservasScreenState extends State<ReservasScreen> {
       if (b.status == 'confirmed')
         _redondo(
           LucideIcons.trophy,
-          const Color(0xFFBFDBFE), // blue-200
-          const Color(0xFFEFF6FF), // blue-50
-          const Color(0xFF3B82F6), // blue-500
+          Blue.c200,
+          Blue.c50,
+          Blue.c500,
           () => _cambiarEstado(b.id, 'completed'),
         ),
     ];
@@ -650,7 +666,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
     Color color,
     VoidCallback onTap,
   ) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
@@ -719,7 +735,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 2),
                     child: Text(
                       '...',
-                      style: RtcType.sm.copyWith(color: Gray.c400),
+                      style: RtcType.sm.copyWith(color: Gray.c500),
                     ),
                   )
                 else
@@ -757,7 +773,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
 
   Widget _numero(int p) {
     final activa = p == _pagina;
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() => _pagina = p),
       child: Container(
@@ -783,7 +799,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
   Widget _flecha(IconData icono, bool activa, VoidCallback onTap) {
     return Opacity(
       opacity: activa ? 1 : 0.5,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: activa ? onTap : null,
         child: Container(
@@ -801,7 +817,6 @@ class _ReservasScreenState extends State<ReservasScreen> {
     );
   }
 }
-
 
 /// Insignia pequeña junto al estado: "En el club", "Fijo".
 class _Insignia extends StatelessWidget {
@@ -822,7 +837,14 @@ class _Insignia extends StatelessWidget {
         children: [
           Icon(icono, size: 11, color: color),
           const SizedBox(width: 3),
-          Text(texto, style: RtcType.xs.copyWith(fontSize: 10, fontWeight: RtcType.bold, color: color)),
+          Text(
+            texto,
+            style: RtcType.xs.copyWith(
+              fontSize: 11,
+              fontWeight: RtcType.bold,
+              color: color,
+            ),
+          ),
         ],
       ),
     );

@@ -10,6 +10,7 @@ import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../../widgets/dashboard/owner_home_widgets.dart';
 import '../../widgets/motion/rtc_motion.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de la rama de PROPIETARIO de
 /// `Frontend/src/app/dashboard/page.tsx` (la de admin no se porta).
@@ -115,9 +116,9 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s6),
       decoration: const BoxDecoration(
-        color: Color(0xFFFFFBEB), // amber-50
+        color: Amber.c50,
         border: Border(
-          left: BorderSide(color: Color(0xFFF59E0B), width: 4), // amber-500
+          left: BorderSide(color: Amber.c500, width: 4), // amber-500
         ),
         borderRadius: BorderRadius.all(Radius.circular(RtcRadius.md)),
       ),
@@ -126,11 +127,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 2),
-            child: Icon(
-              LucideIcons.triangleAlert,
-              size: 24,
-              color: Color(0xFFD97706), // amber-600
-            ),
+            child: Icon(LucideIcons.triangleAlert, size: 24, color: Amber.c600),
           ),
           const SizedBox(width: RtcSpace.s4),
           Expanded(
@@ -141,15 +138,13 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                   'No se pudieron cargar los datos',
                   style: RtcType.base.copyWith(
                     fontWeight: RtcType.bold,
-                    color: const Color(0xFF78350F), // amber-900
+                    color: Amber.c900,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Revisa tu conexión y desliza hacia abajo para reintentar.',
-                  style: RtcType.sm.copyWith(
-                    color: const Color(0xFFB45309), // amber-700
-                  ),
+                  style: RtcType.sm.copyWith(color: Amber.c700),
                 ),
               ],
             ),
@@ -166,8 +161,8 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
         'Reservas totales',
         '${s?.totalBookings ?? 0}',
         LucideIcons.calendarDays,
-        const Color(0xFF2563EB), // blue-600
-        const Color(0xFFEFF6FF), // blue-50
+        Blue.c600,
+        Blue.c50,
       ),
       (
         'Confirmadas',
@@ -181,15 +176,15 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
         'Ingresos',
         '\$${((s?.totalRevenue ?? 0) / 1000).round()}K',
         LucideIcons.dollarSign,
-        const Color(0xFF059669), // emerald-600
-        const Color(0xFFECFDF5), // emerald-50
+        Emerald.c600,
+        Emerald.c50,
       ),
       (
         'Mis canchas',
         '${s?.totalCourts ?? 0}',
         LucideIcons.building2,
-        const Color(0xFF9333EA), // purple-600
-        const Color(0xFFFAF5FF), // purple-50
+        Purple.c600,
+        Purple.c50,
       ),
     ];
 
@@ -282,14 +277,14 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
         '/dashboard/propetario/reservas',
         'Ver reservas',
         LucideIcons.calendarDays,
-        const Color(0xFF2563EB), // blue-600
+        Blue.c600,
         Colors.white,
       ),
       (
         '/dashboard/propetario/analytics',
         'Analytics',
         LucideIcons.chartColumn,
-        const Color(0xFF9333EA), // purple-600
+        Purple.c600,
         Colors.white,
       ),
       // Mis canchas sigue en el menu lateral; aca va lo que se usa en la
@@ -316,7 +311,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
       ),
       itemBuilder: (context, i) {
         final (href, label, icono, fondo, texto) = accesos[i];
-        return GestureDetector(
+        return RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: () => rtcIrAlPanel(href),
           child: Container(

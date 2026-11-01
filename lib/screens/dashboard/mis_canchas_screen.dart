@@ -13,6 +13,7 @@ import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_select_field.dart';
 import '../../widgets/star_rating.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/canchas/page.tsx`.
 ///
@@ -197,7 +198,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
   }
 
   Widget _botonNueva() {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => rtcIrAlPanel('/dashboard/propetario/canchas/nueva'),
       child: Container(
@@ -237,11 +238,11 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
           decoration: InputDecoration(
             isDense: true,
             hintText: 'Buscar por nombre o ciudad...',
-            hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+            hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             prefixIcon: const Icon(
               LucideIcons.search,
               size: 16,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 40),
             filled: true,
@@ -312,7 +313,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
             'NO HAY CANCHAS',
             style: RtcType.sm.copyWith(
               fontWeight: FontWeight.w900,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
           ),
           const SizedBox(height: 4),
@@ -320,7 +321,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
             _busqueda.isNotEmpty || _deporte.isNotEmpty
                 ? 'Intenta con otros filtros'
                 : 'Agrega tu primera cancha',
-            style: RtcType.sm.copyWith(color: Gray.c400),
+            style: RtcType.sm.copyWith(color: Gray.c500),
           ),
         ],
       ),
@@ -447,15 +448,9 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
       ),
       _redondo(
         LucideIcons.power,
-        court.isActive
-            ? const Color(0xFFFDE68A) // amber-200
-            : const Color(0xFFBBF7D0), // green-200
-        court.isActive
-            ? const Color(0xFFFFFBEB) // amber-50
-            : Green.c50,
-        court.isActive
-            ? const Color(0xFFF59E0B) // amber-500
-            : const Color(0xFF22C55E), // green-500
+        court.isActive ? Amber.c200 : Green.c200,
+        court.isActive ? Amber.c50 : Green.c50,
+        court.isActive ? Amber.c500 : Green.c500,
         _cambiando == court.id ? null : () => _alternar(court),
       ),
       _redondo(
@@ -485,7 +480,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
       child: Text(
         texto,
         style: RtcType.xs.copyWith(
-          fontSize: 10,
+          fontSize: 11,
           color: color,
           fontWeight: RtcType.bold,
         ),
@@ -502,7 +497,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
   ) {
     return Opacity(
       opacity: onTap == null ? 0.5 : 1,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
@@ -585,7 +580,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: GestureDetector(
+                              child: RtcPressable(
                                 behavior: HitTestBehavior.opaque,
                                 onTap: _eliminando
                                     ? null
@@ -611,7 +606,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
                             ),
                             const SizedBox(width: RtcSpace.s2),
                             Expanded(
-                              child: GestureDetector(
+                              child: RtcPressable(
                                 behavior: HitTestBehavior.opaque,
                                 onTap: _eliminando ? null : _eliminar,
                                 child: Opacity(

@@ -6,6 +6,7 @@ import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../../widgets/faq_accordion.dart';
 import '../../widgets/rtc_select_field.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/soporte/page.tsx`.
 ///
@@ -103,7 +104,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           'Chat en vivo',
           'Respuesta en menos de 5 min',
           'Iniciar chat',
-          const Color(0xFFF0FDF4), // green-50
+          Green.c50,
           Green.c600,
           // Los tres botones de la web son `<button>` sin `onClick`: no
           // llevan a ningun lado todavia. Se portan igual de inertes.
@@ -115,8 +116,8 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           'Email',
           'Respondemos en 24 horas',
           'Enviar email',
-          const Color(0xFFEFF6FF), // blue-50
-          const Color(0xFF2563EB), // blue-600
+          Blue.c50,
+          Blue.c600,
         ),
         const SizedBox(height: RtcSpace.s4),
         _canal(
@@ -124,8 +125,8 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           'WhatsApp',
           'Atención personalizada',
           'Abrir chat',
-          const Color(0xFFECFDF5), // emerald-50
-          const Color(0xFF059669), // emerald-600
+          Emerald.c50,
+          Emerald.c600,
         ),
         const SizedBox(height: RtcSpace.s8),
         _horario(),
@@ -239,13 +240,13 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
                   vertical: 2,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFDCFCE7), // green-100
+                  color: Green.c100,
                   borderRadius: RtcRadius.brFull,
                 ),
                 child: Text(
                   insignia,
                   style: RtcType.xs.copyWith(
-                    fontSize: 10,
+                    fontSize: 11,
                     fontWeight: RtcType.bold,
                     color: Green.c700,
                   ),
@@ -344,7 +345,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           height: 64,
           alignment: Alignment.center,
           decoration: const BoxDecoration(
-            color: Color(0xFFDCFCE7), // green-100
+            color: Green.c100,
             shape: BoxShape.circle,
           ),
           child: const Icon(
@@ -368,7 +369,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           style: RtcType.sm.copyWith(color: Gray.c500),
         ),
         const SizedBox(height: RtcSpace.s3),
-        GestureDetector(
+        RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: () => setState(() {
             _enviado = false;
@@ -421,7 +422,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
 
   Widget _boton() {
     final listo = _asunto != null && _mensaje.text.trim().isNotEmpty;
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: listo ? _enviar : null,
       child: Opacity(
@@ -494,7 +495,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
     return InputDecoration(
       isDense: true,
       hintText: hint,
-      hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+      hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(

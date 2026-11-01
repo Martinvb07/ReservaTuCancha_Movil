@@ -12,6 +12,7 @@ import '../models/fechas.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/reservas/reprogramar/page.tsx`.
 ///
@@ -261,7 +262,7 @@ class _ReprogramarScreenState extends State<ReprogramarScreen> {
               itemBuilder: (_, i) {
                 final d = _dias[i];
                 final activo = _dia != null && fechaIso(_dia!) == fechaIso(d);
-                return GestureDetector(
+                return RtcPressable(
                   onTap: () => _elegirDia(d),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -332,7 +333,7 @@ class _ReprogramarScreenState extends State<ReprogramarScreen> {
         const SizedBox(height: RtcSpace.s5),
         Opacity(
           opacity: _hora == null ? 0.4 : 1,
-          child: GestureDetector(
+          child: RtcPressable(
             onTap: _hora == null ? null : _guardar,
             child: Container(
               height: 54,
@@ -419,7 +420,7 @@ class _Turno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: deshabilitado ? null : onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
@@ -476,7 +477,7 @@ class _Mensaje extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: ok ? Green.c50 : const Color(0xFFFEF2F2),
+                color: ok ? Green.c50 : Red.c50,
                 shape: BoxShape.circle,
               ),
               child: Icon(icono, size: 34, color: ok ? Green.c600 : Red.c500),
@@ -497,7 +498,7 @@ class _Mensaje extends StatelessWidget {
               style: RtcType.sm.copyWith(color: Gray.c500),
             ),
             const SizedBox(height: 20),
-            GestureDetector(
+            RtcPressable(
               onTap: () => rtcNavigate('/mis-reservas'),
               child: Text(
                 'Ver mis reservas',

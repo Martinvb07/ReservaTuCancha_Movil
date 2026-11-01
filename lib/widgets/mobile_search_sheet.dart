@@ -15,6 +15,7 @@ import 'floating_actions.dart';
 import 'icons/city_glyph.dart';
 import 'icons/sport_icon.dart';
 import 'motion/rtc_motion.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `MobileSearchSheet.tsx` + la rama `mobile` de `HeroSearch.tsx`.
 ///
@@ -281,7 +282,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
         children: [
           // bg-black/45 backdrop-blur-lg — tocarlo cierra
           Positioned.fill(
-            child: GestureDetector(
+            child: RtcPressable(
               onTap: () => Navigator.of(context).pop(),
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
@@ -379,7 +380,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
+                  RtcPressable(
                     onTap: _clearAll,
                     child: Text(
                       'Limpiar',
@@ -447,7 +448,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
           Positioned(
             top: MediaQuery.paddingOf(context).top + 20,
             right: 20,
-            child: GestureDetector(
+            child: RtcPressable(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
                 width: 44,
@@ -484,7 +485,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
   }) {
     if (_panel != key) {
       // px-5 py-4, rounded-2xl, shadow '0 2px 16px rgba(20,14,30,.10)'
-      return GestureDetector(
+      return RtcPressable(
         onTap: () => _toggle(key),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -659,7 +660,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         RtcItemIn(
-          child: GestureDetector(
+          child: RtcPressable(
             onTap: () => setState(() {
               _time = '';
               _panel = null;
@@ -726,7 +727,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
               padding: const EdgeInsets.only(left: RtcSpace.s1, bottom: 6),
               child: Row(
                 children: [
-                  Icon(groups[gi].$2, size: 14, color: Gray.c400),
+                  Icon(groups[gi].$2, size: 14, color: Gray.c500),
                   const SizedBox(width: 6),
                   Text(
                     groups[gi].$1.toUpperCase(),
@@ -734,7 +735,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
                       fontSize: 11,
                       fontWeight: FontWeight.w800, // font-extrabold
                       letterSpacing: 0.88, // tracking-[.08em] sobre 11px
-                      color: Gray.c400,
+                      color: Gray.c500,
                     ),
                   ),
                 ],
@@ -793,7 +794,7 @@ class _OptionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
@@ -872,7 +873,7 @@ class _HourChip extends StatelessWidget {
     // .rtc-pick — el chip late al elegirse
     return RtcPick(
       trigger: active,
-      child: GestureDetector(
+      child: RtcPressable(
         onTap: onTap,
         child: Container(
           width: width,
@@ -984,7 +985,7 @@ class _MiniCalendarState extends State<_MiniCalendar> {
                       style: RtcType.xs.copyWith(
                         fontSize: 11,
                         fontWeight: RtcType.bold,
-                        color: Gray.c400,
+                        color: Gray.c500,
                       ),
                     ),
                   ),
@@ -1013,7 +1014,7 @@ class _MiniCalendarState extends State<_MiniCalendar> {
           if (widget.value != null)
             Padding(
               padding: const EdgeInsets.only(top: RtcSpace.s2),
-              child: GestureDetector(
+              child: RtcPressable(
                 onTap: widget.onClear,
                 child: Text(
                   'Limpiar fecha',
@@ -1061,13 +1062,13 @@ class _DayCell extends StatelessWidget {
       background = Green.c600;
       foreground = Colors.white;
     } else if (isToday) {
-      border = Border.all(color: const Color(0xFF22C55E), width: 2);
+      border = Border.all(color: Green.c500, width: 2);
       foreground = Green.c700;
     }
 
     return RtcPick(
       trigger: isSelected,
-      child: GestureDetector(
+      child: RtcPressable(
         onTap: past ? null : () => onPick(date),
         child: Container(
           alignment: Alignment.center,
@@ -1098,7 +1099,7 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(6),

@@ -28,6 +28,13 @@ abstract final class Green {
   static const c400 = Color(0xFF4ADE80); // el anillo de foco de los inputs
   static const c600 = Color(0xFF16A34A); // marca
   static const c700 = Color(0xFF15803D);
+  static const c100 = Color(0xFFDCFCE7);
+  static const c200 = Color(0xFFBBF7D0);
+  static const c300 = Color(0xFF86EFAC);
+  static const c500 = Color(0xFF22C55E);
+  static const c800 = Color(0xFF166534);
+  static const c900 = Color(0xFF14532D);
+  static const c950 = Color(0xFF052E16);
 }
 
 abstract final class Gray {
@@ -86,4 +93,52 @@ abstract final class Slate {
   static const c600 = Color(0xFF475569);
   static const c700 = Color(0xFF334155);
   static const c900 = Color(0xFF0F172A);
+}
+
+abstract final class Emerald {
+  static const c50 = Color(0xFFECFDF5);
+  static const c400 = Color(0xFF34D399);
+  static const c500 = Color(0xFF10B981);
+  static const c600 = Color(0xFF059669);
+}
+
+abstract final class Amber {
+  static const c50 = Color(0xFFFFFBEB);
+  static const c100 = Color(0xFFFEF3C7);
+  static const c200 = Color(0xFFFDE68A);
+  static const c400 = Color(0xFFFBBF24);
+  static const c500 = Color(0xFFF59E0B);
+  static const c600 = Color(0xFFD97706);
+  static const c700 = Color(0xFFB45309);
+  static const c800 = Color(0xFF92400E);
+  static const c900 = Color(0xFF78350F);
+}
+
+abstract final class Blue {
+  static const c50 = Color(0xFFEFF6FF);
+  static const c100 = Color(0xFFDBEAFE);
+  static const c200 = Color(0xFFBFDBFE);
+  static const c400 = Color(0xFF60A5FA);
+  static const c500 = Color(0xFF3B82F6);
+  static const c600 = Color(0xFF2563EB);
+  static const c700 = Color(0xFF1D4ED8);
+  static const c800 = Color(0xFF1E40AF);
+}
+
+abstract final class Purple {
+  static const c50 = Color(0xFFFAF5FF);
+  static const c100 = Color(0xFFF3E8FF);
+  static const c600 = Color(0xFF9333EA);
+  static const c700 = Color(0xFF7E22CE);
+}
+
+abstract final class Indigo {
+  static const c50 = Color(0xFFEEF2FF);
+  static const c500 = Color(0xFF6366F1);
+  static const c600 = Color(0xFF4F46E5);
+}
+
+abstract final class Sky {
+  static const c100 = Color(0xFFE0F2FE);
+  static const c700 = Color(0xFF0369A1);
 }

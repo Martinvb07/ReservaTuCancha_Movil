@@ -92,7 +92,7 @@ class AvailabilityEditor extends StatelessWidget {
         if (value.isEmpty)
           Text(
             'Selecciona al menos un día de atención.',
-            style: RtcType.sm.copyWith(color: Gray.c400),
+            style: RtcType.sm.copyWith(color: Gray.c500),
           )
         else ...[
           Container(height: 1, color: Gray.c200),
@@ -117,10 +117,7 @@ class AvailabilityEditor extends StatelessWidget {
         decoration: BoxDecoration(
           color: activo ? Green.c50 : Colors.white,
           borderRadius: RtcRadius.brXl,
-          border: Border.all(
-            color: activo ? const Color(0xFF22C55E) : Gray.c200,
-            width: 2,
-          ),
+          border: Border.all(color: activo ? Green.c500 : Gray.c200, width: 2),
         ),
         child: Text(
           dias[i],
@@ -204,7 +201,7 @@ class AvailabilityEditor extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(etiqueta, style: RtcType.xs.copyWith(color: Gray.c400)),
+        Text(etiqueta, style: RtcType.xs.copyWith(color: Gray.c500)),
         const SizedBox(height: 4),
         hijo,
       ],

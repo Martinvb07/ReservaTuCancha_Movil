@@ -9,6 +9,7 @@ import '../theme/typography.dart';
 import '../widgets/faq_accordion.dart';
 import '../widgets/pill_tabs.dart';
 import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/soporte/page.tsx`.
 ///
@@ -61,8 +62,8 @@ const _canales =
         cta: 'Abrir asistente',
         badge: 'Más rápido',
         href: null,
-        background: Color(0xFFF0FDF4), // green-50
-        iconColor: Color(0xFF16A34A), // green-600
+        background: Green.c50,
+        iconColor: Green.c600,
       ),
       (
         icon: LucideIcons.phone,
@@ -72,8 +73,8 @@ const _canales =
         cta: 'Abrir WhatsApp',
         badge: null,
         href: _whatsapp,
-        background: Color(0xFFECFDF5), // emerald-50
-        iconColor: Color(0xFF059669), // emerald-600
+        background: Emerald.c50,
+        iconColor: Emerald.c600,
       ),
       (
         icon: LucideIcons.mail,
@@ -82,8 +83,8 @@ const _canales =
         cta: 'Enviar correo',
         badge: null,
         href: 'mailto:$_email',
-        background: Color(0xFFEFF6FF), // blue-50
-        iconColor: Color(0xFF2563EB), // blue-600
+        background: Blue.c50,
+        iconColor: Blue.c600,
       ),
     ];
 
@@ -323,7 +324,7 @@ class _SoporteScreenState extends State<SoporteScreen> {
             'Escríbenos por WhatsApp con tu código de reserva y lo revisamos '
             'contigo.',
             textAlign: TextAlign.center,
-            style: RtcType.sm.copyWith(color: Gray.c400),
+            style: RtcType.sm.copyWith(color: Gray.c500),
           ),
           const SizedBox(height: RtcSpace.s6 + 4), // mt-7
           _CtaButton(
@@ -389,7 +390,7 @@ class _CanalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         width: double.infinity,
@@ -422,13 +423,13 @@ class _CanalCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFDCFCE7), // green-100
+                      color: Green.c100,
                       borderRadius: RtcRadius.brFull,
                     ),
                     child: Text(
                       badge!,
                       style: RtcType.xs.copyWith(
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: RtcType.bold,
                         color: Green.c700,
                       ),
@@ -489,7 +490,7 @@ class _CtaButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         width: double.infinity,

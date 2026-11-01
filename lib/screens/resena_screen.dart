@@ -9,6 +9,7 @@ import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/star_rating.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 const _etiquetas = {
   1: 'Muy mala',
@@ -103,7 +104,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
                 style: RtcType.sm.copyWith(color: Gray.c500),
               ),
               const SizedBox(height: 20),
-              GestureDetector(
+              RtcPressable(
                 onTap: () => rtcNavigate('/'),
                 child: Text(
                   'Volver al inicio',
@@ -152,7 +153,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var i = 1; i <= 5; i++)
-                    GestureDetector(
+                    RtcPressable(
                       onTap: () {
                         HapticFeedback.selectionClick();
                         setState(() => _estrellas = i);
@@ -186,7 +187,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
                 style: RtcType.sm.copyWith(color: Gray.c900),
                 decoration: InputDecoration(
                   hintText: 'Cuéntanos cómo estuvo (opcional)',
-                  hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+                  hintStyle: RtcType.sm.copyWith(color: Gray.c500),
                   filled: true,
                   fillColor: Fondo.app,
                   border: OutlineInputBorder(
@@ -205,7 +206,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
         const SizedBox(height: RtcSpace.s5),
         Opacity(
           opacity: _estrellas == 0 ? 0.4 : 1,
-          child: GestureDetector(
+          child: RtcPressable(
             onTap: _estrellas == 0 ? null : _enviar,
             child: Container(
               height: 54,

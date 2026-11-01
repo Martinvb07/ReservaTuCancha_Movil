@@ -14,6 +14,7 @@ import '../../widgets/icons/sport_icon.dart';
 import '../../widgets/remote_image.dart';
 import '../../widgets/rtc_borde_punteado.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/fotos/page.tsx`.
 ///
@@ -156,10 +157,7 @@ class _FotosScreenState extends State<FotosScreen> {
           child: SizedBox(
             width: 32,
             height: 32,
-            child: CircularProgressIndicator(
-              strokeWidth: 3,
-              color: Color(0xFF22C55E), // green-500
-            ),
+            child: CircularProgressIndicator(strokeWidth: 3, color: Green.c500),
           ),
         ),
       );
@@ -203,7 +201,7 @@ class _FotosScreenState extends State<FotosScreen> {
         Text(
           'Primero crea una cancha desde el panel',
           textAlign: TextAlign.center,
-          style: RtcType.sm.copyWith(color: Gray.c400),
+          style: RtcType.sm.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -270,7 +268,7 @@ class _FotosScreenState extends State<FotosScreen> {
 
   Widget _pastillaCancha(Court c) {
     final activa = c.id == _canchaId;
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() => _canchaId = c.id),
       child: AnimatedContainer(
@@ -283,10 +281,7 @@ class _FotosScreenState extends State<FotosScreen> {
         decoration: BoxDecoration(
           color: activa ? Green.c50 : Colors.white,
           borderRadius: RtcRadius.brXl,
-          border: Border.all(
-            color: activa ? const Color(0xFF22C55E) : Gray.c200,
-            width: 2,
-          ),
+          border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -307,7 +302,7 @@ class _FotosScreenState extends State<FotosScreen> {
             const SizedBox(width: 4),
             Text(
               '(${c.photos.length})',
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
             if (activa) ...[
               const SizedBox(width: RtcSpace.s2),
@@ -320,7 +315,7 @@ class _FotosScreenState extends State<FotosScreen> {
   }
 
   Widget _zonaSubida() {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: _subiendo ? null : _subir,
       child: Container(
@@ -345,10 +340,10 @@ class _FotosScreenState extends State<FotosScreen> {
                       height: 28,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        color: Color(0xFF22C55E), // green-500
+                        color: Green.c500,
                       ),
                     )
-                  : const Icon(LucideIcons.upload, size: 28, color: Gray.c400),
+                  : const Icon(LucideIcons.upload, size: 28, color: Gray.c500),
             ),
             const SizedBox(height: RtcSpace.s3),
             Text(
@@ -368,7 +363,7 @@ class _FotosScreenState extends State<FotosScreen> {
               child: Text(
                 'JPG, PNG · Máx 5MB por foto · Recomendado: 1280×720px',
                 textAlign: TextAlign.center,
-                style: RtcType.xs.copyWith(color: Gray.c400),
+                style: RtcType.xs.copyWith(color: Gray.c500),
               ),
             ),
             if (!_subiendo) ...[
@@ -440,7 +435,7 @@ class _FotosScreenState extends State<FotosScreen> {
               const SizedBox(width: RtcSpace.s3),
               Text(
                 '⭐ = principal',
-                style: RtcType.xs.copyWith(color: Gray.c400),
+                style: RtcType.xs.copyWith(color: Gray.c500),
               ),
             ],
           ],
@@ -466,7 +461,7 @@ class _FotosScreenState extends State<FotosScreen> {
             'SIN FOTOS AÚN',
             style: RtcType.sm.copyWith(
               fontWeight: FontWeight.w900,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
           ),
           const SizedBox(height: 4),
@@ -475,7 +470,7 @@ class _FotosScreenState extends State<FotosScreen> {
             child: Text(
               'Sube fotos de tu cancha para atraer más clientes',
               textAlign: TextAlign.center,
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ),
         ],
@@ -544,7 +539,7 @@ class _FotosScreenState extends State<FotosScreen> {
                           Text(
                             'Principal',
                             style: RtcType.xs.copyWith(
-                              fontSize: 10,
+                              fontSize: 11,
                               fontWeight: FontWeight.w900,
                               color: Gray.c900,
                             ),
@@ -595,7 +590,7 @@ class _FotosScreenState extends State<FotosScreen> {
     VoidCallback? onTap,
     bool ocupada,
   ) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Opacity(
@@ -611,10 +606,10 @@ class _FotosScreenState extends State<FotosScreen> {
   }
 
   Widget _tips() {
-    const azulFondo = Color(0xFFEFF6FF); // blue-50
-    const azulBorde = Color(0xFFDBEAFE); // blue-100
-    const azul800 = Color(0xFF1E40AF);
-    const azul700 = Color(0xFF1D4ED8);
+    const azulFondo = Blue.c50; // blue-50
+    const azulBorde = Blue.c100; // blue-100
+    const azul800 = Blue.c800;
+    const azul700 = Blue.c700;
 
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),

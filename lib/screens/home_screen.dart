@@ -30,6 +30,7 @@ import '../api/bookings_api.dart';
 import '../models/fechas.dart';
 import '../widgets/etiqueta_cupo.dart';
 import 'court_detail_screen.dart' show tagFotoCancha;
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Inicio de la app.
 ///
@@ -318,7 +319,7 @@ class _Titulo extends StatelessWidget {
             ),
           ),
           if (accion != null)
-            GestureDetector(
+            RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: onAccion,
               child: Padding(
@@ -419,7 +420,7 @@ class _Chip extends StatelessWidget {
     return Semantics(
       button: true,
       selected: activo,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () {
           HapticFeedback.selectionClick();
@@ -560,7 +561,7 @@ class _TarjetaGrande extends StatelessWidget {
   Widget build(BuildContext context) {
     final sport = getSport(court.sport);
     final foto = court.photos.isNotEmpty ? court.photos.first : sport.image;
-    return GestureDetector(
+    return RtcPressable(
       onTap: () => rtcOpenCourt(court.id, foto: foto),
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -864,7 +865,7 @@ class _FilaCancha extends StatelessWidget {
   Widget build(BuildContext context) {
     final sport = getSport(court.sport);
     final foto = court.photos.isNotEmpty ? court.photos.first : sport.image;
-    return GestureDetector(
+    return RtcPressable(
       onTap: () => rtcOpenCourt(court.id),
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -910,7 +911,7 @@ class _FilaCancha extends StatelessWidget {
                         const Icon(
                           LucideIcons.star,
                           size: 13,
-                          color: Color(0xFFF59E0B), // amber-500
+                          color: Amber.c500,
                         ),
                         const SizedBox(width: 3),
                         Text(
@@ -971,7 +972,7 @@ class _BannerClubes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
-      child: GestureDetector(
+      child: RtcPressable(
         onTap: () => rtcNavigate('/para-clubes'),
         child: Container(
           padding: const EdgeInsets.all(RtcSpace.s5),
@@ -995,7 +996,7 @@ class _BannerClubes extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Recibe reservas pagadas en línea, sin mensualidad.',
-                      style: RtcType.xs.copyWith(color: Gray.c400),
+                      style: RtcType.xs.copyWith(color: Gray.c500),
                     ),
                   ],
                 ),

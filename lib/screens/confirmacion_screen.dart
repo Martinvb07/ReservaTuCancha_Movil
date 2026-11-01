@@ -14,6 +14,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/acciones_reserva.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/reservas/confirmacion/page.tsx`, con una
 /// diferencia deliberada.
@@ -215,9 +216,9 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
 
   // ── DEMORADO ─────────────────────────────────────────────────────────
   List<Widget> _demorado() => [
-    _circulo(LucideIcons.clock, const Color(0xFFFBBF24)), // amber-400
+    _circulo(LucideIcons.clock, Amber.c400), // amber-400
     const SizedBox(height: RtcSpace.s6),
-    _titulillo('VERIFICANDO', const Color(0xFFFBBF24)),
+    _titulillo('VERIFICANDO', Amber.c400),
     const SizedBox(height: RtcSpace.s2),
     _titulo('ESTAMOS CONFIRMANDO'),
     const SizedBox(height: RtcSpace.s2),
@@ -275,7 +276,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
   Widget _bajada(String texto) => Text(
     texto,
     textAlign: TextAlign.center,
-    style: RtcType.sm.copyWith(color: Gray.c400),
+    style: RtcType.sm.copyWith(color: Gray.c500),
   );
 
   /// El recuadro con el codigo, que la web solo mostraba para efectivo. Aca
@@ -295,7 +296,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
         Text(
           'CÓDIGO DE RESERVA',
           style: RtcType.xs.copyWith(
-            color: Gray.c400,
+            color: Gray.c500,
             fontWeight: RtcType.bold,
             letterSpacing: 1.6,
           ),
@@ -315,13 +316,13 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
         Text(
           '${b.courtName} · ${fechaLargaCapitalizada(b.date)}',
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
         Text(
           '${hora12(b.startTime)} – ${hora12(b.endTime)} · '
           '\$${formatCop(b.totalPrice)}',
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     ),
@@ -337,11 +338,11 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     child: Text(
       texto,
       textAlign: TextAlign.center,
-      style: RtcType.xs.copyWith(color: Gray.c400),
+      style: RtcType.xs.copyWith(color: Gray.c500),
     ),
   );
 
-  Widget _boton(String label, VoidCallback onTap) => GestureDetector(
+  Widget _boton(String label, VoidCallback onTap) => RtcPressable(
     behavior: HitTestBehavior.opaque,
     onTap: onTap,
     child: Container(
@@ -362,7 +363,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     ),
   );
 
-  Widget _botonSecundario(String label, VoidCallback onTap) => GestureDetector(
+  Widget _botonSecundario(String label, VoidCallback onTap) => RtcPressable(
     behavior: HitTestBehavior.opaque,
     onTap: onTap,
     child: Container(

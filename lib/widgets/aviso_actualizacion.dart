@@ -6,6 +6,7 @@ import '../data/version_app.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Si hay una version nueva: obligatoria tapa la app con un unico boton a la
 /// tienda; sugerida es una tarjeta abajo que se puede cerrar.
@@ -81,7 +82,7 @@ class _AvisoActualizacionState extends State<AvisoActualizacion> {
               style: RtcType.sm.copyWith(color: Gray.c500),
             ),
             const SizedBox(height: 16),
-            GestureDetector(
+            RtcPressable(
               onTap: _abrirTienda,
               child: Container(
                 height: 50,

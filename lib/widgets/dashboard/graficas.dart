@@ -69,7 +69,7 @@ class _Ejes {
         text: t,
         style: TextStyle(
           fontSize: tamano,
-          color: const Color(0xFF9CA3AF),
+          color: Gray.c400,
           fontFamily: RtcType.fontFamily,
         ),
       ),

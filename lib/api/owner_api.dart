@@ -320,7 +320,8 @@ class OwnerApi {
     int semanas = 1,
     int? precio,
   }) async {
-    String? limpio(String? v) => (v == null || v.trim().isEmpty) ? null : v.trim();
+    String? limpio(String? v) =>
+        (v == null || v.trim().isEmpty) ? null : v.trim();
     final data = await RtcApi.instance.post(
       '/bookings/manual',
       body: {
@@ -370,19 +371,26 @@ class OwnerApi {
         const [];
   }
 
-  Future<void> invitarAlEquipo({required String nombre, required String email, String? telefono}) =>
-      RtcApi.instance.post(
-        '/equipo',
-        body: {
-          'name': nombre.trim(),
-          'email': email.trim(),
-          if (telefono != null && telefono.trim().isNotEmpty) 'phone': telefono.trim(),
-        },
-        auth: true,
-      );
+  Future<void> invitarAlEquipo({
+    required String nombre,
+    required String email,
+    String? telefono,
+  }) => RtcApi.instance.post(
+    '/equipo',
+    body: {
+      'name': nombre.trim(),
+      'email': email.trim(),
+      if (telefono != null && telefono.trim().isNotEmpty)
+        'phone': telefono.trim(),
+    },
+    auth: true,
+  );
 
-  Future<void> accesoEquipo(String id, bool activo) =>
-      RtcApi.instance.patch('/equipo/$id/acceso', body: {'activo': activo}, auth: true);
+  Future<void> accesoEquipo(String id, bool activo) => RtcApi.instance.patch(
+    '/equipo/$id/acceso',
+    body: {'activo': activo},
+    auth: true,
+  );
 
   Future<void> nuevaClaveEquipo(String id) =>
       RtcApi.instance.post('/equipo/$id/clave', auth: true);
@@ -622,10 +630,15 @@ class MesAnalytics {
   );
 }
 
-
 /// Una franja del mapa de ocupación (`analytics/ocupacion.ts`).
 class CeldaOcupacion {
-  const CeldaOcupacion({required this.dia, required this.hora, required this.capacidad, required this.ocupado, required this.pct});
+  const CeldaOcupacion({
+    required this.dia,
+    required this.hora,
+    required this.capacidad,
+    required this.ocupado,
+    required this.pct,
+  });
 
   /// 0 = domingo … 6 = sábado.
   final int dia;
@@ -668,7 +681,9 @@ class Ocupacion {
   final List<CeldaOcupacion> horasVacias;
   final List<CeldaOcupacion> horasPico;
 
-  List<int> get horas => (celdas.where((c) => c.capacidad > 0).map((c) => c.hora).toSet().toList())..sort();
+  List<int> get horas =>
+      (celdas.where((c) => c.capacidad > 0).map((c) => c.hora).toSet().toList())
+        ..sort();
 
   CeldaOcupacion? celda(int dia, int hora) {
     for (final c in celdas) {
@@ -679,15 +694,25 @@ class Ocupacion {
 
   factory Ocupacion.fromJson(Map<String, dynamic> j) {
     List<CeldaOcupacion> lista(Object? v) =>
-        (v as List?)?.whereType<Map<String, dynamic>>().map(CeldaOcupacion.fromJson).toList() ?? const [];
+        (v as List?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(CeldaOcupacion.fromJson)
+            .toList() ??
+        const [];
     final total = (j['total'] as Map<String, dynamic>?) ?? const {};
     return Ocupacion(
       semanas: (j['semanas'] as num?)?.toInt() ?? 8,
       desde: (j['desde'] as String?) ?? '',
       hasta: (j['hasta'] as String?) ?? '',
-      canchas: (j['canchas'] as List?)
+      canchas:
+          (j['canchas'] as List?)
               ?.whereType<Map<String, dynamic>>()
-              .map((c) => (id: (c['_id'] ?? '').toString(), nombre: (c['name'] as String?) ?? 'Cancha'))
+              .map(
+                (c) => (
+                  id: (c['_id'] ?? '').toString(),
+                  nombre: (c['name'] as String?) ?? 'Cancha',
+                ),
+              )
               .toList() ??
           const [],
       celdas: lista(j['celdas']),
@@ -702,7 +727,14 @@ class Ocupacion {
 
 /// Un empleado con acceso al panel del club.
 class MiembroEquipo {
-  const MiembroEquipo({required this.id, required this.nombre, required this.email, this.telefono, required this.activo, this.ultimoIngreso});
+  const MiembroEquipo({
+    required this.id,
+    required this.nombre,
+    required this.email,
+    this.telefono,
+    required this.activo,
+    this.ultimoIngreso,
+  });
 
   final String id;
   final String nombre;
@@ -717,6 +749,8 @@ class MiembroEquipo {
     email: (j['email'] as String?) ?? '',
     telefono: j['phone'] as String?,
     activo: j['isActive'] != false,
-    ultimoIngreso: DateTime.tryParse((j['lastLoginAt'] as String?) ?? '')?.toLocal(),
+    ultimoIngreso: DateTime.tryParse(
+      (j['lastLoginAt'] as String?) ?? '',
+    )?.toLocal(),
   );
 }

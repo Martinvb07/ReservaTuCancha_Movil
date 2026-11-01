@@ -6,6 +6,7 @@ import '../theme/motion.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/ui/StepWizard.tsx`.
 ///
@@ -192,7 +193,7 @@ class _StepDotState extends State<_StepDot>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: widget.onTap,
       child: AnimatedBuilder(
         animation: _c,

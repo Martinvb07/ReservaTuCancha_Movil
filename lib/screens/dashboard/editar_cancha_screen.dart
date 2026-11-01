@@ -18,6 +18,7 @@ import '../../widgets/icons/sport_icon.dart';
 import '../../widgets/motion/rtc_motion.dart';
 import '../../widgets/rtc_select_field.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de
 /// `Frontend/src/app/dashboard/propetario/canchas/[id]/editar/page.tsx`.
@@ -286,7 +287,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
   }
 
   Widget _volver() {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => rtcIrAlPanel('/dashboard/propetario/canchas'),
       child: Row(
@@ -374,7 +375,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
                       'No se puede cambiar',
                       style: RtcType.xs.copyWith(
                         fontSize: 11,
-                        color: Gray.c400,
+                        color: Gray.c500,
                       ),
                     ),
                   ],
@@ -451,7 +452,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
                       child: Text(
                         '\$',
                         style: RtcType.sm.copyWith(
-                          color: Gray.c400,
+                          color: Gray.c500,
                           fontWeight: RtcType.bold,
                         ),
                       ),
@@ -494,7 +495,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
             Text(
               'Se muestran en la ficha pública de tu cancha.'
               '${_extras.isEmpty ? '' : ' La modalidad (${_extras.join(', ')}) se conserva aparte.'}',
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ],
         );
@@ -525,7 +526,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
 
   Widget _chipComodidad(String a) {
     final activa = _comodidades.contains(a);
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() {
         _comodidadesSucias = true;
@@ -541,10 +542,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
         decoration: BoxDecoration(
           color: activa ? Green.c50 : Colors.white,
           borderRadius: RtcRadius.brFull,
-          border: Border.all(
-            color: activa ? const Color(0xFF22C55E) : Gray.c200,
-            width: 2,
-          ),
+          border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -582,7 +580,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
             TextSpan(
               text: ' $opcional',
               style: RtcType.xs.copyWith(
-                color: Gray.c400,
+                color: Gray.c500,
                 fontWeight: RtcType.medium,
                 letterSpacing: 0,
               ),
@@ -606,7 +604,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
     return InputDecoration(
       isDense: true,
       hintText: hint,
-      hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+      hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(
@@ -673,7 +671,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
           Row(
             children: [
               Expanded(
-                child: GestureDetector(
+                child: RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: _guardando
                       ? null
@@ -698,7 +696,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
               ),
               const SizedBox(width: RtcSpace.s3),
               Expanded(
-                child: GestureDetector(
+                child: RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: _guardando ? null : _guardar,
                   child: Opacity(
@@ -761,7 +759,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
             const SizedBox(height: RtcSpace.s2),
             Text(
               'Tienes cambios sin guardar',
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ],
         ],

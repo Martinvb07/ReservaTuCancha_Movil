@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../app/routes.dart';
 import '../theme/palette.dart';
 import '../theme/shadows.dart';
+import 'motion/rtc_pressable.dart';
 
 /// El cambio entre Reservar y Para clubes, en un boton circular.
 ///
@@ -65,7 +66,7 @@ class _ModoToggleState extends State<ModoToggle> {
     return Semantics(
       button: true,
       label: _clubes ? 'Cambiar a modo Reservar' : 'Cambiar a modo Para clubes',
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: _cambiar,
         child: AnimatedContainer(

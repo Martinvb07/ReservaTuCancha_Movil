@@ -17,6 +17,7 @@ import 'motion/rtc_motion.dart';
 import '../data/preferencias.dart';
 import '../data/push.dart';
 import 'rtc_toast.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/bookings/BookingForm.tsx`.
 ///
@@ -254,7 +255,11 @@ class _BookingFormState extends State<BookingForm> {
           onEnviar: () async {
             final correo = email.text.trim();
             if (!RegExp(r'^[^@\s]+@[^@\s.]+\.[^@\s]+$').hasMatch(correo)) {
-              rtcToast(ctx, 'Escribe un correo válido', tipo: RtcToastTipo.error);
+              rtcToast(
+                ctx,
+                'Escribe un correo válido',
+                tipo: RtcToastTipo.error,
+              );
               return;
             }
             try {
@@ -269,7 +274,9 @@ class _BookingFormState extends State<BookingForm> {
               );
               if (ctx.mounted) Navigator.of(ctx).pop(true);
             } on RtcApiException catch (e) {
-              if (ctx.mounted) rtcToast(ctx, e.message, tipo: RtcToastTipo.error);
+              if (ctx.mounted) {
+                rtcToast(ctx, e.message, tipo: RtcToastTipo.error);
+              }
             }
           },
         ),
@@ -491,7 +498,7 @@ class _BookingFormState extends State<BookingForm> {
           Text(
             _step == 'when' ? 'Paso 1 de 2' : 'Paso 2 de 2',
             style: RtcType.xs.copyWith(
-              color: Gray.c400,
+              color: Gray.c500,
               fontWeight: RtcType.medium,
             ),
           ),
@@ -542,7 +549,7 @@ class _BookingFormState extends State<BookingForm> {
         Text(
           'Sin registro · Puedes cambiar de horario hasta 24h antes',
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -558,7 +565,7 @@ class _BookingFormState extends State<BookingForm> {
       ),
       child: Text(
         'Esta cancha no tiene días configurados aún',
-        style: RtcType.sm.copyWith(color: Gray.c400),
+        style: RtcType.sm.copyWith(color: Gray.c500),
       ),
     );
   }
@@ -588,7 +595,7 @@ class _BookingFormState extends State<BookingForm> {
                           '${diaMesCorto(visibles.last)}',
                 textAlign: TextAlign.center,
                 style: RtcType.xs.copyWith(
-                  color: Gray.c400,
+                  color: Gray.c500,
                   fontWeight: RtcType.medium,
                 ),
               ),
@@ -618,7 +625,7 @@ class _BookingFormState extends State<BookingForm> {
             final elegida =
                 _selectedDate != null &&
                 fechaIso(d) == fechaIso(_selectedDate!);
-            return GestureDetector(
+            return RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: () => _elegirFecha(d),
               child: RtcPick(
@@ -636,8 +643,8 @@ class _BookingFormState extends State<BookingForm> {
                       Text(
                         diasCortos[d.weekday % 7].toUpperCase(),
                         style: RtcType.xs.copyWith(
-                          fontSize: 10,
-                          color: Gray.c400,
+                          fontSize: 11,
+                          color: Gray.c500,
                         ),
                       ),
                       Text(
@@ -650,15 +657,15 @@ class _BookingFormState extends State<BookingForm> {
                       Text(
                         mesesCortos[d.month - 1],
                         style: RtcType.xs.copyWith(
-                          fontSize: 10,
-                          color: Gray.c400,
+                          fontSize: 11,
+                          color: Gray.c500,
                         ),
                       ),
                       if (fechaIso(d) == hoy)
                         Text(
                           'Hoy',
                           style: RtcType.xs.copyWith(
-                            fontSize: 9,
+                            fontSize: 11,
                             color: Green.c600,
                             fontWeight: RtcType.semibold,
                           ),
@@ -677,7 +684,7 @@ class _BookingFormState extends State<BookingForm> {
   Widget _flecha(IconData icon, bool enabled, VoidCallback onTap) {
     return Opacity(
       opacity: enabled ? 1 : 0.3,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: enabled ? onTap : null,
         child: Container(
@@ -727,7 +734,7 @@ class _BookingFormState extends State<BookingForm> {
             final elegida = _selectedSlots.contains(slot);
             final ocupada = _noDisponible(slot);
             final esperable = _admiteEspera(slot);
-            return GestureDetector(
+            return RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: esperable
                   ? () => _pedirAviso(slot)
@@ -785,7 +792,7 @@ class _BookingFormState extends State<BookingForm> {
         Text(
           'Toca varias horas seguidas para reservar más tiempo. ¿Está ocupado '
           'el que quieres? Tócalo y te avisamos si se libera.',
-          style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400),
+          style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
         ),
       ],
     );
@@ -794,7 +801,8 @@ class _BookingFormState extends State<BookingForm> {
   /// Turno fijo: la misma hora varias semanas seguidas, en un solo pago.
   Widget _selectorSemanas() {
     final fechas = [
-      for (var i = 0; i < _semanas; i++) _selectedDate!.add(Duration(days: 7 * i)),
+      for (var i = 0; i < _semanas; i++)
+        _selectedDate!.add(Duration(days: 7 * i)),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -804,9 +812,10 @@ class _BookingFormState extends State<BookingForm> {
         Row(
           children: [
             for (final n in _opcionesSemanas) ...[
-              if (n != _opcionesSemanas.first) const SizedBox(width: RtcSpace.s2),
+              if (n != _opcionesSemanas.first)
+                const SizedBox(width: RtcSpace.s2),
               Expanded(
-                child: GestureDetector(
+                child: RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
                     HapticFeedback.selectionClick();
@@ -818,7 +827,9 @@ class _BookingFormState extends State<BookingForm> {
                     decoration: BoxDecoration(
                       color: _semanas == n ? Green.c50 : null,
                       borderRadius: RtcRadius.brXl,
-                      border: Border.all(color: _semanas == n ? Green.c600 : Gray.c200),
+                      border: Border.all(
+                        color: _semanas == n ? Green.c600 : Gray.c200,
+                      ),
                     ),
                     child: Text(
                       n == 1 ? 'Solo esta' : '$n sem.',
@@ -860,7 +871,7 @@ class _BookingFormState extends State<BookingForm> {
           ),
         ),
         const SizedBox(width: 4),
-        Text(label, style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c400)),
+        Text(label, style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500)),
       ],
     );
   }
@@ -874,7 +885,7 @@ class _BookingFormState extends State<BookingForm> {
       decoration: BoxDecoration(
         color: Green.c50,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: const Color(0xFFBBF7D0)), // green-200
+        border: Border.all(color: Green.c200), // green-200
       ),
       child: Row(
         children: [
@@ -888,7 +899,7 @@ class _BookingFormState extends State<BookingForm> {
                   overflow: TextOverflow.ellipsis,
                   style: RtcType.sm.copyWith(
                     fontWeight: RtcType.semibold,
-                    color: const Color(0xFF14532D), // green-900
+                    color: Green.c900,
                   ),
                 ),
                 Text(
@@ -904,7 +915,7 @@ class _BookingFormState extends State<BookingForm> {
             '\$${formatCop(_totalPrice)}',
             style: RtcType.sm.copyWith(
               fontWeight: RtcType.bold,
-              color: const Color(0xFF166534), // green-800
+              color: Green.c800,
             ),
           ),
         ],
@@ -918,7 +929,7 @@ class _BookingFormState extends State<BookingForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        GestureDetector(
+        RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: () => setState(() => _step = 'when'),
           child: Row(
@@ -1031,7 +1042,7 @@ class _BookingFormState extends State<BookingForm> {
           'Recibirás la confirmación por email, con el link para cambiar tu '
           'horario si lo necesitas.',
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -1073,7 +1084,7 @@ class _BookingFormState extends State<BookingForm> {
               ],
             ),
           ),
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => setState(() => _step = 'when'),
             child: Row(
@@ -1159,7 +1170,7 @@ class _BookingFormState extends State<BookingForm> {
               ],
             ),
           ),
-          const Icon(LucideIcons.creditCard, size: 20, color: Gray.c400),
+          const Icon(LucideIcons.creditCard, size: 20, color: Gray.c500),
         ],
       ),
     );
@@ -1169,27 +1180,23 @@ class _BookingFormState extends State<BookingForm> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s3),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB), // amber-50
+        color: Amber.c50,
         borderRadius: RtcRadius.brXl,
-        border: Border.all(color: const Color(0xFFFDE68A)), // amber-200
+        border: Border.all(color: Amber.c200), // amber-200
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 2),
-            child: Icon(
-              LucideIcons.circleAlert,
-              size: 16,
-              color: Color(0xFFD97706),
-            ),
+            child: Icon(LucideIcons.circleAlert, size: 16, color: Amber.c600),
           ),
           const SizedBox(width: RtcSpace.s2),
           Expanded(
             child: Text(
               'El pago en línea no está disponible en este momento. Intenta '
               'de nuevo en unos minutos.',
-              style: RtcType.xs.copyWith(color: const Color(0xFF92400E)),
+              style: RtcType.xs.copyWith(color: Amber.c800),
             ),
           ),
         ],
@@ -1216,7 +1223,7 @@ class _BookingFormState extends State<BookingForm> {
         ),
         if (extra != null) ...[
           const SizedBox(width: 4),
-          Text(extra, style: RtcType.xs.copyWith(color: Gray.c400)),
+          Text(extra, style: RtcType.xs.copyWith(color: Gray.c500)),
         ],
       ],
     );
@@ -1250,7 +1257,7 @@ class _BookingFormState extends State<BookingForm> {
             ),
             if (opcional) ...[
               const SizedBox(width: 4),
-              Text('(opcional)', style: RtcType.xs.copyWith(color: Gray.c400)),
+              Text('(opcional)', style: RtcType.xs.copyWith(color: Gray.c500)),
             ],
           ],
         ),
@@ -1267,7 +1274,7 @@ class _BookingFormState extends State<BookingForm> {
           decoration: InputDecoration(
             isDense: true,
             hintText: hint,
-            hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+            hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(
@@ -1290,7 +1297,7 @@ class _BookingFormState extends State<BookingForm> {
             focusedBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(
-                color: const Color(0xFF22C55E).withValues(alpha: 0.40),
+                color: Green.c500.withValues(alpha: 0.40),
                 width: 2,
               ),
             ),
@@ -1344,7 +1351,7 @@ class _BookingFormState extends State<BookingForm> {
       ),
     );
 
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: enabled ? onTap : null,
       // `.rtc-ready` se aplica SOLO cuando ya se puede continuar. Envolver
@@ -1361,10 +1368,13 @@ class _BookingFormState extends State<BookingForm> {
   }
 }
 
-
 /// Hoja de "avísame si se libera": un correo y un botón.
 class _AvisoTurno extends StatefulWidget {
-  const _AvisoTurno({required this.titulo, required this.email, required this.onEnviar});
+  const _AvisoTurno({
+    required this.titulo,
+    required this.email,
+    required this.onEnviar,
+  });
 
   final String titulo;
   final TextEditingController email;
@@ -1390,7 +1400,10 @@ class _AvisoTurnoState extends State<_AvisoTurno> {
             Expanded(
               child: Text(
                 widget.titulo,
-                style: RtcType.base.copyWith(fontWeight: RtcType.bold, color: Gray.c900),
+                style: RtcType.base.copyWith(
+                  fontWeight: RtcType.bold,
+                  color: Gray.c900,
+                ),
               ),
             ),
           ],

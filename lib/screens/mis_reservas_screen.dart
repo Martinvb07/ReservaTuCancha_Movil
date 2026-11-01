@@ -14,6 +14,7 @@ import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 import '../data/preferencias.dart';
 import '../widgets/acciones_reserva.dart';
 import '../models/fechas.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/mis-reservas/page.tsx`.
 ///
@@ -180,14 +181,14 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
                 focusedBorder: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
                 hintText: 'tu@email.com o código #XXXXXXXX',
-                hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+                hintStyle: RtcType.sm.copyWith(color: Gray.c500),
               ),
             ),
           ),
           Semantics(
             button: true,
             label: 'Buscar reservas',
-            child: GestureDetector(
+            child: RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: _loading ? null : _search,
               child: Container(
@@ -323,7 +324,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
             _error == null ? 'NO ENCONTRAMOS RESERVAS' : 'NO PUDIMOS BUSCAR',
             style: RtcType.sm.copyWith(
               fontWeight: FontWeight.w900,
-              color: Gray.c400,
+              color: Gray.c500,
             ),
           ),
           const SizedBox(height: RtcSpace.s4),
@@ -331,7 +332,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
             Text(
               _error!,
               textAlign: TextAlign.center,
-              style: RtcType.sm.copyWith(color: Gray.c400),
+              style: RtcType.sm.copyWith(color: Gray.c500),
             )
           else
             Text.rich(
@@ -345,10 +346,10 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
                 ],
               ),
               textAlign: TextAlign.center,
-              style: RtcType.sm.copyWith(color: Gray.c400),
+              style: RtcType.sm.copyWith(color: Gray.c500),
             ),
           const SizedBox(height: RtcSpace.s4),
-          GestureDetector(
+          RtcPressable(
             onTap: () => rtcNavigate('/empresas'),
             child: Container(
               padding: const EdgeInsets.symmetric(
@@ -500,7 +501,7 @@ class _BookingCard extends StatelessWidget {
                               Text(
                                 st.label,
                                 style: RtcType.xs.copyWith(
-                                  fontSize: 10,
+                                  fontSize: 11,
                                   fontWeight: RtcType.bold,
                                   color: st.pillForeground,
                                 ),
@@ -517,12 +518,12 @@ class _BookingCard extends StatelessWidget {
                           const Icon(
                             LucideIcons.mapPin,
                             size: 12,
-                            color: Gray.c400,
+                            color: Gray.c500,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             booking.city,
-                            style: RtcType.xs.copyWith(color: Gray.c400),
+                            style: RtcType.xs.copyWith(color: Gray.c500),
                           ),
                         ],
                       ),
@@ -537,9 +538,9 @@ class _BookingCard extends StatelessWidget {
                   Text(
                     'CÓDIGO',
                     style: RtcType.xs.copyWith(
-                      fontSize: 10,
+                      fontSize: 11,
                       fontWeight: RtcType.bold,
-                      color: Gray.c400,
+                      color: Gray.c500,
                       letterSpacing: 1.4,
                     ),
                   ),
@@ -610,7 +611,7 @@ class _BookingCard extends StatelessWidget {
           // proximo mismo dia de la semana.
           if (booking.status == 'completed' && booking.courtId.isNotEmpty) ...[
             const SizedBox(height: RtcSpace.s4),
-            GestureDetector(
+            RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: () => rtcOpenCourt(
                 booking.courtId,

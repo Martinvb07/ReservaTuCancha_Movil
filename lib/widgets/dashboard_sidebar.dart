@@ -6,6 +6,7 @@ import '../theme/motion.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/layout/DashboardSidebar.tsx`, rama movil
 /// (`variant="mobile"`): en el cajon la barra va siempre expandida, sin el
@@ -100,7 +101,7 @@ class DashboardSidebar extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Slate.c100)),
       ),
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => onNavigate('/'),
         child: Row(
@@ -150,7 +151,7 @@ class DashboardSidebar extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF22C55E), Green.c600],
+                colors: [Green.c500, Green.c600],
               ),
             ),
             child: Text(
@@ -179,7 +180,7 @@ class DashboardSidebar extends StatelessWidget {
                 Text(
                   'PROPIETARIO',
                   style: RtcType.xs.copyWith(
-                    fontSize: 9,
+                    fontSize: 11,
                     color: Green.c600,
                     fontWeight: RtcType.bold,
                     letterSpacing: 1.6, // tracking-widest
@@ -207,15 +208,16 @@ class DashboardSidebar extends StatelessWidget {
         for (final (etiqueta, items) in secciones) ...[
           if (etiqueta != null) _etiquetaSeccion(etiqueta),
           for (final (href, label, icon) in items)
-            if (!(RtcSession.instance.user?.esStaff == true && soloTitular.contains(href)))
-            _Enlace(
-              href: href,
-              label: label,
-              icon: icon,
-              activo: _activo(href),
-              orden: indice++,
-              onTap: () => onNavigate(href),
-            ),
+            if (!(RtcSession.instance.user?.esStaff == true &&
+                soloTitular.contains(href)))
+              _Enlace(
+                href: href,
+                label: label,
+                icon: icon,
+                activo: _activo(href),
+                orden: indice++,
+                onTap: () => onNavigate(href),
+              ),
         ],
       ],
     );
@@ -268,7 +270,7 @@ class DashboardSidebar extends StatelessWidget {
   }
 
   Widget _accion(IconData icon, String label, Color color, VoidCallback onTap) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
@@ -318,7 +320,7 @@ class _Enlace extends StatelessWidget {
     return _EntradaEscalonada(
       // `delayChildren: .06` + `staggerChildren: .04`
       delay: Duration(milliseconds: 60 + orden * 40),
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
@@ -344,7 +346,7 @@ class _Enlace extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0xFF22C55E), Green.c600],
+                        colors: [Green.c500, Green.c600],
                       ),
                       borderRadius: BorderRadius.horizontal(
                         right: Radius.circular(999),

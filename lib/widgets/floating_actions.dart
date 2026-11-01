@@ -7,6 +7,7 @@ import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import 'support_chat.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/layout/FloatingActions.tsx`.
 ///
@@ -109,7 +110,7 @@ class _FloatingActionsState extends State<FloatingActions> {
           bottom: RtcSpace.s6 + abajo,
           child: _Fab(
             oculto: _chatAbierto || !widget.botonesVisibles,
-            background: const Color(0xFF22C55E), // green-500
+            background: Green.c500,
             foreground: Colors.white,
             icon: LucideIcons.messageCircle,
             onTap: () => launchUrl(
@@ -166,7 +167,7 @@ class _Fab extends StatelessWidget {
           scale: oculto ? 0.5 : 1,
           duration: const Duration(milliseconds: 300),
           curve: RtcCurves.expoOut,
-          child: GestureDetector(
+          child: RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
             child: Container(

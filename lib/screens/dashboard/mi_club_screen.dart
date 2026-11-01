@@ -16,6 +16,7 @@ import '../../widgets/remote_image.dart';
 import '../../widgets/rtc_borde_punteado.dart';
 import '../../widgets/rtc_select_field.dart';
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/dashboard/propetario/mi-club/page.tsx`.
 ///
@@ -495,7 +496,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
             ),
           ),
           const SizedBox(width: RtcSpace.s3),
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () async {
               await Clipboard.setData(ClipboardData(text: 'https://$url$slug'));
@@ -561,7 +562,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
             const SizedBox(height: 6),
             Text(
               'Este texto se muestra tal cual en tu página pública.',
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ],
         );
@@ -613,7 +614,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
+        RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: _subiendoLogo ? null : _subirLogo,
           child: Container(
@@ -631,7 +632,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Color(0xFF22C55E),
+                      color: Green.c500,
                     ),
                   )
                 : _logo.isNotEmpty
@@ -642,7 +643,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
           ),
         ),
         const SizedBox(height: RtcSpace.s6),
-        GestureDetector(
+        RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: _subiendoLogo ? null : _subirLogo,
           child: Opacity(
@@ -676,7 +677,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
         ),
         if (_logo.isNotEmpty) ...[
           const SizedBox(height: RtcSpace.s2),
-          GestureDetector(
+          RtcPressable(
             behavior: HitTestBehavior.opaque,
             onTap: () => setState(() => _logo = ''),
             child: Text(
@@ -691,7 +692,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
         const SizedBox(height: RtcSpace.s2),
         Text(
           'Recomendado: 200×200px, PNG o JPG',
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -704,7 +705,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
         Text(
           'Estos links aparecen en tu página pública. Deja vacío para no '
           'mostrar.',
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
         const SizedBox(height: RtcSpace.s4),
         _campo(
@@ -754,7 +755,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
         const SizedBox(height: 6),
         Text(
           'Número con indicativo o link wa.me',
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -779,13 +780,13 @@ class _MiClubScreenState extends State<MiClubScreen> {
               '${fotos.length} foto${fotos.length != 1 ? 's' : ''}',
               style: RtcType.xs.copyWith(
                 fontWeight: RtcType.bold,
-                color: Gray.c400,
+                color: Gray.c500,
               ),
             ),
           ],
         ),
         const SizedBox(height: RtcSpace.s4),
-        GestureDetector(
+        RtcPressable(
           behavior: HitTestBehavior.opaque,
           onTap: _subiendoFotos ? null : _subirFotos,
           child: Container(
@@ -801,11 +802,11 @@ class _MiClubScreenState extends State<MiClubScreen> {
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Color(0xFF22C55E),
+                      color: Green.c500,
                     ),
                   )
                 else
-                  const Icon(LucideIcons.camera, size: 24, color: Gray.c400),
+                  const Icon(LucideIcons.camera, size: 24, color: Gray.c500),
                 const SizedBox(height: RtcSpace.s2),
                 Text(
                   _subiendoFotos
@@ -819,7 +820,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Hasta 10 fotos por vez',
-                  style: RtcType.xs.copyWith(color: Gray.c400),
+                  style: RtcType.xs.copyWith(color: Gray.c500),
                 ),
               ],
             ),
@@ -845,7 +846,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
         const SizedBox(height: RtcSpace.s4),
         Text(
           'Las fotos se guardan al instante, no necesitas guardar cambios.',
-          style: RtcType.xs.copyWith(color: Gray.c400),
+          style: RtcType.xs.copyWith(color: Gray.c500),
         ),
       ],
     );
@@ -868,7 +869,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
           // En la web el boton vive en un velo con `group-hover`; en movil no
           // hay hover, asi que va en una barra fija.
           Expanded(
-            child: GestureDetector(
+            child: RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: () => _eliminarFoto(url),
               child: Container(
@@ -908,7 +909,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
           Row(
             children: [
               Expanded(
-                child: GestureDetector(
+                child: RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: _guardando || !_hayCambios ? null : _descartar,
                   child: Opacity(
@@ -936,7 +937,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
               ),
               const SizedBox(width: RtcSpace.s3),
               Expanded(
-                child: GestureDetector(
+                child: RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: _guardando ? null : _guardar,
                   child: Opacity(
@@ -1003,7 +1004,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
             const SizedBox(height: RtcSpace.s2),
             Text(
               'Tienes cambios sin guardar',
-              style: RtcType.xs.copyWith(color: Gray.c400),
+              style: RtcType.xs.copyWith(color: Gray.c500),
             ),
           ],
         ],
@@ -1051,7 +1052,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                       TextSpan(
                         text: ' $opcional',
                         style: RtcType.xs.copyWith(
-                          color: Gray.c400,
+                          color: Gray.c500,
                           fontWeight: RtcType.medium,
                           letterSpacing: 0,
                         ),
@@ -1076,7 +1077,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
           decoration: InputDecoration(
             isDense: true,
             hintText: hint,
-            hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+            hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(

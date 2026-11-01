@@ -14,6 +14,7 @@ import '../widgets/rtc_mobile_menu.dart';
 import 'dashboard_shell.dart';
 import 'nav_state.dart';
 import 'routes.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/layout.tsx`.
 ///
@@ -114,7 +115,7 @@ class RtcLayout extends StatelessWidget {
                           icono: LucideIcons.messageCircle,
                           titulo: 'WhatsApp',
                           detalle: 'Escríbenos directo',
-                          fondo: const Color(0xFF22C55E), // green-500
+                          fondo: Green.c500,
                           colorIcono: Colors.white,
                           onTap: () => cerrarY(
                             () => launchUrl(
@@ -267,7 +268,7 @@ class _AccesoAyuda extends StatelessWidget {
     return Semantics(
       button: true,
       label: titulo,
-      child: GestureDetector(
+      child: RtcPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(

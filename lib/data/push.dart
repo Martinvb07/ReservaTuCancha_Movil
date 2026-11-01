@@ -74,7 +74,9 @@ class PushNotificaciones {
       FirebaseMessaging.onMessageOpenedApp.listen((m) => _abrir(m.data));
       final inicial = await fcm.getInitialMessage();
       if (inicial != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => _abrir(inicial.data));
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => _abrir(inicial.data),
+        );
       }
     } catch (e) {
       debugPrint('Push apagado: $e');
@@ -87,11 +89,15 @@ class PushNotificaciones {
     if (!_listo) return null;
     try {
       final ajustes = await FirebaseMessaging.instance.requestPermission();
-      if (ajustes.authorizationStatus == AuthorizationStatus.denied) return null;
+      if (ajustes.authorizationStatus == AuthorizationStatus.denied) {
+        return null;
+      }
       if (_token == null) {
         await FirebaseMessaging.instance.register();
-        _token ??= await FirebaseMessaging.instance.onRegistered.first
-            .timeout(const Duration(seconds: 10), onTimeout: () => '');
+        _token ??= await FirebaseMessaging.instance.onRegistered.first.timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => '',
+        );
         if (_token!.isEmpty) _token = null;
       }
       return _token;
@@ -117,7 +123,9 @@ class PushNotificaciones {
         '/push/dispositivos',
         body: {
           'token': t,
-          'plataforma': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
+          'plataforma': defaultTargetPlatform == TargetPlatform.iOS
+              ? 'ios'
+              : 'android',
         },
         auth: true,
       );
@@ -132,7 +140,11 @@ class PushNotificaciones {
     final t = _token;
     if (t == null) return;
     try {
-      await RtcApi.instance.delete('/push/dispositivos', body: {'token': t}, auth: true);
+      await RtcApi.instance.delete(
+        '/push/dispositivos',
+        body: {'token': t},
+        auth: true,
+      );
     } catch (_) {}
   }
 
@@ -146,11 +158,17 @@ class PushNotificaciones {
   void _abrir(Map<String, dynamic> datos) {
     switch (datos['tipo']) {
       case 'nueva-reserva':
-        rtcNavigatorKey.currentState?.pushNamed('/dashboard/propetario/reservas');
+        rtcNavigatorKey.currentState?.pushNamed(
+          '/dashboard/propetario/reservas',
+        );
       case 'turno-liberado':
         final id = datos['courtId'] as String?;
         if (id != null) {
-          rtcOpenCourt(id, date: datos['fecha'] as String?, start: datos['startTime'] as String?);
+          rtcOpenCourt(
+            id,
+            date: datos['fecha'] as String?,
+            start: datos['startTime'] as String?,
+          );
         }
       case 'reserva-confirmada' || 'recordatorio':
         rtcNavigatorKey.currentState?.pushNamed('/mis-reservas');

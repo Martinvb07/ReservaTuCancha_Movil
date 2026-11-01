@@ -63,7 +63,7 @@ class ReviewCard extends StatelessWidget {
                     const SizedBox(height: 2), // mt-0.5
                     Text(
                       relativeEs(review.createdAt),
-                      style: RtcType.xs.copyWith(color: Gray.c400),
+                      style: RtcType.xs.copyWith(color: Gray.c500),
                     ),
                   ],
                 ),
@@ -83,9 +83,7 @@ class ReviewCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.only(left: 48),
               decoration: const BoxDecoration(
-                border: Border(
-                  left: BorderSide(color: Color(0xFFDCFCE7), width: 2),
-                ),
+                border: Border(left: BorderSide(color: Green.c100, width: 2)),
               ),
               child: Text(
                 review.comment!,

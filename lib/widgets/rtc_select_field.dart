@@ -6,6 +6,7 @@ import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/ui/SelectField.tsx`.
 ///
@@ -54,7 +55,7 @@ class RtcSelectField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vacio = _etiqueta == placeholder;
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: deshabilitado ? null : () => _abrir(context),
       child: Opacity(
@@ -82,7 +83,7 @@ class RtcSelectField extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: RtcSpace.s2),
-              const Icon(LucideIcons.chevronDown, size: 16, color: Gray.c400),
+              const Icon(LucideIcons.chevronDown, size: 16, color: Gray.c500),
             ],
           ),
         ),
@@ -110,7 +111,7 @@ class RtcSelectField extends StatelessWidget {
 /// El acento del componente de la web: verde en general, naranja en bloqueos.
 enum RtcSelectAcento {
   verde(Green.c600, Green.c50),
-  naranja(Color(0xFFF97316), Color(0xFFFFF7ED)); // orange-500 / orange-50
+  naranja(Orange.c500, Orange.c50); // orange-500 / orange-50
 
   const RtcSelectAcento(this.color, this.fondo);
 
@@ -175,13 +176,13 @@ class _Hoja extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
+                  RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => Navigator.of(context).pop(),
                     child: const Icon(
                       LucideIcons.x,
                       size: 20,
-                      color: Gray.c400,
+                      color: Gray.c500,
                     ),
                   ),
                 ],
@@ -196,7 +197,7 @@ class _Hoja extends StatelessWidget {
                 itemBuilder: (context, i) {
                   final (v, l) = opciones[i];
                   final elegida = v == value;
-                  return GestureDetector(
+                  return RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => Navigator.of(context).pop(v),
                     child: Container(
@@ -279,7 +280,7 @@ class RtcSettingsTabs extends StatelessWidget {
             itemBuilder: (context, i) {
               final (id, titulo, _, icono, alerta) = secciones[i];
               final activaEsta = id == actual.$1;
-              return GestureDetector(
+              return RtcPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => onChange(id),
                 child: AnimatedContainer(

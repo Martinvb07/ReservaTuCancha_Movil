@@ -8,6 +8,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../app/routes.dart';
 import '../widgets/step_wizard.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/solicitar-acceso/page.tsx`.
 ///
@@ -150,7 +151,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Gray.c900, Gray.c800, Color(0xFF14532D)],
+            colors: [Gray.c900, Gray.c800, Green.c900],
           ),
         ),
         child: Stack(
@@ -266,7 +267,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                 'Al enviar aceptas nuestros términos de uso y política de '
                 'privacidad.',
                 textAlign: TextAlign.center,
-                style: RtcType.xs.copyWith(color: Gray.c400),
+                style: RtcType.xs.copyWith(color: Gray.c500),
               ),
             ],
           ],
@@ -390,7 +391,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                         width: 92,
                         child: Text(
                           label,
-                          style: RtcType.xs.copyWith(color: Gray.c400),
+                          style: RtcType.xs.copyWith(color: Gray.c500),
                         ),
                       ),
                       Expanded(
@@ -404,7 +405,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                           ),
                         ),
                       ),
-                      GestureDetector(
+                      RtcPressable(
                         onTap: () => _goTo(target),
                         child: const Icon(
                           LucideIcons.pencil,
@@ -443,13 +444,13 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                   ? TextSpan(
                       text: '(opcional)',
                       style: RtcType.xs.copyWith(
-                        color: Gray.c400,
+                        color: Gray.c500,
                         fontWeight: RtcType.medium,
                       ),
                     )
                   : const TextSpan(
                       text: '*',
-                      style: TextStyle(color: Color(0xFFEF4444)),
+                      style: TextStyle(color: Red.c500),
                     ),
             ],
           ),
@@ -473,7 +474,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
           decoration: InputDecoration(
             isDense: true,
             hintText: hint,
-            hintStyle: RtcType.sm.copyWith(color: Gray.c400),
+            hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(
@@ -491,7 +492,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
             // focus:ring-2 ring-green-400
             focusedBorder: const OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
-              borderSide: BorderSide(color: Color(0xFF4ADE80), width: 2),
+              borderSide: BorderSide(color: Green.c400, width: 2),
             ),
           ),
         ),
@@ -504,7 +505,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     error,
-                    style: RtcType.xs.copyWith(color: const Color(0xFFEF4444)),
+                    style: RtcType.xs.copyWith(color: Red.c500),
                   ),
                 ),
         ),
@@ -516,7 +517,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
     return Row(
       children: [
         if (_step > 0) ...[
-          GestureDetector(
+          RtcPressable(
             onTap: () => _goTo(_step - 1),
             child: Container(
               padding: const EdgeInsets.symmetric(
@@ -551,7 +552,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
           const SizedBox(width: RtcSpace.s3),
         ],
         Expanded(
-          child: GestureDetector(
+          child: RtcPressable(
             onTap: _loading ? null : (_step < _last ? _next : _submit),
             child: Opacity(
               opacity: _loading ? 0.6 : 1,
@@ -710,7 +711,7 @@ class _SuccessBodyState extends State<_SuccessBody>
               ],
             ),
             textAlign: TextAlign.center,
-            style: RtcType.base.copyWith(color: Gray.c400),
+            style: RtcType.base.copyWith(color: Gray.c500),
           ),
           const SizedBox(height: RtcSpace.s6),
           Container(
@@ -726,17 +727,17 @@ class _SuccessBodyState extends State<_SuccessBody>
               children: [
                 Text(
                   '✉️ Revisa tu bandeja de entrada y spam.',
-                  style: RtcType.sm.copyWith(color: Gray.c400),
+                  style: RtcType.sm.copyWith(color: Gray.c500),
                 ),
                 Text(
                   '🔑 Recibirás tus credenciales por email.',
-                  style: RtcType.sm.copyWith(color: Gray.c400),
+                  style: RtcType.sm.copyWith(color: Gray.c500),
                 ),
               ],
             ),
           ),
           const SizedBox(height: RtcSpace.s6),
-          GestureDetector(
+          RtcPressable(
             onTap: widget.onBack,
             child: Container(
               padding: const EdgeInsets.symmetric(

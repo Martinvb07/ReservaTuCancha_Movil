@@ -3,6 +3,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../theme/typography.dart';
 import 'remote_image.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Abre las fotos a pantalla completa, sobre negro: se pasan con el dedo y
 /// se acercan con dos dedos.
@@ -78,7 +79,7 @@ class _GaleriaState extends State<_Galeria> {
                 Semantics(
                   button: true,
                   label: 'Cerrar',
-                  child: GestureDetector(
+                  child: RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => Navigator.of(context).pop(),
                     child: Container(

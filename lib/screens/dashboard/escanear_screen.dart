@@ -12,6 +12,7 @@ import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import '../../widgets/acciones_reserva.dart' show codigoDesdeQr;
 import '../../widgets/rtc_toast.dart';
+import '../../widgets/motion/rtc_pressable.dart';
 
 /// Check-in en la cancha: el dueño escanea el QR que el jugador muestra en
 /// Mis reservas y, si la reserva es suya y esta pagada, la da por jugada.
@@ -265,7 +266,7 @@ class _BotonGrande extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(

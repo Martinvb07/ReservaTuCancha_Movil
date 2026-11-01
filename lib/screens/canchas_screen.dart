@@ -22,6 +22,7 @@ import '../app/nav_state.dart';
 import '../app/routes.dart';
 import '../widgets/rtc_bottom_nav.dart' show kBottomNavEspacio;
 import '../api/bookings_api.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/empresas/page.client.tsx`, rama movil.
 ///
@@ -526,7 +527,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
         for (var i = 0; i < _sortOrder.length; i++)
           RtcItemIn(
             delay: Duration(milliseconds: i * 30),
-            child: GestureDetector(
+            child: RtcPressable(
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 _sort = _sortOrder[i];
@@ -637,8 +638,8 @@ class _CanchasScreenState extends State<CanchasScreen> {
     final niceDate = dia == null ? '' : fechaLargaCapitalizada(dia);
     if (niceDate.isEmpty && _hora.isEmpty) return null;
 
-    const verde200 = Color(0xFFBBF7D0);
-    const verde800 = Color(0xFF166534);
+    const verde200 = Green.c200;
+    const verde800 = Green.c800;
     final fuerte = RtcType.sm.copyWith(
       fontWeight: RtcType.bold,
       color: verde800,
@@ -843,7 +844,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
   /// `isError`. La web dice "Intenta de nuevo" contando con que recargues la
   /// pagina; en el telefono no hay F5, asi que el bloque reintenta al tocarlo.
   Widget _errorState() {
-    return GestureDetector(
+    return RtcPressable(
       onTap: _loadCourts,
       child: Container(
         color: Colors.transparent,
@@ -891,7 +892,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
             ),
           ),
           const SizedBox(height: RtcSpace.s4),
-          GestureDetector(
+          RtcPressable(
             onTap: _limpiarTodo,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -929,7 +930,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
           for (var p = 1; p <= _pageCount; p++)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: GestureDetector(
+              child: RtcPressable(
                 onTap: () => setState(() => _page = p),
                 child: Container(
                   width: 36,
@@ -1000,7 +1001,7 @@ class _FilterPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
@@ -1055,7 +1056,7 @@ class _ViewToggle extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (final (key, label, icon) in _views)
-            GestureDetector(
+            RtcPressable(
               onTap: () => onChanged(key),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 180),
@@ -1119,7 +1120,7 @@ class _AmenityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         width: width,
@@ -1211,7 +1212,7 @@ class _PricePick extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         width: width,
@@ -1253,7 +1254,7 @@ class _PageArrow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Opacity(
       opacity: enabled ? 1 : 0.4,
-      child: GestureDetector(
+      child: RtcPressable(
         onTap: enabled ? onTap : null,
         child: Container(
           padding: const EdgeInsets.symmetric(

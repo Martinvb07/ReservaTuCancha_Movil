@@ -9,6 +9,7 @@ import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
 import 'bloqueo_rapido.dart';
 import 'booking_detail_dialog.dart';
+import '../motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/dashboard/BookingsCalendar.tsx`.
 ///
@@ -160,7 +161,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                         style: RtcType.xs.copyWith(
                           fontSize: 10,
                           fontWeight: RtcType.bold,
-                          color: Gray.c400,
+                          color: Gray.c500,
                         ),
                       ),
                     ),
@@ -191,7 +192,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
   }
 
   Widget _flechaMes(IconData icono, int delta) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () =>
           setState(() => _mes = DateTime(_mes.year, _mes.month + delta, 1)),
@@ -218,7 +219,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     final esHoy = _mismoDia(dia, hoy);
     final elegido = _diaElegido != null && _mismoDia(dia, _diaElegido!);
 
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() => _diaElegido = dia),
       // Mantener presionado: bloquear un horario ese dia sin salir de aca.
@@ -280,9 +281,9 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                       Text(
                         '+${delDia.length - 5}',
                         style: RtcType.xs.copyWith(
-                          fontSize: 8,
+                          fontSize: 10,
                           fontWeight: RtcType.bold,
-                          color: Gray.c400,
+                          color: Gray.c500,
                         ),
                       ),
                   ],
@@ -354,12 +355,12 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                       Text(
                         '${delDia.length} '
                         '${delDia.length == 1 ? 'reserva' : 'reservas'}',
-                        style: RtcType.xs.copyWith(color: Gray.c400),
+                        style: RtcType.xs.copyWith(color: Gray.c500),
                       ),
                     ],
                   ),
                 ),
-                GestureDetector(
+                RtcPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => setState(() => _diaElegido = null),
                   child: Container(
@@ -373,7 +374,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                     child: const Icon(
                       LucideIcons.x,
                       size: 16,
-                      color: Gray.c400,
+                      color: Gray.c500,
                     ),
                   ),
                 ),
@@ -395,7 +396,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                     'Sin reservas este día',
                     style: RtcType.xs.copyWith(
                       fontWeight: RtcType.semibold,
-                      color: Gray.c400,
+                      color: Gray.c500,
                     ),
                   ),
                 ],
@@ -434,7 +435,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                   ),
                   Text(
                     hora12(b.endTime),
-                    style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
+                    style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c500),
                   ),
                 ],
               ),
@@ -510,16 +511,16 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB), // amber-50
+        color: Amber.c50,
         borderRadius: RtcRadius.brFull,
-        border: Border.all(color: const Color(0xFFFDE68A)), // amber-200
+        border: Border.all(color: Amber.c200), // amber-200
       ),
       child: Text(
         'Esperando pago',
         style: RtcType.xs.copyWith(
           fontSize: 10,
           fontWeight: RtcType.bold,
-          color: const Color(0xFFD97706), // amber-600
+          color: Amber.c600,
         ),
       ),
     );
@@ -555,7 +556,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     Color color,
     VoidCallback onTap,
   ) {
-    return GestureDetector(
+    return RtcPressable(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(

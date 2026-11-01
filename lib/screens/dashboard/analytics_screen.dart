@@ -24,16 +24,11 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 /// `STATUS_COLORS`.
-const _coloresEstado = [
-  Color(0xFF16A34A),
-  Color(0xFFF59E0B),
-  Color(0xFFEF4444),
-  Color(0xFF3B82F6),
-];
-const _colorBarra = Color(0xFF16A34A);
-const _colorLinea = Color(0xFF10B981);
-const _colorHora = Color(0xFF6366F1);
-const _colorDia = Color(0xFFF59E0B);
+const _coloresEstado = [Green.c600, Amber.c500, Red.c500, Blue.c500];
+const _colorBarra = Green.c600;
+const _colorLinea = Emerald.c500;
+const _colorHora = Indigo.c500;
+const _colorDia = Amber.c500;
 
 /// `fmt`.
 String _fmt(int n) {
@@ -141,8 +136,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         'Reservas totales',
         '${s?.totalBookings ?? 0}',
         LucideIcons.calendarDays,
-        const Color(0xFF2563EB),
-        const Color(0xFFEFF6FF),
+        Blue.c600,
+        Blue.c50,
         null,
       ),
       (
@@ -157,24 +152,24 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         'Ingresos totales',
         _fmt(s?.totalRevenue ?? 0),
         LucideIcons.dollarSign,
-        const Color(0xFF059669),
-        const Color(0xFFECFDF5),
+        Emerald.c600,
+        Emerald.c50,
         null,
       ),
       (
         'Canchas activas',
         '${s?.totalCourts ?? 0}',
         LucideIcons.building2,
-        const Color(0xFF9333EA),
-        const Color(0xFFFAF5FF),
+        Purple.c600,
+        Purple.c50,
         null,
       ),
       (
         'Pendientes',
         '${s?.pendingBookings ?? 0}',
         LucideIcons.clock,
-        const Color(0xFFD97706),
-        const Color(0xFFFFFBEB),
+        Amber.c600,
+        Amber.c50,
         null,
       ),
       (
@@ -189,8 +184,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         'Tasa confirmación',
         '${(s?.confirmRate ?? 0).round()}%',
         LucideIcons.trendingUp,
-        const Color(0xFF4F46E5),
-        const Color(0xFFEEF2FF),
+        Indigo.c600,
+        Indigo.c50,
         s == null
             ? null
             : '${s.confirmedBookings + s.completedBookings} de ${s.totalBookings}',
@@ -280,7 +275,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   sub,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: RtcType.xs.copyWith(color: Gray.c400),
+                  style: RtcType.xs.copyWith(color: Gray.c500),
                 ),
             ],
           ),
@@ -296,8 +291,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       titulo: 'Reservas por mes',
       subtitulo: 'Últimos 12 meses',
       icono: LucideIcons.chartColumn,
-      color: const Color(0xFF2563EB),
-      fondo: const Color(0xFFEFF6FF),
+      color: Blue.c600,
+      fondo: Blue.c50,
       alto: 220,
       hijo: _meses.isEmpty
           ? const GraficaVacia(alto: 220)
@@ -314,8 +309,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       titulo: 'Ingresos (COP)',
       subtitulo: 'Últimos 12 meses',
       icono: LucideIcons.trendingUp,
-      color: const Color(0xFF059669),
-      fondo: const Color(0xFFECFDF5),
+      color: Emerald.c600,
+      fondo: Emerald.c50,
       alto: 190,
       hijo: _meses.isEmpty
           ? const GraficaVacia(alto: 190)
@@ -339,8 +334,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       titulo: 'Estado de reservas',
       subtitulo: 'Distribución total',
       icono: LucideIcons.users,
-      color: const Color(0xFF9333EA),
-      fondo: const Color(0xFFFAF5FF),
+      color: Purple.c600,
+      fondo: Purple.c50,
       alto: 190,
       hijo: datos.isEmpty
           ? const GraficaVacia(alto: 190)
@@ -355,8 +350,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       titulo: 'Días más populares',
       subtitulo: 'Reservas activas por día de semana',
       icono: LucideIcons.calendarDays,
-      color: const Color(0xFFD97706),
-      fondo: const Color(0xFFFFFBEB),
+      color: Amber.c600,
+      fondo: Amber.c50,
       alto: 190,
       hijo: hay
           ? GraficaBarras(
@@ -373,8 +368,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       titulo: 'Horas más reservadas',
       subtitulo: 'Franja horaria de inicio',
       icono: LucideIcons.clock,
-      color: const Color(0xFF4F46E5),
-      fondo: const Color(0xFFEEF2FF),
+      color: Indigo.c600,
+      fondo: Indigo.c50,
       alto: 190,
       hijo: datos.isEmpty
           ? const GraficaVacia(alto: 190)
@@ -469,7 +464,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     _fmt(ingresos),
                     style: RtcType.xs.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: const Color(0xFF059669),
+                      color: Emerald.c600,
                     ),
                   ),
                 ],
@@ -487,7 +482,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     child: const DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Color(0xFF34D399), Lime.c400],
+                          colors: [Emerald.c400, Lime.c400],
                         ),
                       ),
                     ),
@@ -499,15 +494,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 children: [
                   Text(
                     '$reservas reservas',
-                    style: RtcType.xs.copyWith(fontSize: 10, color: Gray.c400),
+                    style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
                   ),
                   const SizedBox(width: RtcSpace.s3),
                   Text(
                     '$confirmadas confirmadas',
-                    style: RtcType.xs.copyWith(
-                      fontSize: 10,
-                      color: const Color(0xFF22C55E),
-                    ),
+                    style: RtcType.xs.copyWith(fontSize: 11, color: Green.c500),
                   ),
                 ],
               ),
@@ -554,7 +546,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     const SizedBox(height: 2),
                     Text(
                       subtitulo,
-                      style: RtcType.xs.copyWith(color: Gray.c400),
+                      style: RtcType.xs.copyWith(color: Gray.c500),
                     ),
                   ],
                 ),

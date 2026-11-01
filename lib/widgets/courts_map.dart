@@ -12,6 +12,7 @@ import '../theme/typography.dart';
 import 'icons/sport_icon.dart';
 import 'remote_image.dart';
 import 'tile_attribution.dart';
+import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/map/CourtsMap.tsx`.
 ///
@@ -140,7 +141,7 @@ class _PricePin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: GestureDetector(
+      child: RtcPressable(
         onTap: onTap,
         child: AnimatedScale(
           // `.rtc-pin--active` escala a 1.09
@@ -186,7 +187,7 @@ class _CourtPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sport = getSport(court.sport);
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
@@ -258,7 +259,7 @@ class _CourtPopup extends StatelessWidget {
                           ),
                           TextSpan(
                             text: ' / hora',
-                            style: RtcType.xs.copyWith(color: Gray.c400),
+                            style: RtcType.xs.copyWith(color: Gray.c500),
                           ),
                         ],
                       ),

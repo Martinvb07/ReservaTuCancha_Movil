@@ -12,6 +12,7 @@ import '../app/routes.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
 import '../widgets/modo_toggle.dart';
+import '../widgets/motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/app/(public)/para-clubes/page.tsx`.
 class ParaClubesScreen extends StatefulWidget {
@@ -289,7 +290,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                   background: Colors.white.withValues(alpha: 0.10),
                   borderColor: Colors.white.withValues(alpha: 0.20),
                   foreground: Colors.white,
-                  onTap: () {},
+                  onTap: () => rtcNavigate('/auth/login'),
                 ),
               ],
             ),
@@ -796,7 +797,7 @@ class _PillButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RtcPressable(
       onTap: onTap,
       child: Container(
         width: double.infinity,

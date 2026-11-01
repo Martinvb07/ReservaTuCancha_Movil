@@ -24,11 +24,11 @@ String _hora12(int h) => '${h % 12 == 0 ? 12 : h % 12}${h < 12 ? 'am' : 'pm'}';
 
 /// Escala de un solo tono: más oscuro = más lleno.
 (Color, Color) _color(double pct) {
-  if (pct >= 80) return (const Color(0xFF15803D), Colors.white);
+  if (pct >= 80) return (Green.c700, Colors.white);
   if (pct >= 60) return (Green.c600, Colors.white);
-  if (pct >= 40) return (const Color(0xFF4ADE80), const Color(0xFF052E16));
-  if (pct >= 20) return (const Color(0xFFBBF7D0), const Color(0xFF14532D));
-  if (pct > 0) return (const Color(0xFFDCFCE7), const Color(0xFF166534));
+  if (pct >= 40) return (Green.c400, Green.c950);
+  if (pct >= 20) return (Green.c200, Green.c900);
+  if (pct > 0) return (Green.c100, Green.c800);
   return (Gray.c50, Gray.c400);
 }
 
@@ -63,7 +63,10 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
     final d = _datos;
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: RtcRadius.brXxl),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: RtcRadius.brXxl,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -72,13 +75,25 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
               const Icon(LucideIcons.grid3x3, size: 18, color: Green.c600),
               const SizedBox(width: RtcSpace.s2),
               Expanded(
-                child: Text('OCUPACIÓN POR HORA', style: RtcType.sm.copyWith(fontWeight: FontWeight.w900, color: Gray.c900)),
+                child: Text(
+                  'OCUPACIÓN POR HORA',
+                  style: RtcType.sm.copyWith(
+                    fontWeight: FontWeight.w900,
+                    color: Gray.c900,
+                  ),
+                ),
               ),
               DropdownButton<int>(
                 value: _semanas,
                 underline: const SizedBox.shrink(),
-                style: RtcType.xs.copyWith(fontWeight: RtcType.semibold, color: Gray.c700),
-                items: [for (final n in [4, 8, 12, 26]) DropdownMenuItem(value: n, child: Text('$n semanas'))],
+                style: RtcType.xs.copyWith(
+                  fontWeight: RtcType.semibold,
+                  color: Gray.c700,
+                ),
+                items: [
+                  for (final n in [4, 8, 12, 26])
+                    DropdownMenuItem(value: n, child: Text('$n semanas')),
+                ],
                 onChanged: (v) {
                   if (v == null) return;
                   _semanas = v;
@@ -89,18 +104,24 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
           ),
           Text(
             'Horas reservadas sobre las que podías vender',
-            style: RtcType.xs.copyWith(color: Gray.c400),
+            style: RtcType.xs.copyWith(color: Gray.c500),
           ),
           const SizedBox(height: RtcSpace.s4),
           if (_cargando)
-            Container(height: 180, decoration: BoxDecoration(color: Gray.c100, borderRadius: RtcRadius.brXl))
+            Container(
+              height: 180,
+              decoration: BoxDecoration(
+                color: Gray.c100,
+                borderRadius: RtcRadius.brXl,
+              ),
+            )
           else if (d == null || d.horasCapacidad == 0)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: RtcSpace.s6),
               child: Text(
                 'Configura el horario de tus canchas para ver la ocupación.',
                 textAlign: TextAlign.center,
-                style: RtcType.sm.copyWith(color: Gray.c400),
+                style: RtcType.sm.copyWith(color: Gray.c500),
               ),
             )
           else ...[
@@ -110,7 +131,10 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
                 const SizedBox(width: RtcSpace.s2),
                 _cifra('Vendidas', '${d.horasOcupadas.round()} h'),
                 const SizedBox(width: RtcSpace.s2),
-                _cifra('Vacías', '${(d.horasCapacidad - d.horasOcupadas).clamp(0, double.infinity).round()} h'),
+                _cifra(
+                  'Vacías',
+                  '${(d.horasCapacidad - d.horasOcupadas).clamp(0, double.infinity).round()} h',
+                ),
               ],
             ),
             const SizedBox(height: RtcSpace.s4),
@@ -125,7 +149,14 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
                       for (final h in d.horas)
                         SizedBox(
                           width: 37,
-                          child: Text(_hora12(h), textAlign: TextAlign.center, style: RtcType.xs.copyWith(fontSize: 9, color: Gray.c400)),
+                          child: Text(
+                            _hora12(h),
+                            textAlign: TextAlign.center,
+                            style: RtcType.xs.copyWith(
+                              fontSize: 11,
+                              color: Gray.c500,
+                            ),
+                          ),
                         ),
                     ],
                   ),
@@ -137,7 +168,14 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
                         children: [
                           SizedBox(
                             width: 34,
-                            child: Text(_dias[dia], style: RtcType.xs.copyWith(fontSize: 11, fontWeight: RtcType.bold, color: Gray.c500)),
+                            child: Text(
+                              _dias[dia],
+                              style: RtcType.xs.copyWith(
+                                fontSize: 11,
+                                fontWeight: RtcType.bold,
+                                color: Gray.c500,
+                              ),
+                            ),
                           ),
                           for (final h in d.horas) _celda(d.celda(dia, h)),
                         ],
@@ -147,7 +185,11 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
               ),
             ),
             const SizedBox(height: RtcSpace.s4),
-            _lista('Franjas que más se quedan vacías', LucideIcons.moon, d.horasVacias),
+            _lista(
+              'Franjas que más se quedan vacías',
+              LucideIcons.moon,
+              d.horasVacias,
+            ),
             if (d.horasPico.isNotEmpty) ...[
               const SizedBox(height: RtcSpace.s3),
               _lista('Horas pico', LucideIcons.flame, d.horasPico),
@@ -165,8 +207,21 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(etiqueta.toUpperCase(), style: RtcType.xs.copyWith(fontSize: 9, fontWeight: RtcType.bold, color: Gray.c400)),
-          Text(valor, style: RtcType.xl.copyWith(fontWeight: FontWeight.w900, color: Gray.c900)),
+          Text(
+            etiqueta.toUpperCase(),
+            style: RtcType.xs.copyWith(
+              fontSize: 11,
+              fontWeight: RtcType.bold,
+              color: Gray.c500,
+            ),
+          ),
+          Text(
+            valor,
+            style: RtcType.xl.copyWith(
+              fontWeight: FontWeight.w900,
+              color: Gray.c900,
+            ),
+          ),
         ],
       ),
     ),
@@ -178,7 +233,10 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
         width: 34,
         height: 30,
         margin: const EdgeInsets.only(right: 3),
-        decoration: BoxDecoration(borderRadius: RtcRadius.brSm, border: Border.all(color: Gray.c100)),
+        decoration: BoxDecoration(
+          borderRadius: RtcRadius.brSm,
+          border: Border.all(color: Gray.c100),
+        ),
       );
     }
     final (fondo, texto) = _color(c.pct);
@@ -190,7 +248,14 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
         margin: const EdgeInsets.only(right: 3),
         alignment: Alignment.center,
         decoration: BoxDecoration(color: fondo, borderRadius: RtcRadius.brSm),
-        child: Text('${c.pct.round()}', style: RtcType.xs.copyWith(fontSize: 10, fontWeight: RtcType.bold, color: texto)),
+        child: Text(
+          '${c.pct.round()}',
+          style: RtcType.xs.copyWith(
+            fontSize: 11,
+            fontWeight: RtcType.bold,
+            color: texto,
+          ),
+        ),
       ),
     );
   }
@@ -198,7 +263,10 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
   Widget _lista(String titulo, IconData icono, List<CeldaOcupacion> celdas) {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s3),
-      decoration: BoxDecoration(borderRadius: RtcRadius.brXl, border: Border.all(color: Gray.c100)),
+      decoration: BoxDecoration(
+        borderRadius: RtcRadius.brXl,
+        border: Border.all(color: Gray.c100),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -206,7 +274,13 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
             children: [
               Icon(icono, size: 14, color: Gray.c600),
               const SizedBox(width: 6),
-              Text(titulo.toUpperCase(), style: RtcType.xs.copyWith(fontWeight: FontWeight.w900, color: Gray.c900)),
+              Text(
+                titulo.toUpperCase(),
+                style: RtcType.xs.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: Gray.c900,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -215,8 +289,19 @@ class _OcupacionMapaState extends State<OcupacionMapa> {
               padding: const EdgeInsets.only(bottom: 2),
               child: Row(
                 children: [
-                  Expanded(child: Text('${_dias[c.dia]} ${_hora12(c.hora)}', style: RtcType.xs.copyWith(color: Gray.c600))),
-                  Text('${c.pct.round()}%', style: RtcType.xs.copyWith(fontWeight: RtcType.bold, color: Gray.c700)),
+                  Expanded(
+                    child: Text(
+                      '${_dias[c.dia]} ${_hora12(c.hora)}',
+                      style: RtcType.xs.copyWith(color: Gray.c600),
+                    ),
+                  ),
+                  Text(
+                    '${c.pct.round()}%',
+                    style: RtcType.xs.copyWith(
+                      fontWeight: RtcType.bold,
+                      color: Gray.c700,
+                    ),
+                  ),
                 ],
               ),
             ),
