@@ -9,6 +9,7 @@ import 'auth/session.dart';
 import 'booking/pago.dart';
 import 'data/preferencias.dart';
 import 'theme/app_theme.dart';
+import 'widgets/aviso_actualizacion.dart';
 import 'widgets/aviso_sin_conexion.dart';
 import 'widgets/bienvenida.dart';
 
@@ -77,6 +78,7 @@ class RtcApp extends StatelessWidget {
             right: 0,
             child: AvisoSinConexion(),
           ),
+          const AvisoActualizacion(),
           const _BienvenidaSiHaceFalta(),
         ],
       ),
