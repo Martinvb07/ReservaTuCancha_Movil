@@ -170,7 +170,7 @@ class _TarjetaProximoTurnoState extends State<TarjetaProximoTurno> {
 
   @override
   Widget build(BuildContext context) {
-    final conQr = tieneCodigo(b);
+    final conQr = b.id.isNotEmpty;
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
@@ -227,8 +227,9 @@ class _TarjetaProximoTurnoState extends State<TarjetaProximoTurno> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: QrImageView(
-                      data: qrDeReserva(b.bookingCode),
+                      data: qrDeReserva(b),
                       padding: EdgeInsets.zero,
+                      backgroundColor: Colors.white,
                     ),
                   ),
                 ),

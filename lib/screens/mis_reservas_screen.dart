@@ -517,28 +517,32 @@ class _BookingCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: RtcSpace.s3),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'CÓDIGO',
-                    style: RtcType.xs.copyWith(
-                      fontSize: 11,
-                      fontWeight: RtcType.bold,
-                      color: Gray.c500,
-                      letterSpacing: 1.4,
+              // La búsqueda por correo no trae el código: sin él no se muestra
+              // un "#N/A" (el QR igual funciona con el identificador).
+              if (tieneCodigoReserva(booking)) ...[
+                const SizedBox(width: RtcSpace.s3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'CÓDIGO',
+                      style: RtcType.xs.copyWith(
+                        fontSize: 11,
+                        fontWeight: RtcType.bold,
+                        color: Gray.c500,
+                        letterSpacing: 1.4,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '#${booking.bookingCode}',
-                    style: RtcType.sm.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: Lime.c600,
+                    Text(
+                      '#${booking.bookingCode}',
+                      style: RtcType.sm.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: Lime.c600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ],
           ),
           const SizedBox(height: RtcSpace.s4),

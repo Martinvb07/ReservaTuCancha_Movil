@@ -1,5 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+/// Cuántas hojas o diálogos hay abiertos. La barra de abajo vive encima del
+/// Navigator, así que mientras haya uno se esconde para no taparlo.
+final rtcModalesAbiertos = ValueNotifier<int>(0);
+
 /// Estado del header, UNO para toda la app.
 ///
 /// En la web hay un solo `<Navbar />` en `(public)/layout.tsx`, encima del
@@ -111,17 +115,29 @@ class RtcRouteObserver extends NavigatorObserver {
     if (name != null) state.setRoute(name);
   }
 
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) =>
-      _sync(route);
+  void _modal(Route<dynamic> route, int delta) {
+    if (route is! PopupRoute) return;
+    final n = rtcModalesAbiertos.value + delta;
+    rtcModalesAbiertos.value = n < 0 ? 0 : n;
+  }
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) =>
-      _sync(previousRoute);
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _modal(route, 1);
+    _sync(route);
+  }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) =>
-      _sync(previousRoute);
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _modal(route, -1);
+    _sync(previousRoute);
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _modal(route, -1);
+    _sync(previousRoute);
+  }
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) =>

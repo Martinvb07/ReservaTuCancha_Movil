@@ -10,7 +10,7 @@ import '../../models/fechas.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
-import '../../widgets/acciones_reserva.dart' show codigoDesdeQr;
+import '../../widgets/acciones_reserva.dart' show leerQr;
 import '../../widgets/rtc_toast.dart';
 import '../../widgets/motion/rtc_pressable.dart';
 
@@ -43,8 +43,8 @@ class _EscanearScreenState extends State<EscanearScreen> {
 
   Future<void> _leido(BarcodeCapture captura) async {
     if (_ocupado) return;
-    final codigo = codigoDesdeQr(captura.barcodes.firstOrNull?.rawValue);
-    if (codigo == null) return;
+    final qr = leerQr(captura.barcodes.firstOrNull?.rawValue);
+    if (qr == null) return;
     setState(() => _ocupado = true);
     HapticFeedback.mediumImpact();
 
@@ -52,7 +52,14 @@ class _EscanearScreenState extends State<EscanearScreen> {
     String? error;
     try {
       final todas = await ownerApi.reservas();
-      reserva = todas.where((b) => b.bookingCode == codigo).firstOrNull;
+      // Por código, o por identificador si el QR salió de una reserva que el
+      // jugador encontró por correo. Solo entre las reservas de este club.
+      reserva = todas
+          .where(
+            (b) =>
+                qr.codigo != null ? b.bookingCode == qr.codigo : b.id == qr.id,
+          )
+          .firstOrNull;
       if (reserva == null) error = 'Esta reserva no es de tu club.';
     } on RtcApiException catch (e) {
       error = e.message;

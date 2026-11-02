@@ -9,6 +9,7 @@ import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'icons/icono_cancha.dart';
 import 'motion/rtc_pressable.dart';
 
 /// Alto que ocupa la barra, para que las pantallas dejen ese espacio libre
@@ -17,16 +18,20 @@ const kBottomNavEspacio = 96.0;
 
 /// Una pestaña de la barra.
 class RtcTab {
-  const RtcTab(this.ruta, this.etiqueta, this.icono);
+  const RtcTab(this.ruta, this.etiqueta, this.icono, {this.cancha = false});
 
   final String ruta;
   final String etiqueta;
   final IconData icono;
+
+  /// Usa el ícono propio de cancha en vez del de Lucide.
+  final bool cancha;
 }
 
 const rtcTabs = [
   RtcTab('/', 'Inicio', LucideIcons.house),
-  RtcTab('/empresas', 'Canchas', LucideIcons.mapPin),
+  // Una cancha, no un pin de mapa: la pestaña es el listado de canchas.
+  RtcTab('/empresas', 'Canchas', LucideIcons.mapPin, cancha: true),
   RtcTab('/mis-reservas', 'Reservas', LucideIcons.calendarCheck),
   RtcTab('menu', 'Más', LucideIcons.layoutGrid),
 ];
@@ -213,20 +218,28 @@ class _Item extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                tab.icono,
-                size: 20,
-                color: activa
-                    ? Gray.c900
-                    : Colors.white.withValues(alpha: 0.75),
-              ),
+              if (tab.cancha)
+                IconoCancha(
+                  size: 21,
+                  color: activa
+                      ? GrisFijo.c900
+                      : Colors.white.withValues(alpha: 0.75),
+                )
+              else
+                Icon(
+                  tab.icono,
+                  size: 20,
+                  color: activa
+                      ? GrisFijo.c900
+                      : Colors.white.withValues(alpha: 0.75),
+                ),
               if (activa) ...[
                 const SizedBox(width: RtcSpace.s2),
                 Text(
                   tab.etiqueta,
                   style: RtcType.sm.copyWith(
                     fontWeight: RtcType.bold,
-                    color: Gray.c900,
+                    color: GrisFijo.c900,
                   ),
                 ),
               ],

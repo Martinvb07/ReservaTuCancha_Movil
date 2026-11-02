@@ -205,18 +205,20 @@ class RtcLayout extends StatelessWidget {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      // Con una hoja abierta (menu, buscador) o el chat del
-                      // asistente, la barra se esconde: vive encima del Navigator y le taparia los
+                      // Con una hoja o un diálogo abierto (menu, buscador, QR,
+                      // selectores) o el chat del asistente, la barra se esconde: vive encima del Navigator y le taparia los
                       // botones a la hoja.
                       child: ListenableBuilder(
                         listenable: Listenable.merge([
                           FloatingActions.hojaAbierta,
                           FloatingActions.chatAbierto,
+                          rtcModalesAbiertos,
                         ]),
                         builder: (context, barra) => AnimatedSlide(
                           offset:
                               FloatingActions.hojaAbierta.value ||
-                                  FloatingActions.chatAbierto.value
+                                  FloatingActions.chatAbierto.value ||
+                                  rtcModalesAbiertos.value > 0
                               ? const Offset(0, 1.5)
                               : Offset.zero,
                           duration: const Duration(milliseconds: 220),

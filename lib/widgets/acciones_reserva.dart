@@ -17,17 +17,35 @@ import '../theme/typography.dart';
 import '../models/fechas.dart';
 import 'motion/rtc_pressable.dart';
 
-/// Lo que va dentro del QR. El prefijo lo distingue de cualquier otro QR que
-/// el dueño escanee por error; el escaner del panel lo lee con
-/// [codigoDesdeQr].
-String qrDeReserva(String codigo) => 'RTC:$codigo';
+/// ¿Trae el código de reserva? La búsqueda por correo no lo entrega (para
+/// que saber un correo no alcance para mover la reserva de otro): ahí llega
+/// "N/A".
+bool tieneCodigoReserva(Booking b) =>
+    b.bookingCode.isNotEmpty && b.bookingCode != 'N/A';
 
-/// El codigo de reserva de un QR, o null si no es uno nuestro.
-String? codigoDesdeQr(String? valor) {
+/// Lo que va dentro del QR. El prefijo lo distingue de cualquier otro QR que
+/// el dueño escanee por error; el escáner del panel lo lee con [leerQr].
+///
+/// Con código va el código ("RTC:ABCD1234"). Sin código (reservas que llegan
+/// por la búsqueda de correo) va el identificador ("RTC:ID:665f..."), que el
+/// escáner busca igual entre las reservas de su club.
+String qrDeReserva(Booking b) =>
+    tieneCodigoReserva(b) ? 'RTC:${b.bookingCode}' : 'RTC:ID:${b.id}';
+
+/// Lo que trae un QR de reserva: el código o el identificador. null si no es
+/// uno nuestro.
+({String? codigo, String? id})? leerQr(String? valor) {
   if (valor == null || !valor.startsWith('RTC:')) return null;
-  final codigo = valor.substring(4).trim().toUpperCase();
-  return codigo.isEmpty ? null : codigo;
+  final resto = valor.substring(4).trim();
+  if (resto.startsWith('ID:')) {
+    final id = resto.substring(3).trim();
+    return id.isEmpty ? null : (codigo: null, id: id);
+  }
+  return resto.isEmpty ? null : (codigo: resto.toUpperCase(), id: null);
 }
+
+/// El código de reserva de un QR, o null si no es uno nuestro o no trae código.
+String? codigoDesdeQr(String? valor) => leerQr(valor)?.codigo;
 
 /// La hoja con el QR grande, para mostrarlo en la recepcion de la cancha.
 Future<void> mostrarQrReserva(BuildContext context, Booking b) {
@@ -64,34 +82,47 @@ Future<void> mostrarQrReserva(BuildContext context, Booking b) {
             ),
             const SizedBox(height: 4),
             Text(
-              '${b.courtName} · ${b.startTime} – ${b.endTime}',
+              '${b.courtName} · ${diaMesCorto(b.date)} · ${hora12(b.startTime)} – ${hora12(b.endTime)}',
               textAlign: TextAlign.center,
               style: RtcType.sm.copyWith(color: Gray.c500),
             ),
             const SizedBox(height: RtcSpace.s5),
-            QrImageView(
-              data: qrDeReserva(b.bookingCode),
-              size: 220,
-              padding: EdgeInsets.zero,
-              eyeStyle: QrEyeStyle(
-                eyeShape: QrEyeShape.circle,
-                color: Gray.c900,
+            // Siempre negro sobre blanco y con módulos cuadrados, aun en modo
+            // oscuro: es lo que leen bien todas las cámaras.
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
               ),
-              dataModuleStyle: QrDataModuleStyle(
-                dataModuleShape: QrDataModuleShape.circle,
-                color: Gray.c900,
+              child: QrImageView(
+                data: qrDeReserva(b),
+                size: 220,
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.white,
+                errorCorrectionLevel: QrErrorCorrectLevel.M,
+                eyeStyle: const QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: GrisFijo.c900,
+                ),
+                dataModuleStyle: const QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.square,
+                  color: GrisFijo.c900,
+                ),
+                semanticsLabel: 'Código QR de la reserva',
               ),
-              semanticsLabel: 'Código QR de la reserva ${b.bookingCode}',
             ),
-            const SizedBox(height: RtcSpace.s4),
-            Text(
-              '#${b.bookingCode}',
-              style: RtcType.base.copyWith(
-                fontWeight: FontWeight.w800,
-                color: Gray.c700,
-                letterSpacing: 2,
+            if (tieneCodigoReserva(b)) ...[
+              const SizedBox(height: RtcSpace.s4),
+              Text(
+                '#${b.bookingCode}',
+                style: RtcType.base.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: Gray.c700,
+                  letterSpacing: 2,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

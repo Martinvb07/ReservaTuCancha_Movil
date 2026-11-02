@@ -45,13 +45,29 @@ void main() {
   });
 
   group('QR de la reserva', () {
+    Booking reserva(String id, String codigo) => Booking.fromJson({
+      '_id': id,
+      'bookingCode': codigo,
+      'date': '2030-03-04T05:00:00.000Z',
+      'startTime': '19:00',
+      'endTime': '20:00',
+    });
+
     test('ida y vuelta del codigo', () {
-      expect(codigoDesdeQr(qrDeReserva('ab12cd34')), 'AB12CD34');
+      expect(codigoDesdeQr(qrDeReserva(reserva('b1', 'ab12cd34'))), 'AB12CD34');
+    });
+
+    test('sin código (búsqueda por correo) el QR lleva el identificador', () {
+      final qr = qrDeReserva(reserva('665f1a2b3c4d5e6f7a8b9c0d', 'N/A'));
+      expect(qr, 'RTC:ID:665f1a2b3c4d5e6f7a8b9c0d');
+      expect(leerQr(qr), (codigo: null, id: '665f1a2b3c4d5e6f7a8b9c0d'));
+      expect(codigoDesdeQr(qr), isNull);
     });
 
     test('ignora QR que no son nuestros', () {
       expect(codigoDesdeQr('https://otra-cosa.com'), isNull);
       expect(codigoDesdeQr('RTC:'), isNull);
+      expect(leerQr('RTC:ID:'), isNull);
       expect(codigoDesdeQr(null), isNull);
     });
   });
