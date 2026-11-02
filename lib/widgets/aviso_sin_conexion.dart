@@ -40,7 +40,7 @@ class AvisoSinConexion extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Material(
-                color: Gray.c900,
+                color: GrisFijo.c900,
                 borderRadius: RtcRadius.brFull,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 6, 6, 6),
@@ -83,7 +83,7 @@ class AvisoSinConexion extends StatelessWidget {
                             'Reintentar',
                             style: RtcType.xs.copyWith(
                               fontWeight: RtcType.bold,
-                              color: Gray.c900,
+                              color: GrisFijo.c900,
                             ),
                           ),
                         ),

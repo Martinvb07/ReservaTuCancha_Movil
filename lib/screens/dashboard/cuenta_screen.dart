@@ -104,7 +104,7 @@ class _CuentaScreenState extends State<CuentaScreen> {
         Container(
           padding: const EdgeInsets.all(RtcSpace.s5),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
           ),
           child: Column(

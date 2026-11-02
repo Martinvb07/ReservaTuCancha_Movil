@@ -50,7 +50,7 @@ class _Chip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 6),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(color: Gray.c200),
           boxShadow: const [

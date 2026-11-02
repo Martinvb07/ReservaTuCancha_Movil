@@ -81,7 +81,7 @@ class DashboardSidebar extends StatelessWidget {
     final nombre = user?.name ?? '';
 
     return ColoredBox(
-      color: Colors.white,
+      color: Superficie.tarjeta,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -99,7 +99,7 @@ class DashboardSidebar extends StatelessWidget {
     return Container(
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s4),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Slate.c100)),
       ),
       child: RtcPressable(
@@ -137,7 +137,7 @@ class DashboardSidebar extends StatelessWidget {
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s4,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Slate.c100)),
       ),
       child: Row(
@@ -247,7 +247,7 @@ class DashboardSidebar extends StatelessWidget {
   Widget _pie() {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s3),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Slate.c100)),
       ),
       child: Column(

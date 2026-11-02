@@ -91,12 +91,12 @@ class BarHeading extends StatelessWidget {
           title,
           style: RtcType.lg.copyWith(
             fontWeight: RtcType.bold,
-            color: Gray.c900,
+            color: GrisFijo.c900,
           ),
         ),
         if (trailing != null) ...[
           const SizedBox(width: 6),
-          Text(trailing!, style: RtcType.base.copyWith(color: Gray.c500)),
+          Text(trailing!, style: RtcType.base.copyWith(color: GrisFijo.c500)),
         ],
       ],
     );

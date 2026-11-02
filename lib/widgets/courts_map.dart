@@ -151,7 +151,7 @@ class _PricePin extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
             decoration: BoxDecoration(
-              color: active ? Gray.c900 : Colors.white,
+              color: active ? GrisFijo.c900 : Superficie.tarjeta,
               borderRadius: RtcRadius.brFull,
               border: Border.all(
                 color: active
@@ -191,7 +191,7 @@ class _CourtPopup extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: RtcRadius.brXxl,
           boxShadow: RtcShadows.mapPopup,
         ),

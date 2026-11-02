@@ -443,7 +443,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
               padding: const EdgeInsets.symmetric(vertical: RtcSpace.s3),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Superficie.tarjeta,
                 border: Border.all(color: Gray.c200),
                 borderRadius: RtcRadius.brXl,
               ),
@@ -472,7 +472,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
           vertical: RtcSpace.s3,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: RtcRadius.brXl,
           border: Border.all(color: Gray.c200),
         ),
@@ -487,7 +487,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
               ),
             ),
             const SizedBox(width: RtcSpace.s2),
-            const Icon(LucideIcons.calendarDays, size: 16, color: Gray.c500),
+            Icon(LucideIcons.calendarDays, size: 16, color: Gray.c500),
           ],
         ),
       ),
@@ -510,7 +510,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 2),
             child: Icon(LucideIcons.clock, size: 16, color: Orange.c800),
           ),
@@ -651,7 +651,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
       ),
       child: Column(
         children: [
-          const Icon(LucideIcons.ban, size: 48, color: Gray.c300),
+          Icon(LucideIcons.ban, size: 48, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
             'No tienes horarios bloqueados',
@@ -680,7 +680,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
       child: Container(
         padding: const EdgeInsets.all(RtcSpace.s4),
         decoration: BoxDecoration(
-          color: pasado ? Gray.c50 : Colors.white,
+          color: pasado ? Gray.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brXl,
           border: Border.all(color: pasado ? Gray.c100 : Orange.c100),
         ),
@@ -756,7 +756,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(RtcSpace.s2),
                   child: _borrando == b.id
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(
@@ -764,11 +764,7 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
                             color: Gray.c500,
                           ),
                         )
-                      : const Icon(
-                          LucideIcons.trash2,
-                          size: 16,
-                          color: Gray.c500,
-                        ),
+                      : Icon(LucideIcons.trash2, size: 16, color: Gray.c500),
                 ),
               ),
             ],
@@ -818,14 +814,14 @@ class _BloqueosScreenState extends State<BloqueosScreen> {
   InputDecoration _decoracion(String hint) {
     final borde = OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     );
     return InputDecoration(
       isDense: true,
       hintText: hint,
       hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: Superficie.tarjeta,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s3,

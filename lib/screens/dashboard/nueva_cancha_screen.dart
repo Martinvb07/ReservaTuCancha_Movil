@@ -443,11 +443,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Gray.c200),
               ),
-              child: const Icon(
-                LucideIcons.arrowLeft,
-                size: 16,
-                color: Gray.c500,
-              ),
+              child: Icon(LucideIcons.arrowLeft, size: 16, color: Gray.c500),
             ),
             const SizedBox(width: RtcSpace.s2),
             Text(
@@ -553,7 +549,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(vertical: RtcSpace.s5),
         decoration: BoxDecoration(
-          color: activa ? Green.c50 : Colors.white,
+          color: activa ? Green.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brXxl,
           border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
@@ -600,7 +596,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
       children: [
         Row(
           children: [
-            const Icon(LucideIcons.users, size: 12, color: Gray.c500),
+            Icon(LucideIcons.users, size: 12, color: Gray.c500),
             const SizedBox(width: 4),
             Expanded(child: _etiqueta('Modalidad', obligatorio: true)),
           ],
@@ -644,7 +640,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(vertical: RtcSpace.s3),
         decoration: BoxDecoration(
-          color: activa ? Green.c50 : Colors.white,
+          color: activa ? Green.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brXl,
           border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
@@ -675,7 +671,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(LucideIcons.users, size: 10, color: Gray.c500),
+                Icon(LucideIcons.users, size: 10, color: Gray.c500),
                 const SizedBox(width: 2),
                 Text(
                   m.jugadores,
@@ -756,7 +752,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
       children: [
         Row(
           children: [
-            const Icon(LucideIcons.dollarSign, size: 12, color: Gray.c500),
+            Icon(LucideIcons.dollarSign, size: 12, color: Gray.c500),
             const SizedBox(width: 4),
             Expanded(child: _etiqueta('Precio por hora', obligatorio: true)),
           ],
@@ -825,7 +821,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
               vertical: RtcSpace.s10,
             ),
             decoration: ShapeDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               shape: RtcBordePunteado(
                 color: Gray.c300,
                 radio: RtcRadius.xxl,
@@ -1037,7 +1033,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
           vertical: RtcSpace.s2,
         ),
         decoration: BoxDecoration(
-          color: activa ? Green.c50 : Colors.white,
+          color: activa ? Green.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brFull,
           border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
@@ -1045,7 +1041,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (activa) ...[
-              const Icon(LucideIcons.circleCheck, size: 12, color: Green.c700),
+              Icon(LucideIcons.circleCheck, size: 12, color: Green.c700),
               const SizedBox(width: 6),
             ],
             Text(
@@ -1122,7 +1118,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
         border: Border.all(color: Gray.c200),
       ),
@@ -1147,7 +1143,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
           ),
           for (final (etiqueta, valor, paso) in filas)
             DecoratedBox(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: Gray.c100)),
               ),
               child: Padding(
@@ -1180,7 +1176,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                     RtcPressable(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => _irA(paso),
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.all(4),
                         child: Icon(
                           LucideIcons.pencil,
@@ -1218,7 +1214,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                 vertical: RtcSpace.s4,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Superficie.tarjeta,
                 border: Border.all(color: Gray.c200),
                 borderRadius: RtcRadius.brXxl,
               ),
@@ -1226,11 +1222,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (_paso > 0) ...[
-                    const Icon(
-                      LucideIcons.chevronLeft,
-                      size: 16,
-                      color: Gray.c600,
-                    ),
+                    Icon(LucideIcons.chevronLeft, size: 16, color: Gray.c600),
                     const SizedBox(width: 6),
                   ],
                   Text(
@@ -1372,7 +1364,7 @@ class _NuevaCanchaScreenState extends State<NuevaCanchaScreen> {
       hintText: hint,
       hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: Superficie.tarjeta,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s3,

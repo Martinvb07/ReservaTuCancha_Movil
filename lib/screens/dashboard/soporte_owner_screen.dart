@@ -181,7 +181,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Stack(
@@ -221,11 +221,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(
-                    LucideIcons.chevronRight,
-                    size: 16,
-                    color: Green.c700,
-                  ),
+                  Icon(LucideIcons.chevronRight, size: 16, color: Green.c700),
                 ],
               ),
             ],
@@ -319,7 +315,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -344,10 +340,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           width: 64,
           height: 64,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Green.c100,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: Green.c100, shape: BoxShape.circle),
           child: const Icon(
             LucideIcons.circleCheck,
             size: 32,
@@ -490,14 +483,14 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
   InputDecoration _decoracion(String hint) {
     final borde = OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     );
     return InputDecoration(
       isDense: true,
       hintText: hint,
       hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: Superficie.tarjeta,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s3,

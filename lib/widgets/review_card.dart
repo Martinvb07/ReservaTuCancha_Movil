@@ -21,7 +21,7 @@ class ReviewCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
         border: Border.all(color: Gray.c100),
       ),
@@ -82,7 +82,7 @@ class ReviewCard extends StatelessWidget {
             // `pl-12 border-l-2 border-green-100`
             Container(
               padding: const EdgeInsets.only(left: 48),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(left: BorderSide(color: Green.c100, width: 2)),
               ),
               child: Text(

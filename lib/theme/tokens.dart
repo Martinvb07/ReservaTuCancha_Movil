@@ -32,24 +32,26 @@ abstract final class RtcLight {
 
 /// Paleta oscura — bloque `.dark` de globals.css.
 abstract final class RtcDark {
-  static const background = Color(0xFF020817);
-  static const foreground = Color(0xFFF8FAFC);
-  static const card = Color(0xFF020817);
-  static const cardForeground = Color(0xFFF8FAFC);
-  static const popover = Color(0xFF020817);
+  /* Los mismos fondos de la paleta en modo oscuro (Fondo.app y
+     Superficie.tarjeta), para que diálogos y hojas de Material calcen. */
+  static const background = Color(0xFF0E1311);
+  static const foreground = Color(0xFFF3F5F4);
+  static const card = Color(0xFF161C1A);
+  static const cardForeground = Color(0xFFF3F5F4);
+  static const popover = Color(0xFF161C1A);
   static const popoverForeground = Color(0xFFF8FAFC);
   static const primary = Color(0xFF22C55E); // 142.1 70.6% 45.3% — green-500
   static const primaryForeground = Color(0xFF052E16); // 144.9 80.4% 10%
-  static const secondary = Color(0xFF1E293B); // 217.2 32.6% 17.5%
+  static const secondary = Color(0xFF1C2321);
   static const secondaryForeground = Color(0xFFF8FAFC);
-  static const muted = Color(0xFF1E293B);
-  static const mutedForeground = Color(0xFF94A3B8); // 215 20.2% 65.1%
-  static const accent = Color(0xFF1E293B);
+  static const muted = Color(0xFF1C2321);
+  static const mutedForeground = Color(0xFF9AA29F);
+  static const accent = Color(0xFF1C2321);
   static const accentForeground = Color(0xFFF8FAFC);
   static const destructive = Color(0xFF7F1D1D); // 0 62.8% 30.6%
   static const destructiveForeground = Color(0xFFF8FAFC);
-  static const border = Color(0xFF1E293B);
-  static const input = Color(0xFF1E293B);
+  static const border = Color(0xFF2A322F);
+  static const input = Color(0xFF2A322F);
   static const ring = Color(0xFF15803D); // 142.4 71.8% 29.2%
 }
 

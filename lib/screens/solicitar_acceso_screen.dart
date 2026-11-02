@@ -146,12 +146,12 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
   Widget _hero() {
     return ClipRect(
       child: DecoratedBox(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           // from-gray-900 via-gray-800 to-green-900
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Gray.c900, Gray.c800, Green.c900],
+            colors: [GrisFijo.c900, GrisFijo.c800, Green.c900],
           ),
         ),
         child: Stack(
@@ -353,7 +353,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
         const SizedBox(height: RtcSpace.s4),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             border: Border.all(color: Gray.c200),
             borderRadius: RtcRadius.brXxl,
           ),
@@ -378,7 +378,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
               ),
               for (final (label, value, target) in resumen)
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     border: Border(top: BorderSide(color: Gray.c100)),
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -407,7 +407,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                       ),
                       RtcPressable(
                         onTap: () => _goTo(target),
-                        child: const Icon(
+                        child: Icon(
                           LucideIcons.pencil,
                           size: 14,
                           color: Gray.c300,
@@ -476,16 +476,16 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
             hintText: hint,
             hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,
             ),
-            border: const OutlineInputBorder(
+            border: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
@@ -525,18 +525,14 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                 vertical: RtcSpace.s4,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Superficie.tarjeta,
                 border: Border.all(color: Gray.c200),
                 borderRadius: RtcRadius.brXxl,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    LucideIcons.chevronLeft,
-                    size: 16,
-                    color: Gray.c600,
-                  ),
+                  Icon(LucideIcons.chevronLeft, size: 16, color: Gray.c600),
                   const SizedBox(width: 6),
                   Text(
                     'Atrás',
@@ -619,7 +615,7 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
     // En la web el exito vive dentro del <main>, asi que el navbar sigue
     // arriba. Aca pasa lo mismo: es contenido, no una pantalla aparte.
     return ColoredBox(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(RtcSpace.s4),
         child: Center(child: _SuccessBody(onBack: () => rtcNavigate('/'))),
@@ -679,7 +675,7 @@ class _SuccessBodyState extends State<_SuccessBody>
             child: const Icon(
               LucideIcons.circleCheckBig,
               size: 40,
-              color: Gray.c900,
+              color: GrisFijo.c900,
             ),
           ),
           const SizedBox(height: RtcSpace.s6),
@@ -711,14 +707,14 @@ class _SuccessBodyState extends State<_SuccessBody>
               ],
             ),
             textAlign: TextAlign.center,
-            style: RtcType.base.copyWith(color: Gray.c500),
+            style: RtcType.base.copyWith(color: GrisFijo.c500),
           ),
           const SizedBox(height: RtcSpace.s6),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(RtcSpace.s5),
             decoration: BoxDecoration(
-              color: Gray.c800,
+              color: GrisFijo.c800,
               border: Border.all(color: Gray.c700),
               borderRadius: RtcRadius.brXxl,
             ),
@@ -727,11 +723,11 @@ class _SuccessBodyState extends State<_SuccessBody>
               children: [
                 Text(
                   '✉️ Revisa tu bandeja de entrada y spam.',
-                  style: RtcType.sm.copyWith(color: Gray.c500),
+                  style: RtcType.sm.copyWith(color: GrisFijo.c500),
                 ),
                 Text(
                   '🔑 Recibirás tus credenciales por email.',
-                  style: RtcType.sm.copyWith(color: Gray.c500),
+                  style: RtcType.sm.copyWith(color: GrisFijo.c500),
                 ),
               ],
             ),
@@ -755,14 +751,14 @@ class _SuccessBodyState extends State<_SuccessBody>
                     'Volver al inicio',
                     style: RtcType.base.copyWith(
                       fontWeight: RtcType.bold,
-                      color: Gray.c900,
+                      color: GrisFijo.c900,
                     ),
                   ),
                   const SizedBox(width: RtcSpace.s2),
                   const Icon(
                     LucideIcons.chevronRight,
                     size: 20,
-                    color: Gray.c900,
+                    color: GrisFijo.c900,
                   ),
                 ],
               ),

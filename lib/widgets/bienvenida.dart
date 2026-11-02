@@ -63,7 +63,7 @@ class _BienvenidaState extends State<Bienvenida> {
   Widget build(BuildContext context) {
     final ultima = _pagina == _paginas.length - 1;
     return Material(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
@@ -75,7 +75,7 @@ class _BienvenidaState extends State<Bienvenida> {
                   onPressed: _terminar,
                   child: Text(
                     'Saltar',
-                    style: RtcType.sm.copyWith(color: Gray.c500),
+                    style: RtcType.sm.copyWith(color: GrisFijo.c500),
                   ),
                 ),
               ),
@@ -96,7 +96,7 @@ class _BienvenidaState extends State<Bienvenida> {
                             color: Lime.c400,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(icono, size: 52, color: Gray.c900),
+                          child: Icon(icono, size: 52, color: GrisFijo.c900),
                         ),
                         const SizedBox(height: 36),
                         Text(
@@ -114,7 +114,7 @@ class _BienvenidaState extends State<Bienvenida> {
                           texto,
                           textAlign: TextAlign.center,
                           style: RtcType.base.copyWith(
-                            color: Gray.c500,
+                            color: GrisFijo.c500,
                             height: 1.45,
                           ),
                         ),
@@ -133,7 +133,7 @@ class _BienvenidaState extends State<Bienvenida> {
                       width: i == _pagina ? 22 : 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: i == _pagina ? Lime.c400 : Gray.c700,
+                        color: i == _pagina ? Lime.c400 : GrisFijo.c700,
                         borderRadius: RtcRadius.brFull,
                       ),
                     ),
@@ -158,7 +158,7 @@ class _BienvenidaState extends State<Bienvenida> {
                     ultima ? 'Activar ubicación y empezar' : 'Siguiente',
                     style: RtcType.base.copyWith(
                       fontWeight: RtcType.bold,
-                      color: Gray.c900,
+                      color: GrisFijo.c900,
                     ),
                   ),
                 ),
@@ -168,7 +168,7 @@ class _BienvenidaState extends State<Bienvenida> {
                   onPressed: _terminar,
                   child: Text(
                     'Ahora no',
-                    style: RtcType.sm.copyWith(color: Gray.c500),
+                    style: RtcType.sm.copyWith(color: GrisFijo.c500),
                   ),
                 ),
             ],

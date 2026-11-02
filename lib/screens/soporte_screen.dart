@@ -40,7 +40,19 @@ void _abrirAsistente() => FloatingActions.abrirSoporte.value++;
 
 /// `CANALES`. `href` en null = el asistente, que en la web dispara el evento
 /// ABRIR_SOPORTE del chat.
-const _canales =
+List<
+  ({
+    IconData icon,
+    String title,
+    String desc,
+    String cta,
+    String? badge,
+    String? href,
+    Color background,
+    Color iconColor,
+  })
+>
+get _canales =>
     <
       ({
         IconData icon,
@@ -89,7 +101,8 @@ const _canales =
     ];
 
 /// `FAQ`, con sus cuatro categorias.
-const _faq = <String, List<(String, String)>>{
+Map<String, List<(String, String)>>
+get _faq => <String, List<(String, String)>>{
   'Reservar': [
     (
       '¿Necesito crear una cuenta?',
@@ -304,7 +317,7 @@ class _SoporteScreenState extends State<SoporteScreen> {
   // ── CIERRE ───────────────────────────────────────────────────────────
   Widget _cierre() {
     return Container(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       padding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s12,
@@ -324,14 +337,14 @@ class _SoporteScreenState extends State<SoporteScreen> {
             'Escríbenos por WhatsApp con tu código de reserva y lo revisamos '
             'contigo.',
             textAlign: TextAlign.center,
-            style: RtcType.sm.copyWith(color: Gray.c500),
+            style: RtcType.sm.copyWith(color: GrisFijo.c500),
           ),
           const SizedBox(height: RtcSpace.s6 + 4), // mt-7
           _CtaButton(
             icon: LucideIcons.phone,
             label: 'Escribir por WhatsApp',
             background: Lime.c400,
-            foreground: Gray.c900,
+            foreground: GrisFijo.c900,
             onTap: () => _open(_whatsapp),
           ),
           const SizedBox(height: RtcSpace.s3),
@@ -396,7 +409,7 @@ class _CanalCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(RtcSpace.s5),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
@@ -461,7 +474,7 @@ class _CanalCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(LucideIcons.arrowRight, size: 16, color: Green.c700),
+                Icon(LucideIcons.arrowRight, size: 16, color: Green.c700),
               ],
             ),
           ],

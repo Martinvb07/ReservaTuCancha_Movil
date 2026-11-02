@@ -32,24 +32,30 @@ class PagosScreen extends StatefulWidget {
 }
 
 /// `STATUS_PILL` / `STATUS_LABEL`.
-const _estados = <String, ({Color fondo, Color texto, String etiqueta})>{
-  'confirmed': (fondo: Green.c100, texto: Green.c700, etiqueta: 'Confirmada'),
-  'pending': (
-    fondo: Color(0xFFFEF9C3),
-    texto: Color(0xFFA16207),
-    etiqueta: 'Pendiente',
-  ),
-  'cancelled': (fondo: Red.c100, texto: Red.c600, etiqueta: 'Cancelada'),
-  'completed': (fondo: Blue.c100, texto: Blue.c700, etiqueta: 'Completada'),
-};
+Map<String, ({Color fondo, Color texto, String etiqueta})> get _estados =>
+    <String, ({Color fondo, Color texto, String etiqueta})>{
+      'confirmed': (
+        fondo: Green.c100,
+        texto: Green.c700,
+        etiqueta: 'Confirmada',
+      ),
+      'pending': (
+        fondo: Color(0xFFFEF9C3),
+        texto: Color(0xFFA16207),
+        etiqueta: 'Pendiente',
+      ),
+      'cancelled': (fondo: Red.c100, texto: Red.c600, etiqueta: 'Cancelada'),
+      'completed': (fondo: Blue.c100, texto: Blue.c700, etiqueta: 'Completada'),
+    };
 
 /// `METHOD_LABEL`.
-const _metodos = <String, ({String etiqueta, Color texto, Color fondo})>{
-  'epayco': (etiqueta: 'ePayco', texto: Blue.c600, fondo: Blue.c50),
-  // Reservas de antes del cambio a ePayco.
-  'wompi': (etiqueta: 'Wompi', texto: Blue.c600, fondo: Blue.c50),
-  'efectivo': (etiqueta: 'Efectivo', texto: Amber.c600, fondo: Amber.c50),
-};
+Map<String, ({String etiqueta, Color texto, Color fondo})> get _metodos =>
+    <String, ({String etiqueta, Color texto, Color fondo})>{
+      'epayco': (etiqueta: 'ePayco', texto: Blue.c600, fondo: Blue.c50),
+      // Reservas de antes del cambio a ePayco.
+      'wompi': (etiqueta: 'Wompi', texto: Blue.c600, fondo: Blue.c50),
+      'efectivo': (etiqueta: 'Efectivo', texto: Amber.c600, fondo: Amber.c50),
+    };
 
 /// `PERIODS`.
 const _periodos = [
@@ -295,18 +301,14 @@ class _PagosScreenState extends State<PagosScreen> {
                   horizontal: RtcSpace.s4,
                   vertical: 10,
                 ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Superficie.tarjeta,
                   borderRadius: RtcRadius.brFull,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      LucideIcons.download,
-                      size: 16,
-                      color: Gray.c900,
-                    ),
+                    Icon(LucideIcons.download, size: 16, color: Gray.c900),
                     const SizedBox(width: 6),
                     Text(
                       'Exportar',
@@ -369,22 +371,29 @@ class _PagosScreenState extends State<PagosScreen> {
           vertical: grande ? 10 : 6,
         ),
         decoration: BoxDecoration(
-          color: activa ? Gray.c900 : Colors.transparent,
+          color: activa ? GrisFijo.c900 : Colors.transparent,
           borderRadius: RtcRadius.brFull,
-          border: Border.all(color: activa ? Gray.c900 : Gray.c200, width: 2),
+          border: Border.all(
+            color: activa ? Gray.c900 : GrisFijo.c200,
+            width: 2,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icono != null) ...[
-              Icon(icono, size: 16, color: activa ? Colors.white : Gray.c500),
+              Icon(
+                icono,
+                size: 16,
+                color: activa ? Colors.white : GrisFijo.c500,
+              ),
               const SizedBox(width: RtcSpace.s2),
             ],
             Text(
               etiqueta,
               style: (grande ? RtcType.sm : RtcType.xs).copyWith(
                 fontWeight: RtcType.bold,
-                color: activa ? Colors.white : Gray.c500,
+                color: activa ? Colors.white : GrisFijo.c500,
               ),
             ),
           ],
@@ -447,7 +456,7 @@ class _PagosScreenState extends State<PagosScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -455,7 +464,7 @@ class _PagosScreenState extends State<PagosScreen> {
         children: [
           Row(
             children: [
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(right: RtcSpace.s2),
                 child: Icon(
                   LucideIcons.slidersHorizontal,
@@ -556,7 +565,7 @@ class _PagosScreenState extends State<PagosScreen> {
         return Container(
           padding: const EdgeInsets.all(RtcSpace.s4),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
           ),
           child: Column(
@@ -614,7 +623,7 @@ class _PagosScreenState extends State<PagosScreen> {
   Widget _buscadorYEstados() {
     final borde = OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -631,8 +640,8 @@ class _PagosScreenState extends State<PagosScreen> {
             hintText: 'Buscar por cliente, email o código (#XXXXXXXX)...',
             hintStyle: RtcType.xs.copyWith(color: Gray.c500),
             filled: true,
-            fillColor: Colors.white,
-            prefixIcon: const Padding(
+            fillColor: Superficie.tarjeta,
+            prefixIcon: Padding(
               padding: EdgeInsets.only(left: RtcSpace.s3, right: RtcSpace.s2),
               child: Icon(LucideIcons.search, size: 16, color: Gray.c500),
             ),
@@ -735,7 +744,7 @@ class _PagosScreenState extends State<PagosScreen> {
   Widget _lista(List<Booking> pagina, int total) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       clipBehavior: Clip.antiAlias,
@@ -756,9 +765,7 @@ class _PagosScreenState extends State<PagosScreen> {
   Widget _filaEsqueleto(bool conBorde) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: conBorde
-            ? const Border(top: BorderSide(color: Gray.c50))
-            : null,
+        border: conBorde ? Border(top: BorderSide(color: Gray.c50)) : null,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -804,7 +811,7 @@ class _PagosScreenState extends State<PagosScreen> {
       padding: const EdgeInsets.symmetric(vertical: 64), // py-16
       child: Column(
         children: [
-          const Icon(LucideIcons.dollarSign, size: 40, color: Gray.c200),
+          Icon(LucideIcons.dollarSign, size: 40, color: Gray.c200),
           const SizedBox(height: RtcSpace.s3),
           Text(
             'SIN RESULTADOS',
@@ -837,9 +844,7 @@ class _PagosScreenState extends State<PagosScreen> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: conBorde
-            ? const Border(top: BorderSide(color: Gray.c50))
-            : null,
+        border: conBorde ? Border(top: BorderSide(color: Gray.c50)) : null,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -1035,7 +1040,7 @@ class _PagosScreenState extends State<PagosScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(

@@ -43,8 +43,8 @@ class RtcNavbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: const Border(bottom: BorderSide(color: Gray.c100)),
+        color: Superficie.tarjeta,
+        border: Border(bottom: BorderSide(color: Gray.c100)),
         // shadow-sm de Tailwind
         boxShadow: [
           cssShadow(
@@ -232,7 +232,7 @@ class _NavSearchPillCompactState extends State<_NavSearchPillCompact> {
           margin: const EdgeInsets.symmetric(horizontal: RtcSpace.s1),
           padding: const EdgeInsets.only(left: RtcSpace.s2, right: 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brFull,
             border: Border.all(color: Gray.c200),
             boxShadow: [

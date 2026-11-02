@@ -15,13 +15,14 @@ import '../motion/rtc_pressable.dart';
 /// OJO: la web no define 'cancelled' en ninguno de los dos mapas, asi que una
 /// reserva cancelada cae al estilo de 'pending'. Se replica el fallback, pero
 /// la pildora del filtro si lleva su texto: sin el sale un boton vacio.
-const kEstadosReserva = <String, (Color, Color, Color, String)>{
-  // fondo de la pildora, texto de la pildora, punto, etiqueta
-  'confirmed': (Green.c100, Green.c700, Green.c500, 'Confirmada'),
-  'reagendada': (Amber.c100, Amber.c700, Amber.c400, 'Reagendada'),
-  'completed': (Blue.c100, Blue.c700, Blue.c400, 'Completada'),
-  'pending': (Gray.c100, Gray.c500, Gray.c400, 'Sin pagar'),
-};
+Map<String, (Color, Color, Color, String)> get kEstadosReserva =>
+    <String, (Color, Color, Color, String)>{
+      // fondo de la pildora, texto de la pildora, punto, etiqueta
+      'confirmed': (Green.c100, Green.c700, Green.c500, 'Confirmada'),
+      'reagendada': (Amber.c100, Amber.c700, Amber.c400, 'Reagendada'),
+      'completed': (Blue.c100, Blue.c700, Blue.c400, 'Completada'),
+      'pending': (Gray.c100, Gray.c500, Gray.c400, 'Sin pagar'),
+    };
 
 (Color, Color, Color, String) estiloReserva(String estado) =>
     kEstadosReserva[estado] ?? kEstadosReserva['pending']!;
@@ -106,7 +107,7 @@ class BookingDetailDialog extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(RtcSpace.s6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Superficie.tarjeta,
                       borderRadius: RtcRadius.brXxl,
                     ),
                     child: SingleChildScrollView(

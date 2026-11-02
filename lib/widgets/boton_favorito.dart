@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../data/preferencias.dart';
+import '../theme/palette.dart';
 import '../theme/shadows.dart';
 import 'motion/rtc_pressable.dart';
 
@@ -65,7 +66,7 @@ class _BotonFavoritoState extends State<BotonFavorito>
               width: widget.tamano,
               height: widget.tamano,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Superficie.tarjeta,
                 shape: BoxShape.circle,
                 boxShadow: [
                   cssShadow(

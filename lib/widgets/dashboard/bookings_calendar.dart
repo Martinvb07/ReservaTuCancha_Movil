@@ -113,7 +113,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -124,7 +124,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s4,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Gray.c100)),
             ),
             child: Row(
@@ -146,7 +146,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
           ),
           // Cabecera de dias
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Gray.c100)),
             ),
             child: Row(
@@ -232,8 +232,8 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
           decoration: BoxDecoration(
             color: elegido ? Green.c50 : null,
             border: Border(
-              bottom: const BorderSide(color: Gray.c50),
-              right: const BorderSide(color: Gray.c50),
+              bottom: BorderSide(color: Gray.c50),
+              right: BorderSide(color: Gray.c50),
               top: elegido
                   ? const BorderSide(color: Green.c400, width: 2)
                   : BorderSide.none,
@@ -325,7 +325,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -336,7 +336,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Gray.c100)),
             ),
             child: Row(
@@ -371,11 +371,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                       borderRadius: RtcRadius.brLg,
                       border: Border.all(color: Gray.c200),
                     ),
-                    child: const Icon(
-                      LucideIcons.x,
-                      size: 16,
-                      color: Gray.c500,
-                    ),
+                    child: Icon(LucideIcons.x, size: 16, color: Gray.c500),
                   ),
                 ),
               ],
@@ -386,11 +382,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
               padding: const EdgeInsets.symmetric(vertical: RtcSpace.s10),
               child: Column(
                 children: [
-                  const Icon(
-                    LucideIcons.calendarDays,
-                    size: 32,
-                    color: Gray.c200,
-                  ),
+                  Icon(LucideIcons.calendarDays, size: 32, color: Gray.c200),
                   const SizedBox(height: RtcSpace.s2),
                   Text(
                     'Sin reservas este día',
@@ -474,7 +466,7 @@ class _BookingsCalendarState extends State<BookingsCalendar> {
                   const SizedBox(height: 2),
                   Row(
                     children: [
-                      const Icon(LucideIcons.user, size: 12, color: Gray.c500),
+                      Icon(LucideIcons.user, size: 12, color: Gray.c500),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(

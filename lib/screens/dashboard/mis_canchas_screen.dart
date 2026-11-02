@@ -239,23 +239,19 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
             isDense: true,
             hintText: 'Buscar por nombre o ciudad...',
             hintStyle: RtcType.sm.copyWith(color: Gray.c500),
-            prefixIcon: const Icon(
-              LucideIcons.search,
-              size: 16,
-              color: Gray.c500,
-            ),
+            prefixIcon: Icon(LucideIcons.search, size: 16, color: Gray.c500),
             prefixIconConstraints: const BoxConstraints(minWidth: 40),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,
             ),
-            border: const OutlineInputBorder(
+            border: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
@@ -302,12 +298,12 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80), // py-20
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
         children: [
-          const Icon(LucideIcons.building2, size: 48, color: Gray.c300),
+          Icon(LucideIcons.building2, size: 48, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
             'NO HAY CANCHAS',
@@ -332,7 +328,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Row(
@@ -379,7 +375,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
                 // juntas — asi que van apiladas, que es como se ve alli.
                 Row(
                   children: [
-                    const Icon(LucideIcons.mapPin, size: 12, color: Gray.c500),
+                    Icon(LucideIcons.mapPin, size: 12, color: Gray.c500),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
@@ -534,7 +530,7 @@ class _MisCanchasScreenState extends State<MisCanchasScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(RtcSpace.s6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Superficie.tarjeta,
                       borderRadius: RtcRadius.brXxl,
                     ),
                     child: Column(

@@ -67,7 +67,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
         Container(
           padding: const EdgeInsets.all(RtcSpace.s5),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Gray.c200),
           ),
@@ -83,7 +83,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
               const SizedBox(height: RtcSpace.s4),
               _abrirCuenta(),
               const SizedBox(height: RtcSpace.s6),
-              const Divider(height: 1, color: Gray.c100),
+              Divider(height: 1, color: Gray.c100),
               const SizedBox(height: RtcSpace.s5),
               _campo(),
               const SizedBox(height: RtcSpace.s4),
@@ -153,7 +153,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
           height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Gray.c900,
+            color: GrisFijo.c900,
             borderRadius: RtcRadius.brXl,
           ),
           child: const Icon(
@@ -171,7 +171,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
                 'CUENTA DE EPAYCO',
                 style: RtcType.sm.copyWith(
                   fontWeight: FontWeight.w900,
-                  color: Gray.c900,
+                  color: GrisFijo.c900,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -180,7 +180,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
                 'El pago de cada reserva se divide en el momento: a ti te llega '
                 'tu parte y a nosotros la nuestra. Para eso necesitas tu propia '
                 'cuenta de ePayco.',
-                style: RtcType.sm.copyWith(color: Gray.c500, height: 1.35),
+                style: RtcType.sm.copyWith(color: GrisFijo.c500, height: 1.35),
               ),
             ],
           ),
@@ -198,10 +198,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
           height: 20,
           margin: const EdgeInsets.only(top: 1),
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Gray.c100,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: Gray.c100, shape: BoxShape.circle),
           child: Text(
             '$n',
             style: RtcType.xs.copyWith(
@@ -242,7 +239,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
               ),
             ),
             const SizedBox(width: 6),
-            const Icon(LucideIcons.externalLink, size: 14, color: Green.c700),
+            Icon(LucideIcons.externalLink, size: 14, color: Green.c700),
           ],
         ),
       ),
@@ -252,7 +249,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
   Widget _campo() {
     final borde = OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +272,7 @@ class _CuentaEpaycoState extends State<CuentaEpayco> {
             hintText: 'Ej: 1234567',
             hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,

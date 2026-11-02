@@ -208,8 +208,8 @@ class _StepDotState extends State<_StepDot>
             color: widget.done
                 ? Green.c600
                 : widget.current
-                ? Gray.c900
-                : Colors.white,
+                ? GrisFijo.c900
+                : Superficie.tarjeta,
             shape: BoxShape.circle,
             border: !widget.done && !widget.current
                 ? Border.all(color: Gray.c200)

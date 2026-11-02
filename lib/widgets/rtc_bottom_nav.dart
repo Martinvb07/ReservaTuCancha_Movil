@@ -89,7 +89,7 @@ class RtcBottomNav extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Gray.c900.withValues(alpha: 0.88),
+              color: GrisFijo.c900.withValues(alpha: 0.88),
               borderRadius: RtcRadius.brFull,
             ),
             child: Row(

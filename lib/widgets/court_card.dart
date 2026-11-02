@@ -71,7 +71,7 @@ class _CourtCardState extends State<CourtCard> {
           // Tarjeta blanca sobre el fondo gris de la app, sin borde ni
           // sombra; la foto va adentro con su propio redondeo.
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: BorderRadius.circular(28),
           ),
           padding: const EdgeInsets.all(8),
@@ -112,7 +112,7 @@ class _CourtCardState extends State<CourtCard> {
                           top: 12,
                           right: 12,
                           child: _Badge(
-                            background: Gray.c900.withValues(alpha: 0.80),
+                            background: GrisFijo.c900.withValues(alpha: 0.80),
                             foreground: Colors.white,
                             // `fill-yellow-400` del web: una estrella RELLENA,
                             // y el icono de lucide es solo contorno.
@@ -158,11 +158,7 @@ class _CourtCardState extends State<CourtCard> {
                     const SizedBox(height: RtcSpace.s1),
                     Row(
                       children: [
-                        const Icon(
-                          LucideIcons.mapPin,
-                          size: 14,
-                          color: Gray.c500,
-                        ),
+                        Icon(LucideIcons.mapPin, size: 14, color: Gray.c500),
                         const SizedBox(width: RtcSpace.s1),
                         Expanded(
                           child: Text(

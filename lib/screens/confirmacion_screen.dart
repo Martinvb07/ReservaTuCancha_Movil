@@ -128,7 +128,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
   Widget build(BuildContext context) {
     // `min-h-screen bg-gray-900` con todo centrado.
     return ColoredBox(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       child: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -289,7 +289,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
       vertical: RtcSpace.s5,
     ),
     decoration: BoxDecoration(
-      color: Gray.c800,
+      color: GrisFijo.c800,
       borderRadius: RtcRadius.brXxl,
       border: Border.all(color: Lime.c400.withValues(alpha: 0.30)),
     ),
@@ -298,7 +298,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
         Text(
           'CÓDIGO DE RESERVA',
           style: RtcType.xs.copyWith(
-            color: Gray.c500,
+            color: GrisFijo.c500,
             fontWeight: RtcType.bold,
             letterSpacing: 1.6,
           ),
@@ -313,18 +313,18 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
           ),
         ),
         const SizedBox(height: RtcSpace.s3),
-        Container(height: 1, color: Gray.c700),
+        Container(height: 1, color: GrisFijo.c700),
         const SizedBox(height: RtcSpace.s3),
         Text(
           '${b.courtName} · ${fechaLargaCapitalizada(b.date)}',
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(color: Gray.c500),
+          style: RtcType.xs.copyWith(color: GrisFijo.c500),
         ),
         Text(
           '${hora12(b.startTime)} – ${hora12(b.endTime)} · '
           '\$${formatCop(b.totalPrice)}',
           textAlign: TextAlign.center,
-          style: RtcType.xs.copyWith(color: Gray.c500),
+          style: RtcType.xs.copyWith(color: GrisFijo.c500),
         ),
       ],
     ),
@@ -358,7 +358,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
       child: Text(
         label,
         style: RtcType.base.copyWith(
-          color: Gray.c900,
+          color: GrisFijo.c900,
           fontWeight: FontWeight.w900,
         ),
       ),

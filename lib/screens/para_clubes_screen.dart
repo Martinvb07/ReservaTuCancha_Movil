@@ -195,7 +195,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
   // ── HERO ─────────────────────────────────────────────────────────────
   Widget _hero() {
     return Container(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       child: Stack(
         children: [
           Positioned.fill(
@@ -213,7 +213,10 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Gray.c900.withValues(alpha: 0.70), Gray.c900],
+                  colors: [
+                    GrisFijo.c900.withValues(alpha: 0.70),
+                    GrisFijo.c900,
+                  ],
                 ),
               ),
             ),
@@ -237,13 +240,17 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(LucideIcons.store, size: 14, color: Gray.c900),
+                      const Icon(
+                        LucideIcons.store,
+                        size: 14,
+                        color: GrisFijo.c900,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         'Para clubes y empresas',
                         style: RtcType.xs.copyWith(
                           fontWeight: RtcType.bold,
-                          color: Gray.c900,
+                          color: GrisFijo.c900,
                         ),
                       ),
                     ],
@@ -273,14 +280,14 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                   'dobles reservas. Gestiona tus canchas, horarios y pagos '
                   'desde un solo panel.',
                   textAlign: TextAlign.center,
-                  style: RtcType.base.copyWith(color: Gray.c300),
+                  style: RtcType.base.copyWith(color: GrisFijo.c300),
                 ),
                 const SizedBox(height: RtcSpace.s8),
                 _PillButton(
                   label: 'Solicitar acceso',
                   icon: LucideIcons.chevronRight,
                   background: Lime.c400,
-                  foreground: Gray.c900,
+                  foreground: GrisFijo.c900,
                   bold: true,
                   onTap: _solicitar,
                 ),
@@ -350,7 +357,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
       (_stats.avgRatingLabel, 'Calificación promedio'),
     ];
     return Container(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       padding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s12,
@@ -437,7 +444,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
       child: Container(
         padding: const EdgeInsets.all(RtcSpace.s8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           border: Border.all(color: Gray.c100),
           borderRadius: BorderRadius.circular(24), // rounded-3xl
           boxShadow: RtcShadows.card,
@@ -461,13 +468,13 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                   'Las reservas online me ahorraron una secretaria y dejé de '
                   'perder clientes por no contestar el teléfono."',
                   style: RtcType.lg.copyWith(
-                    color: Gray.c700,
+                    color: GrisFijo.c700,
                     fontStyle: FontStyle.italic,
                     height: 1.625,
                   ),
                 ),
                 const SizedBox(height: RtcSpace.s6),
-                const Divider(height: 1, thickness: 1, color: Gray.c100),
+                Divider(height: 1, thickness: 1, color: Gray.c100),
                 const SizedBox(height: RtcSpace.s6),
                 Row(
                   children: [
@@ -475,7 +482,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                       width: 44,
                       height: 44,
                       alignment: Alignment.center,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Lime.c100,
                         shape: BoxShape.circle,
                       ),
@@ -536,7 +543,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                 margin: const EdgeInsets.only(bottom: RtcSpace.s4),
                 padding: const EdgeInsets.all(RtcSpace.s5),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Superficie.tarjeta,
                   border: Border.all(color: Gray.c100),
                   borderRadius: RtcRadius.brXxl,
                 ),
@@ -596,7 +603,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: Container(
-          color: Gray.c900,
+          color: GrisFijo.c900,
           child: Stack(
             children: [
               Positioned.fill(
@@ -615,9 +622,9 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        Gray.c900,
-                        Gray.c900.withValues(alpha: 0.85),
-                        Gray.c900.withValues(alpha: 0.40),
+                        GrisFijo.c900,
+                        GrisFijo.c900.withValues(alpha: 0.85),
+                        GrisFijo.c900.withValues(alpha: 0.40),
                       ],
                     ),
                   ),
@@ -658,7 +665,7 @@ class _ParaClubesScreenState extends State<ParaClubesScreen> {
                       label: 'Publica tu cancha',
                       icon: LucideIcons.chevronRight,
                       background: Lime.c400,
-                      foreground: Gray.c900,
+                      foreground: GrisFijo.c900,
                       bold: true,
                       onTap: _solicitar,
                     ),
@@ -724,7 +731,7 @@ class _InfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(RtcSpace.s6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         border: Border.all(color: Gray.c100),
         borderRadius: RtcRadius.brXxl,
       ),

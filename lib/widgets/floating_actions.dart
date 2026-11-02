@@ -124,7 +124,7 @@ class _FloatingActionsState extends State<FloatingActions> {
           bottom: RtcSpace.s6 + _tamano + RtcSpace.s4 + abajo, // bottom-24
           child: _Fab(
             oculto: _chatAbierto || !widget.botonesVisibles,
-            background: Gray.c900,
+            background: GrisFijo.c900,
             foreground: Lime.c400,
             icon: LucideIcons.bot,
             onTap: () => setState(() => _chatAbierto = true),

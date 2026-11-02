@@ -162,7 +162,7 @@ class _FaqEntryState extends State<_FaqEntry> with TickerProviderStateMixin {
           curve: RtcCurves.ease,
           padding: const EdgeInsets.all(RtcSpace.s5),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
             border: Border.all(color: widget.open ? Green.c300 : Gray.c100),
             // shadow-[0_14px_40px_-20px_rgba(22,163,74,0.55)]

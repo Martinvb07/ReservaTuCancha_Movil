@@ -384,7 +384,7 @@ class _Tarjeta extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -430,7 +430,7 @@ class _Turno extends StatelessWidget {
               ? Green.c600
               : deshabilitado
               ? Fondo.app
-              : Colors.white,
+              : Superficie.tarjeta,
           borderRadius: RtcRadius.brFull,
           border: Border.all(color: activo ? Green.c600 : Gray.c200),
         ),

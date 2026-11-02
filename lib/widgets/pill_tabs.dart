@@ -209,7 +209,7 @@ class _Tab extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             // El fondo blanco solo se ve cuando la pildora no esta encima.
-            color: active ? Colors.transparent : Colors.white,
+            color: active ? Colors.transparent : Superficie.tarjeta,
             borderRadius: RtcRadius.brFull,
             border: Border.all(
               color: active ? Green.c600 : Gray.c200,

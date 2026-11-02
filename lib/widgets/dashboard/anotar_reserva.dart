@@ -19,7 +19,7 @@ Future<bool> abrirAnotarReserva(BuildContext context) async {
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    backgroundColor: Colors.white,
+    backgroundColor: Superficie.tarjeta,
     builder: (ctx) => const _AnotarReserva(),
   );
   return ok == true;
@@ -124,11 +124,11 @@ class _AnotarReservaState extends State<_AnotarReserva> {
     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     border: OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     ),
   );
 
@@ -349,6 +349,7 @@ class _AnotarReservaState extends State<_AnotarReserva> {
             const SizedBox(height: RtcSpace.s4),
             FilledButton(
               style: FilledButton.styleFrom(
+                foregroundColor: Colors.white,
                 backgroundColor: Green.c600,
                 minimumSize: const Size.fromHeight(48),
                 shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),

@@ -301,11 +301,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
               shape: BoxShape.circle,
               border: Border.all(color: Gray.c200),
             ),
-            child: const Icon(
-              LucideIcons.arrowLeft,
-              size: 16,
-              color: Gray.c500,
-            ),
+            child: Icon(LucideIcons.arrowLeft, size: 16, color: Gray.c500),
           ),
           const SizedBox(width: RtcSpace.s2),
           Text(
@@ -353,7 +349,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
               vertical: 10,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               borderRadius: RtcRadius.brXxl,
             ),
             child: Row(
@@ -540,7 +536,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
           vertical: RtcSpace.s2,
         ),
         decoration: BoxDecoration(
-          color: activa ? Green.c50 : Colors.white,
+          color: activa ? Green.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brFull,
           border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
@@ -548,7 +544,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (activa) ...[
-              const Icon(LucideIcons.circleCheck, size: 12, color: Green.c700),
+              Icon(LucideIcons.circleCheck, size: 12, color: Green.c700),
               const SizedBox(width: 6),
             ],
             Text(
@@ -606,7 +602,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
       hintText: hint,
       hintStyle: RtcType.sm.copyWith(color: Gray.c500),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: Superficie.tarjeta,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s3,
@@ -680,7 +676,7 @@ class _EditarCanchaScreenState extends State<EditarCanchaScreen> {
                     padding: const EdgeInsets.symmetric(vertical: RtcSpace.s4),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Superficie.tarjeta,
                       borderRadius: RtcRadius.brXxl,
                       border: Border.all(color: Gray.c200, width: 2),
                     ),

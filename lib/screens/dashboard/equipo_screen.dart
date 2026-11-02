@@ -128,15 +128,15 @@ class _EquipoScreenState extends State<EquipoScreen> {
     hintText: hint,
     isDense: true,
     filled: true,
-    fillColor: Colors.white,
+    fillColor: Superficie.tarjeta,
     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     border: OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: RtcRadius.brXl,
-      borderSide: const BorderSide(color: Gray.c200),
+      borderSide: BorderSide(color: Gray.c200),
     ),
   );
 
@@ -186,7 +186,7 @@ class _EquipoScreenState extends State<EquipoScreen> {
           Container(
             padding: const EdgeInsets.all(RtcSpace.s4),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               borderRadius: RtcRadius.brXxl,
             ),
             child: Column(
@@ -226,6 +226,7 @@ class _EquipoScreenState extends State<EquipoScreen> {
                 const SizedBox(height: RtcSpace.s3),
                 FilledButton(
                   style: FilledButton.styleFrom(
+                    foregroundColor: Colors.white,
                     backgroundColor: Green.c600,
                     minimumSize: const Size.fromHeight(46),
                     shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),
@@ -275,7 +276,7 @@ class _EquipoScreenState extends State<EquipoScreen> {
       margin: const EdgeInsets.only(bottom: RtcSpace.s3),
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(

@@ -118,8 +118,8 @@ class _RtcMobileMenuState extends State<RtcMobileMenu>
         opacity: fade,
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: Superficie.tarjeta,
             border: Border(top: BorderSide(color: Gray.c100)),
           ),
           padding: const EdgeInsets.symmetric(
@@ -176,7 +176,7 @@ class _RtcMobileMenuState extends State<RtcMobileMenu>
               ),
 
               const SizedBox(height: RtcSpace.s3),
-              const Divider(height: 1, thickness: 1, color: Gray.c100),
+              Divider(height: 1, thickness: 1, color: Gray.c100),
 
               // El separador es el ultimo hijo cuando no hay botones debajo:
               // ahi el aire lo pone el padding del panel, no un espaciador.
@@ -424,7 +424,7 @@ class _ModeToggleState extends State<_ModeToggle>
 
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s1), // p-1
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Gray.c100,
         borderRadius: RtcRadius.brFull,
       ),
@@ -450,7 +450,7 @@ class _ModeToggleState extends State<_ModeToggle>
                   width: widths[0] + (widths[1] - widths[0]) * t,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Superficie.tarjeta,
                       borderRadius: RtcRadius.brFull,
                       boxShadow: [
                         cssShadow(

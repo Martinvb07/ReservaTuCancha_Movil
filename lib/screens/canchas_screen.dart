@@ -638,8 +638,8 @@ class _CanchasScreenState extends State<CanchasScreen> {
     final niceDate = dia == null ? '' : fechaLargaCapitalizada(dia);
     if (niceDate.isEmpty && _hora.isEmpty) return null;
 
-    const verde200 = Green.c200;
-    const verde800 = Green.c800;
+    final verde200 = Green.c200;
+    final verde800 = Green.c800;
     final fuerte = RtcType.sm.copyWith(
       fontWeight: RtcType.bold,
       color: verde800,
@@ -873,7 +873,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
       ),
       child: Column(
         children: [
-          const Icon(LucideIcons.search, size: 40, color: Gray.c300),
+          Icon(LucideIcons.search, size: 40, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
             'Sin canchas para estos filtros',
@@ -897,7 +897,7 @@ class _CanchasScreenState extends State<CanchasScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(LucideIcons.x, size: 16, color: Green.c700),
+                Icon(LucideIcons.x, size: 16, color: Green.c700),
                 const SizedBox(width: RtcSpace.s2),
                 Text(
                   'Limpiar filtros',
@@ -937,10 +937,10 @@ class _CanchasScreenState extends State<CanchasScreen> {
                   height: 36,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: p == _safePage ? Gray.c900 : null,
+                    color: p == _safePage ? GrisFijo.c900 : null,
                     border: p == _safePage
                         ? null
-                        : Border.all(color: Gray.c200),
+                        : Border.all(color: GrisFijo.c200),
                     borderRadius: RtcRadius.brXl,
                   ),
                   child: Text(
@@ -1009,7 +1009,7 @@ class _FilterPill extends StatelessWidget {
           vertical: 8,
         ),
         decoration: BoxDecoration(
-          color: active ? Green.c600 : Colors.white,
+          color: active ? Green.c600 : Superficie.tarjeta,
           borderRadius: RtcRadius.brFull,
         ),
         child: Row(
@@ -1048,7 +1048,7 @@ class _ViewToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Fondo.suave,
         borderRadius: RtcRadius.brFull,
       ),
@@ -1066,7 +1066,7 @@ class _ViewToggle extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: view == key ? Colors.white : Colors.transparent,
+                  color: view == key ? Superficie.tarjeta : Colors.transparent,
                   borderRadius: RtcRadius.brFull,
                   boxShadow: view == key
                       ? [
@@ -1139,7 +1139,7 @@ class _AmenityTile extends StatelessWidget {
               decoration: BoxDecoration(
                 color: active
                     ? Colors.white.withValues(alpha: 0.20)
-                    : Colors.white,
+                    : Superficie.tarjeta,
                 borderRadius: RtcRadius.brXl,
               ),
               child: Icon(

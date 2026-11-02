@@ -150,7 +150,7 @@ class _MobileStackSheetState extends State<_MobileStackSheet> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Superficie.tarjeta,
                   shape: BoxShape.circle,
                   boxShadow: [
                     cssShadow(
@@ -160,7 +160,7 @@ class _MobileStackSheetState extends State<_MobileStackSheet> {
                     ),
                   ],
                 ),
-                child: const Icon(LucideIcons.x, size: 19, color: Gray.c800),
+                child: Icon(LucideIcons.x, size: 19, color: Gray.c800),
               ),
             ),
           ),
@@ -192,7 +192,7 @@ class StackSectionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
             boxShadow: [
               cssShadow(
@@ -232,7 +232,7 @@ class StackSectionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           cssShadow(
@@ -284,8 +284,8 @@ class StackSheetFooter extends StatelessWidget {
         14 + MediaQuery.paddingOf(context).bottom,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: const Border(top: BorderSide(color: Gray.c100)),
+        color: Superficie.tarjeta,
+        border: Border(top: BorderSide(color: Gray.c100)),
         boxShadow: [
           cssShadow(
             dy: -4,

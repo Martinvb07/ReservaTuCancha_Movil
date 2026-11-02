@@ -261,7 +261,7 @@ class _SupportChatState extends State<SupportChat> {
           child: Container(
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               borderRadius: const BorderRadius.all(
                 Radius.circular(24),
               ), // rounded-3xl
@@ -283,7 +283,7 @@ class _SupportChatState extends State<SupportChat> {
 
   Widget _encabezado(SupportBotTree tree) {
     return Container(
-      color: Gray.c900,
+      color: GrisFijo.c900,
       padding: const EdgeInsets.symmetric(
         horizontal: RtcSpace.s5,
         vertical: RtcSpace.s4,
@@ -298,7 +298,7 @@ class _SupportChatState extends State<SupportChat> {
               color: Lime.c400,
               shape: BoxShape.circle,
             ),
-            child: const Icon(LucideIcons.bot, size: 20, color: Gray.c900),
+            child: const Icon(LucideIcons.bot, size: 20, color: GrisFijo.c900),
           ),
           const SizedBox(width: RtcSpace.s3),
           Expanded(
@@ -328,7 +328,7 @@ class _SupportChatState extends State<SupportChat> {
                     const SizedBox(width: 6),
                     Text(
                       tree.meta.subtitulo,
-                      style: RtcType.xs.copyWith(color: Gray.c500),
+                      style: RtcType.xs.copyWith(color: GrisFijo.c500),
                     ),
                   ],
                 ),
@@ -393,7 +393,7 @@ class _SupportChatState extends State<SupportChat> {
               vertical: m.esBot ? RtcSpace.s3 : 10, // py-3 / py-2.5
             ),
             decoration: BoxDecoration(
-              color: m.esBot ? Colors.white : Gray.c900,
+              color: m.esBot ? Superficie.tarjeta : GrisFijo.c900,
               // rounded-2xl con la esquina de arriba del lado del autor casi recta
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(m.esBot ? 2 : 16),
@@ -427,7 +427,7 @@ class _SupportChatState extends State<SupportChat> {
           vertical: 14, // py-3.5
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(2),
             topRight: Radius.circular(16),
@@ -472,7 +472,7 @@ class _SupportChatState extends State<SupportChat> {
             vertical: RtcSpace.s2,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brFull,
             border: Border.all(color: Gray.c200),
             boxShadow: RtcShadows.card,
@@ -524,8 +524,8 @@ class _SupportChatState extends State<SupportChat> {
         horizontal: RtcSpace.s4,
         vertical: RtcSpace.s3,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Superficie.tarjeta,
         border: Border(top: BorderSide(color: Gray.c100)),
       ),
       child: RtcPressable(

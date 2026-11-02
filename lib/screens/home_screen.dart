@@ -431,7 +431,7 @@ class _Chip extends StatelessWidget {
           curve: Curves.easeOutCubic,
           width: 84,
           decoration: BoxDecoration(
-            color: activo ? Green.c600 : Colors.white,
+            color: activo ? Green.c600 : Superficie.tarjeta,
             borderRadius: BorderRadius.circular(22),
             boxShadow: activo
                 ? [
@@ -801,7 +801,7 @@ class _CarruselEsqueleto extends StatelessWidget {
               width: 40,
               child: RtcSkeletonPulse(
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Fondo.suave,
                     borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(32),
@@ -829,12 +829,12 @@ class _SinCanchas extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
       padding: const EdgeInsets.all(RtcSpace.s6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
         children: [
-          const Icon(LucideIcons.searchX, size: 32, color: Gray.c300),
+          Icon(LucideIcons.searchX, size: 32, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
             rtcSinConexion.value
@@ -870,7 +870,7 @@ class _FilaCancha extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
@@ -918,7 +918,7 @@ class _FilaCancha extends StatelessWidget {
                           court.averageRating.toStringAsFixed(1),
                           style: RtcType.xs.copyWith(
                             fontWeight: RtcType.bold,
-                            color: Gray.c800,
+                            color: GrisFijo.c800,
                           ),
                         ),
                         const SizedBox(width: RtcSpace.s3),
@@ -928,7 +928,7 @@ class _FilaCancha extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: '\$${formatCop(court.pricePerHour)}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Green.c700,
                               ),
@@ -936,7 +936,7 @@ class _FilaCancha extends StatelessWidget {
                             const TextSpan(text: ' /hora'),
                           ],
                         ),
-                        style: RtcType.xs.copyWith(color: Gray.c500),
+                        style: RtcType.xs.copyWith(color: GrisFijo.c500),
                       ),
                     ],
                   ),
@@ -946,15 +946,11 @@ class _FilaCancha extends StatelessWidget {
             Container(
               width: 36,
               height: 36,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Fondo.app,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                LucideIcons.chevronRight,
-                size: 18,
-                color: Gray.c700,
-              ),
+              child: Icon(LucideIcons.chevronRight, size: 18, color: Gray.c700),
             ),
           ],
         ),
@@ -977,7 +973,7 @@ class _BannerClubes extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(RtcSpace.s5),
           decoration: BoxDecoration(
-            color: Gray.c900,
+            color: GrisFijo.c900,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Row(
@@ -996,7 +992,7 @@ class _BannerClubes extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Recibe reservas pagadas en línea, sin mensualidad.',
-                      style: RtcType.xs.copyWith(color: Gray.c500),
+                      style: RtcType.xs.copyWith(color: GrisFijo.c500),
                     ),
                   ],
                 ),
@@ -1015,7 +1011,7 @@ class _BannerClubes extends StatelessWidget {
                   'Publicar',
                   style: RtcType.sm.copyWith(
                     fontWeight: RtcType.bold,
-                    color: Gray.c900,
+                    color: GrisFijo.c900,
                   ),
                 ),
               ),

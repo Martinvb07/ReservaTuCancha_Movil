@@ -480,7 +480,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Gray.c900,
+        color: GrisFijo.c900,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Row(
@@ -492,7 +492,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
               '$url$slug',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: RtcType.sm.copyWith(color: Gray.c300),
+              style: RtcType.sm.copyWith(color: GrisFijo.c300),
             ),
           ),
           const SizedBox(width: RtcSpace.s3),
@@ -516,7 +516,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                 'Copiar',
                 style: RtcType.xs.copyWith(
                   fontWeight: RtcType.bold,
-                  color: Gray.c900,
+                  color: GrisFijo.c900,
                 ),
               ),
             ),
@@ -639,7 +639,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                 ? SizedBox.expand(
                     child: RemoteImage(url: _logo, fit: BoxFit.cover),
                   )
-                : const Icon(LucideIcons.building2, size: 36, color: Gray.c300),
+                : Icon(LucideIcons.building2, size: 36, color: Gray.c300),
           ),
         ),
         const SizedBox(height: RtcSpace.s6),
@@ -654,14 +654,14 @@ class _MiClubScreenState extends State<MiClubScreen> {
                 vertical: 10,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Superficie.tarjeta,
                 borderRadius: RtcRadius.brXl,
                 border: Border.all(color: Gray.c200, width: 2),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(LucideIcons.upload, size: 16, color: Gray.c700),
+                  Icon(LucideIcons.upload, size: 16, color: Gray.c700),
                   const SizedBox(width: RtcSpace.s2),
                   Text(
                     _logo.isNotEmpty ? 'Cambiar logo' : 'Subir logo',
@@ -737,7 +737,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
           _tiktok,
           'https://tiktok.com/@tuclub',
           error: _errores['tiktok'],
-          icono: const Icon(LucideIcons.music2, size: 16, color: Gray.c900),
+          icono: Icon(LucideIcons.music2, size: 16, color: Gray.c900),
           teclado: TextInputType.url,
         ),
         const SizedBox(height: RtcSpace.s4),
@@ -806,7 +806,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                     ),
                   )
                 else
-                  const Icon(LucideIcons.camera, size: 24, color: Gray.c500),
+                  Icon(LucideIcons.camera, size: 24, color: Gray.c500),
                 const SizedBox(height: RtcSpace.s2),
                 Text(
                   _subiendoFotos
@@ -855,7 +855,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
   Widget _tarjetaFoto(String url) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXl,
       ),
       clipBehavior: Clip.antiAlias,
@@ -920,7 +920,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
                       ),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Superficie.tarjeta,
                         borderRadius: RtcRadius.brXxl,
                         border: Border.all(color: Gray.c200, width: 2),
                       ),
@@ -1079,7 +1079,7 @@ class _MiClubScreenState extends State<MiClubScreen> {
             hintText: hint,
             hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,

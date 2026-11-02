@@ -112,7 +112,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: activo ? Gray.c900 : Fondo.app,
+                color: activo ? GrisFijo.c900 : Fondo.app,
                 borderRadius: RtcRadius.brFull,
               ),
               child: Text(
@@ -122,7 +122,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
                   color: activo
                       ? Colors.white
                       : off
-                      ? Gray.c300
+                      ? GrisFijo.c300
                       : Gray.c700,
                 ),
               ),
@@ -144,7 +144,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
           margin: const EdgeInsets.all(12),
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Column(
@@ -156,7 +156,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Gray.c200,
+                    color: GrisFijo.c200,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -164,7 +164,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
               const SizedBox(height: 14),
               Row(
                 children: [
-                  const Icon(LucideIcons.lock, size: 18, color: Gray.c900),
+                  Icon(LucideIcons.lock, size: 18, color: Gray.c900),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -244,7 +244,7 @@ class _BloqueoRapidoState extends State<_BloqueoRapido> {
                     height: 52,
                     alignment: Alignment.center,
                     decoration: const BoxDecoration(
-                      color: Gray.c900,
+                      color: GrisFijo.c900,
                       borderRadius: RtcRadius.brFull,
                     ),
                     child: _guardando

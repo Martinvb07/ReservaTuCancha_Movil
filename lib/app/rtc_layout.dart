@@ -78,7 +78,7 @@ class RtcLayout extends StatelessWidget {
             margin: const EdgeInsets.all(12),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               borderRadius: BorderRadius.circular(28),
             ),
             child: Column(
@@ -167,7 +167,10 @@ class RtcLayout extends StatelessWidget {
 
             // /auth/login se dibuja sola, sin header ni menu.
             if (state.chromeless) {
-              return Scaffold(backgroundColor: Colors.white, body: navigator!);
+              return Scaffold(
+                backgroundColor: Superficie.tarjeta,
+                body: navigator!,
+              );
             }
 
             // Sin header: cada pantalla trae su propia cabecera, como en una

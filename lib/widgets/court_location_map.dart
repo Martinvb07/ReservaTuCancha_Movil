@@ -150,7 +150,7 @@ class CourtLocationMap extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 2),
             child: Icon(LucideIcons.mapPin, size: 16, color: Gray.c500),
           ),
@@ -205,7 +205,7 @@ class CourtLocationMap extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(LucideIcons.navigation, size: 16, color: Gray.c700),
+            Icon(LucideIcons.navigation, size: 16, color: Gray.c700),
             const SizedBox(width: RtcSpace.s2),
             Text(
               'Cómo llegar',

@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: _conGoogle ? null : _entrarConGoogle,
       style: OutlinedButton.styleFrom(
         minimumSize: const Size.fromHeight(52),
-        side: const BorderSide(color: Gray.c200),
+        side: BorderSide(color: Gray.c200),
         foregroundColor: Gray.c900,
         shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXxl),
       ),
@@ -151,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Colors.white,
+      color: Superficie.tarjeta,
       child: SafeArea(
         child: Column(
           children: [
@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
         horizontal: RtcSpace.s6,
         vertical: RtcSpace.s5,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Gray.c100)),
       ),
       child: Row(
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Gray.c200),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     LucideIcons.arrowLeft,
                     size: 16,
                     color: Gray.c500,
@@ -456,7 +456,9 @@ class _LoginScreenState extends State<LoginScreen> {
               hintStyle: RtcType.sm.copyWith(color: Gray.c500),
               filled: true,
               // `border-red-300 bg-red-50/40` cuando el campo esta mal.
-              fillColor: bad ? Red.c50.withValues(alpha: 0.40) : Colors.white,
+              fillColor: bad
+                  ? Red.c50.withValues(alpha: 0.40)
+                  : Superficie.tarjeta,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: RtcSpace.s4,
                 vertical: RtcSpace.s3,
@@ -574,7 +576,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _footerLinks() {
     return Container(
       padding: const EdgeInsets.only(top: RtcSpace.s5),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Gray.c100)),
       ),
       child: Column(

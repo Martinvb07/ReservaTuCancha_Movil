@@ -241,7 +241,7 @@ class _BookingFormState extends State<BookingForm> {
       showDragHandle: true,
       // Las pantallas están pintadas en claro; sin esto, con el teléfono en
       // modo oscuro la hoja salía oscura y el texto gris oscuro no se leía.
-      backgroundColor: Colors.white,
+      backgroundColor: Superficie.tarjeta,
       builder: (ctx) => Padding(
         padding: EdgeInsets.fromLTRB(
           RtcSpace.s6,
@@ -456,7 +456,7 @@ class _BookingFormState extends State<BookingForm> {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -479,7 +479,7 @@ class _BookingFormState extends State<BookingForm> {
         horizontal: RtcSpace.s6,
         vertical: RtcSpace.s5,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Gray.c100)),
       ),
       child: Row(
@@ -935,7 +935,7 @@ class _BookingFormState extends State<BookingForm> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(LucideIcons.arrowLeft, size: 16, color: Gray.c500),
+              Icon(LucideIcons.arrowLeft, size: 16, color: Gray.c500),
               const SizedBox(width: 6),
               Text(
                 'Volver',
@@ -1002,7 +1002,7 @@ class _BookingFormState extends State<BookingForm> {
           _lineaDesglose('Turno fijo · $_semanas semanas, c/u', _totalFecha),
         ],
         const SizedBox(height: RtcSpace.s2),
-        const Divider(height: 1, color: Gray.c100),
+        Divider(height: 1, color: Gray.c100),
         const SizedBox(height: RtcSpace.s2),
         Row(
           children: [
@@ -1090,7 +1090,7 @@ class _BookingFormState extends State<BookingForm> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(LucideIcons.pencil, size: 12, color: Green.c700),
+                Icon(LucideIcons.pencil, size: 12, color: Green.c700),
                 const SizedBox(width: 4),
                 Text(
                   'Editar',
@@ -1145,9 +1145,9 @@ class _BookingFormState extends State<BookingForm> {
             child: Container(
               width: 8,
               height: 8,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: Superficie.tarjeta,
               ),
             ),
           ),
@@ -1170,7 +1170,7 @@ class _BookingFormState extends State<BookingForm> {
               ],
             ),
           ),
-          const Icon(LucideIcons.creditCard, size: 20, color: Gray.c500),
+          Icon(LucideIcons.creditCard, size: 20, color: Gray.c500),
         ],
       ),
     );
@@ -1276,20 +1276,20 @@ class _BookingFormState extends State<BookingForm> {
             hintText: hint,
             hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,
             ),
-            border: const OutlineInputBorder(
+            border: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
-            disabledBorder: const OutlineInputBorder(
+            disabledBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
@@ -1427,7 +1427,8 @@ class _AvisoTurnoState extends State<_AvisoTurno> {
         const SizedBox(height: RtcSpace.s4),
         FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: Gray.c900,
+            foregroundColor: Colors.white,
+            backgroundColor: GrisFijo.c900,
             minimumSize: const Size.fromHeight(48),
             shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),
           ),

@@ -11,14 +11,69 @@ import 'data/atajos.dart';
 import 'data/preferencias.dart';
 import 'data/push.dart';
 import 'theme/app_theme.dart';
+import 'theme/palette.dart';
 import 'widgets/aviso_actualizacion.dart';
 import 'widgets/aviso_sin_conexion.dart';
 import 'widgets/bienvenida.dart';
+
+/// Fija el modo de la paleta antes de pintar y, si el teléfono cambia de
+/// claro a oscuro con la app abierta, repinta todo sin perder la navegación.
+class _ModoDelTelefono extends StatefulWidget {
+  const _ModoDelTelefono({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_ModoDelTelefono> createState() => _ModoDelTelefonoState();
+}
+
+class _ModoDelTelefonoState extends State<_ModoDelTelefono>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    final oscuro =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark;
+    if (oscuro == RtcModo.oscuro) return;
+    RtcModo.oscuro = oscuro;
+    // Los colores de la paleta no avisan cuando cambian: se marcan todos los
+    // elementos para volver a pintarse. El estado (pantallas abiertas,
+    // formularios) se conserva.
+    void repintar(Element e) {
+      e.markNeedsBuild();
+      e.visitChildren(repintar);
+    }
+
+    (context as Element).visitChildren(repintar);
+    SystemChrome.setSystemUIOverlayStyle(
+      oscuro ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 Future<void> main() async {
   // La sesion se lee del almacenamiento seguro antes del primer frame: si no,
   // el navbar parpadea entre "sin sesion" y "con sesion" al abrir la app.
   WidgetsFlutterBinding.ensureInitialized();
+  // El modo del teléfono, antes del primer cuadro.
+  RtcModo.oscuro =
+      WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+      Brightness.dark;
   // Android 15 dibuja de borde a borde le guste o no a la app; declararlo hace
   // que Flutter reporte bien los insets en vez de dejar las barras en negro.
   // En iOS no cambia nada: ahi siempre fue asi.
@@ -74,12 +129,9 @@ class RtcApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: RtcTheme.light,
       darkTheme: RtcTheme.dark,
-      /* Siempre claro, como la web. Las pantallas están pintadas para fondo
-         claro (blancos y grises a mano), así que siguiendo al sistema un
-         teléfono en modo oscuro mezclaba hojas y diálogos oscuros con textos
-         oscuros que no se leían. El tema oscuro queda listo para cuando las
-         pantallas usen los colores del tema. */
-      themeMode: ThemeMode.light,
+      // Sigue el modo del teléfono. Los colores de las pantallas salen de la
+      // paleta, que cambia con RtcModo (ver _ModoDelTelefono).
+      themeMode: ThemeMode.system,
       initialRoute: '/',
       routes: rtcRoutes,
       // `/canchas/<id>` no entra en el mapa: lleva parametro.
@@ -88,19 +140,21 @@ class RtcApp extends StatelessWidget {
       navigatorKey: rtcNavigatorKey,
       navigatorObservers: [RtcRouteObserver(_nav)],
       // El header envuelve al Navigator: al cambiar de pantalla no se remonta.
-      builder: (context, navigator) => Stack(
-        children: [
-          RtcLayout(state: _nav, child: navigator!),
-          // El aviso de sin conexion va encima de todo, panel incluido.
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AvisoSinConexion(),
-          ),
-          const AvisoActualizacion(),
-          const _BienvenidaSiHaceFalta(),
-        ],
+      builder: (context, navigator) => _ModoDelTelefono(
+        child: Stack(
+          children: [
+            RtcLayout(state: _nav, child: navigator!),
+            // El aviso de sin conexion va encima de todo, panel incluido.
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AvisoSinConexion(),
+            ),
+            const AvisoActualizacion(),
+            const _BienvenidaSiHaceFalta(),
+          ],
+        ),
       ),
     );
   }

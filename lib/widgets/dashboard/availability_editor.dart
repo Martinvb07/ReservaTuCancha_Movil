@@ -115,7 +115,7 @@ class AvailabilityEditor extends StatelessWidget {
         height: 44, // h-11
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: activo ? Green.c50 : Colors.white,
+          color: activo ? Green.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brXl,
           border: Border.all(color: activo ? Green.c500 : Gray.c200, width: 2),
         ),
@@ -135,7 +135,7 @@ class AvailabilityEditor extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s3),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXl,
         border: Border.all(color: Gray.c200),
       ),

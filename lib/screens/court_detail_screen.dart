@@ -165,7 +165,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         RtcSpace.s5,
         RtcSpace.s4,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Fondo.app,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
@@ -269,7 +269,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         RtcSpace.s4 + abajo,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
           BoxShadow(
@@ -291,7 +291,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
                   children: [
                     TextSpan(
                       text: '\$${formatCop(court.pricePerHour)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
                         color: Gray.c900,
@@ -489,12 +489,12 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SportIcon(sport: court.sport, size: 14, color: Gray.c900),
+                  SportIcon(sport: court.sport, size: 14, color: GrisFijo.c900),
                   const SizedBox(width: 6),
                   Text(
                     sport.label,
                     style: RtcType.xs.copyWith(
-                      color: Gray.c900,
+                      color: GrisFijo.c900,
                       fontWeight: RtcType.bold,
                     ),
                   ),
@@ -506,7 +506,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         const SizedBox(height: RtcSpace.s3),
         Row(
           children: [
-            const Icon(LucideIcons.mapPin, size: 16, color: Gray.c500),
+            Icon(LucideIcons.mapPin, size: 16, color: GrisFijo.c500),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -537,7 +537,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
               const SizedBox(width: 4),
               Text(
                 '· ${court.totalReviews} reseñas',
-                style: RtcType.sm.copyWith(color: Gray.c500),
+                style: RtcType.sm.copyWith(color: GrisFijo.c500),
               ),
             ],
           ),
@@ -600,7 +600,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -646,7 +646,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
             RtcSpace.s5,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Column(
@@ -706,12 +706,12 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: RtcSpace.s10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
           children: [
-            const RtcStar(size: 40, fill: Gray.c300, stroke: Gray.c300),
+            RtcStar(size: 40, fill: Gray.c300, stroke: Gray.c300),
             const SizedBox(height: RtcSpace.s3),
             Text(
               'Aún no hay reseñas',
@@ -754,7 +754,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -799,7 +799,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(LucideIcons.searchX, size: 40, color: Gray.c300),
+            Icon(LucideIcons.searchX, size: 40, color: Gray.c300),
             const SizedBox(height: RtcSpace.s3),
             Text(
               _error!,
@@ -855,7 +855,7 @@ class _DetalleSkeleton extends StatelessWidget {
         SizedBox(
           height: _altoFoto + MediaQuery.paddingOf(context).top,
           child: foto == null
-              ? const ColoredBox(color: Gray.c200)
+              ? ColoredBox(color: Gray.c200)
               : Hero(
                   tag: tagFotoCancha(courtId),
                   child: RemoteImage(url: foto!),

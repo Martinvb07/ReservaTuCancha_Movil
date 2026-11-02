@@ -44,7 +44,7 @@ class _AvisoActualizacionState extends State<AvisoActualizacion> {
     final obligatoria = info.estado == EstadoVersion.obligatoria;
 
     final tarjeta = Material(
-      color: Colors.white,
+      color: Superficie.tarjeta,
       borderRadius: BorderRadius.circular(28),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -61,7 +61,7 @@ class _AvisoActualizacionState extends State<AvisoActualizacion> {
               child: const Icon(
                 LucideIcons.download,
                 size: 24,
-                color: Gray.c900,
+                color: GrisFijo.c900,
               ),
             ),
             const SizedBox(height: 12),
@@ -69,7 +69,7 @@ class _AvisoActualizacionState extends State<AvisoActualizacion> {
               obligatoria ? 'Actualiza la app' : 'Hay una versión nueva',
               style: RtcType.lg.copyWith(
                 fontWeight: FontWeight.w800,
-                color: Gray.c900,
+                color: GrisFijo.c900,
               ),
             ),
             const SizedBox(height: 4),
@@ -79,7 +79,7 @@ class _AvisoActualizacionState extends State<AvisoActualizacion> {
                         'reservando.'
                   : 'Trae mejoras y correcciones. Tarda menos de un minuto.',
               textAlign: TextAlign.center,
-              style: RtcType.sm.copyWith(color: Gray.c500),
+              style: RtcType.sm.copyWith(color: GrisFijo.c500),
             ),
             const SizedBox(height: 16),
             RtcPressable(
@@ -105,7 +105,7 @@ class _AvisoActualizacionState extends State<AvisoActualizacion> {
                 onPressed: () => setState(() => _cerrado = true),
                 child: Text(
                   'Ahora no',
-                  style: RtcType.sm.copyWith(color: Gray.c500),
+                  style: RtcType.sm.copyWith(color: GrisFijo.c500),
                 ),
               ),
           ],

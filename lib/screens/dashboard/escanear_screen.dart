@@ -84,7 +84,7 @@ class _EscanearScreenState extends State<EscanearScreen> {
           margin: const EdgeInsets.all(12),
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Column(
@@ -204,7 +204,7 @@ class _EscanearScreenState extends State<EscanearScreen> {
                     controller: _camara,
                     onDetect: _leido,
                     errorBuilder: (context, error) => ColoredBox(
-                      color: Gray.c900,
+                      color: GrisFijo.c900,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(24),
@@ -244,11 +244,11 @@ class _EscanearScreenState extends State<EscanearScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(LucideIcons.info, size: 14, color: Gray.c500),
+              Icon(LucideIcons.info, size: 14, color: GrisFijo.c500),
               const SizedBox(width: 6),
               Text(
                 'Solo se pueden marcar reservas pagadas de tu club.',
-                style: RtcType.xs.copyWith(color: Gray.c500),
+                style: RtcType.xs.copyWith(color: GrisFijo.c500),
               ),
             ],
           ),

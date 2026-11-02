@@ -11,16 +11,16 @@ InputDecoration decoCuenta(String hint, {Widget? sufijo}) => InputDecoration(
   hintText: hint,
   isDense: true,
   filled: true,
-  fillColor: Colors.white,
+  fillColor: Superficie.tarjeta,
   suffixIcon: sufijo,
   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
   border: OutlineInputBorder(
     borderRadius: RtcRadius.brXl,
-    borderSide: const BorderSide(color: Gray.c200),
+    borderSide: BorderSide(color: Gray.c200),
   ),
   enabledBorder: OutlineInputBorder(
     borderRadius: RtcRadius.brXl,
-    borderSide: const BorderSide(color: Gray.c200),
+    borderSide: BorderSide(color: Gray.c200),
   ),
 );
 
@@ -34,6 +34,7 @@ Widget etiquetaCuenta(String texto) => Padding(
 
 Widget botonCuenta(String texto, VoidCallback? onTap) => FilledButton(
   style: FilledButton.styleFrom(
+    foregroundColor: Colors.white,
     backgroundColor: Green.c600,
     minimumSize: const Size.fromHeight(50),
     shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),
@@ -148,7 +149,7 @@ class MarcoCuenta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Colors.white,
+      color: Superficie.tarjeta,
       child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(RtcSpace.s6),

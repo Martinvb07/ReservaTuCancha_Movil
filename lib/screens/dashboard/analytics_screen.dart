@@ -228,7 +228,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         return Container(
           padding: const EdgeInsets.all(RtcSpace.s4),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
           ),
           child: Column(
@@ -523,7 +523,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(

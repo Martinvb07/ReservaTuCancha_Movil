@@ -115,7 +115,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
   Widget _avisoSinDatos() {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s6),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Amber.c50,
         border: Border(
           left: BorderSide(color: Amber.c500, width: 4), // amber-500
@@ -206,7 +206,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
           child: Container(
             padding: const EdgeInsets.all(RtcSpace.s5),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               borderRadius: RtcRadius.brXxl,
             ),
             child: Column(

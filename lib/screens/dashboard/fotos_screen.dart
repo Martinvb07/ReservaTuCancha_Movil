@@ -241,7 +241,7 @@ class _FotosScreenState extends State<FotosScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -279,7 +279,7 @@ class _FotosScreenState extends State<FotosScreen> {
           vertical: 10, // py-2.5
         ),
         decoration: BoxDecoration(
-          color: activa ? Green.c50 : Colors.white,
+          color: activa ? Green.c50 : Superficie.tarjeta,
           borderRadius: RtcRadius.brXl,
           border: Border.all(color: activa ? Green.c500 : Gray.c200, width: 2),
         ),
@@ -306,7 +306,7 @@ class _FotosScreenState extends State<FotosScreen> {
             ),
             if (activa) ...[
               const SizedBox(width: RtcSpace.s2),
-              const Icon(LucideIcons.circleCheck, size: 16, color: Green.c700),
+              Icon(LucideIcons.circleCheck, size: 16, color: Green.c700),
             ],
           ],
         ),
@@ -343,7 +343,7 @@ class _FotosScreenState extends State<FotosScreen> {
                         color: Green.c500,
                       ),
                     )
-                  : const Icon(LucideIcons.upload, size: 28, color: Gray.c500),
+                  : Icon(LucideIcons.upload, size: 28, color: Gray.c500),
             ),
             const SizedBox(height: RtcSpace.s3),
             Text(
@@ -450,12 +450,12 @@ class _FotosScreenState extends State<FotosScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 64), // py-16
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
         children: [
-          const Icon(LucideIcons.image, size: 48, color: Gray.c300),
+          Icon(LucideIcons.image, size: 48, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
             'SIN FOTOS AÚN',
@@ -500,7 +500,7 @@ class _FotosScreenState extends State<FotosScreen> {
     final ocupada = _ocupada == url;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
         border: Border.all(color: principal ? Lime.c400 : Gray.c100, width: 2),
       ),
@@ -533,7 +533,7 @@ class _FotosScreenState extends State<FotosScreen> {
                           const Icon(
                             LucideIcons.star,
                             size: 12,
-                            color: Gray.c900,
+                            color: GrisFijo.c900,
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -541,7 +541,7 @@ class _FotosScreenState extends State<FotosScreen> {
                             style: RtcType.xs.copyWith(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
-                              color: Gray.c900,
+                              color: GrisFijo.c900,
                             ),
                           ),
                         ],
@@ -606,10 +606,10 @@ class _FotosScreenState extends State<FotosScreen> {
   }
 
   Widget _tips() {
-    const azulFondo = Blue.c50; // blue-50
-    const azulBorde = Blue.c100; // blue-100
-    const azul800 = Blue.c800;
-    const azul700 = Blue.c700;
+    final azulFondo = Blue.c50; // blue-50
+    final azulBorde = Blue.c100; // blue-100
+    final azul800 = Blue.c800;
+    final azul700 = Blue.c700;
 
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),

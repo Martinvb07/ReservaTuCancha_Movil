@@ -249,6 +249,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
         const SizedBox(height: RtcSpace.s4),
         FilledButton.icon(
           style: FilledButton.styleFrom(
+            foregroundColor: Colors.white,
             backgroundColor: Green.c600,
             shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXl),
           ),
@@ -292,7 +293,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
           vertical: RtcSpace.s2,
         ),
         decoration: BoxDecoration(
-          color: activa ? Colors.white : null,
+          color: activa ? Superficie.tarjeta : null,
           borderRadius: RtcRadius.brLg,
           boxShadow: activa ? RtcShadows.card : null,
         ),
@@ -329,23 +330,19 @@ class _ReservasScreenState extends State<ReservasScreen> {
             isDense: true,
             hintText: 'Buscar por cliente, email o código (#XXXXXXXX)...',
             hintStyle: RtcType.xs.copyWith(color: Gray.c500),
-            prefixIcon: const Icon(
-              LucideIcons.search,
-              size: 16,
-              color: Gray.c500,
-            ),
+            prefixIcon: Icon(LucideIcons.search, size: 16, color: Gray.c500),
             prefixIconConstraints: const BoxConstraints(minWidth: 40),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: RtcSpace.s4,
               vertical: RtcSpace.s3,
             ),
-            border: const OutlineInputBorder(
+            border: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
@@ -374,10 +371,10 @@ class _ReservasScreenState extends State<ReservasScreen> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: _estado == valor ? Gray.c900 : null,
+                    color: _estado == valor ? GrisFijo.c900 : null,
                     borderRadius: RtcRadius.brFull,
                     border: Border.all(
-                      color: _estado == valor ? Gray.c900 : Gray.c200,
+                      color: _estado == valor ? Gray.c900 : GrisFijo.c200,
                       width: 2,
                     ),
                   ),
@@ -385,7 +382,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
                     etiqueta,
                     style: RtcType.xs.copyWith(
                       fontWeight: RtcType.bold,
-                      color: _estado == valor ? Colors.white : Gray.c500,
+                      color: _estado == valor ? Colors.white : GrisFijo.c500,
                     ),
                   ),
                 ),
@@ -420,12 +417,12 @@ class _ReservasScreenState extends State<ReservasScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 64), // py-16
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
         children: [
-          const Icon(LucideIcons.calendarDays, size: 40, color: Gray.c300),
+          Icon(LucideIcons.calendarDays, size: 40, color: Gray.c300),
           const SizedBox(height: RtcSpace.s3),
           Text(
             'SIN RESERVAS',
@@ -451,7 +448,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s3),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -511,14 +508,14 @@ class _ReservasScreenState extends State<ReservasScreen> {
                           ),
                         PildoraEstado(estado: b.status),
                         if (b.esManual)
-                          const _Insignia(
+                          _Insignia(
                             'En el club',
                             LucideIcons.store,
                             Purple.c100,
                             Purple.c700,
                           ),
                         if (b.serieId != null)
-                          const _Insignia(
+                          _Insignia(
                             'Fijo',
                             LucideIcons.repeat,
                             Sky.c100,
@@ -689,7 +686,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(

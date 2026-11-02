@@ -47,7 +47,7 @@ class _MobileSearchTriggerState extends State<MobileSearchTrigger> {
             vertical: 14, // py-3.5
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
             // boxShadow: '0 10px 30px rgba(0,0,0,.24)' — inline en el TSX
             boxShadow: [

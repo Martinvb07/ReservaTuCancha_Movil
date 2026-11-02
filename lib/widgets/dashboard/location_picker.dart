@@ -237,13 +237,9 @@ class _LocationPickerState extends State<LocationPicker> {
             hintText: 'Busca la dirección en el mapa…',
             hintStyle: RtcType.sm.copyWith(color: Gray.c500),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Superficie.tarjeta,
             contentPadding: const EdgeInsets.symmetric(vertical: RtcSpace.s3),
-            prefixIcon: const Icon(
-              LucideIcons.search,
-              size: 16,
-              color: Gray.c500,
-            ),
+            prefixIcon: Icon(LucideIcons.search, size: 16, color: Gray.c500),
             prefixIconConstraints: const BoxConstraints(minWidth: 40),
             suffixIconConstraints: const BoxConstraints(minWidth: 0),
             suffixIcon: Padding(
@@ -252,7 +248,7 @@ class _LocationPickerState extends State<LocationPicker> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (_buscando)
-                    const SizedBox(
+                    SizedBox(
                       width: 16,
                       height: 16,
                       child: CircularProgressIndicator(
@@ -270,7 +266,7 @@ class _LocationPickerState extends State<LocationPicker> {
                           _abierta = false;
                         });
                       },
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.all(6),
                         child: Icon(LucideIcons.x, size: 14, color: Gray.c500),
                       ),
@@ -281,7 +277,7 @@ class _LocationPickerState extends State<LocationPicker> {
                     child: Padding(
                       padding: const EdgeInsets.all(6),
                       child: _ubicando
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 16,
                               height: 16,
                               child: CircularProgressIndicator(
@@ -289,7 +285,7 @@ class _LocationPickerState extends State<LocationPicker> {
                                 color: Gray.c500,
                               ),
                             )
-                          : const Icon(
+                          : Icon(
                               LucideIcons.crosshair,
                               size: 16,
                               color: Gray.c500,
@@ -299,11 +295,11 @@ class _LocationPickerState extends State<LocationPicker> {
                 ],
               ),
             ),
-            border: const OutlineInputBorder(
+            border: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: RtcRadius.brXl,
               borderSide: BorderSide(color: Gray.c200),
             ),
@@ -322,7 +318,7 @@ class _LocationPickerState extends State<LocationPicker> {
             child: Container(
               constraints: const BoxConstraints(maxHeight: 256), // max-h-64
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Superficie.tarjeta,
                 borderRadius: RtcRadius.brXxl,
                 border: Border.all(color: Gray.c200),
                 boxShadow: RtcShadows.sheetCard,
@@ -458,7 +454,7 @@ class _LocationPickerState extends State<LocationPicker> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Gray.c900.withValues(alpha: 0.85),
+                      color: GrisFijo.c900.withValues(alpha: 0.85),
                       borderRadius: RtcRadius.brFull,
                     ),
                     child: Text(
@@ -478,7 +474,7 @@ class _LocationPickerState extends State<LocationPicker> {
                 child: GestureDetector(
                   onTap: () => setState(() => _bloqueado = false),
                   child: ColoredBox(
-                    color: Gray.c900.withValues(alpha: 0.25),
+                    color: GrisFijo.c900.withValues(alpha: 0.25),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -514,12 +510,12 @@ class _LocationPickerState extends State<LocationPicker> {
     if (_resolviendo) {
       return Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 12,
             height: 12,
             child: CircularProgressIndicator(
               strokeWidth: 1.5,
-              color: Gray.c500,
+              color: GrisFijo.c500,
             ),
           ),
           const SizedBox(width: 6),

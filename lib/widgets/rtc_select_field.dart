@@ -66,7 +66,7 @@ class RtcSelectField extends StatelessWidget {
             vertical: compacto ? RtcSpace.s2 : RtcSpace.s3,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: compacto ? RtcRadius.brLg : RtcRadius.brXl,
             border: Border.all(color: Gray.c200),
           ),
@@ -83,7 +83,7 @@ class RtcSelectField extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: RtcSpace.s2),
-              const Icon(LucideIcons.chevronDown, size: 16, color: Gray.c500),
+              Icon(LucideIcons.chevronDown, size: 16, color: Gray.c500),
             ],
           ),
         ),
@@ -110,13 +110,12 @@ class RtcSelectField extends StatelessWidget {
 
 /// El acento del componente de la web: verde en general, naranja en bloqueos.
 enum RtcSelectAcento {
-  verde(Green.c600, Green.c50),
-  naranja(Orange.c500, Orange.c50); // orange-500 / orange-50
+  verde,
+  naranja; // orange-500 / orange-50
 
-  const RtcSelectAcento(this.color, this.fondo);
-
-  final Color color;
-  final Color fondo;
+  /* Getters y no campos: los colores cambian con el modo claro/oscuro. */
+  Color get color => this == verde ? Green.c600 : Orange.c500;
+  Color get fondo => this == verde ? Green.c50 : Orange.c50;
 }
 
 class _Hoja extends StatelessWidget {
@@ -137,8 +136,8 @@ class _Hoja extends StatelessWidget {
     final alto = MediaQuery.sizeOf(context).height;
     return Container(
       constraints: BoxConstraints(maxHeight: alto * 0.70),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: SafeArea(
@@ -179,11 +178,7 @@ class _Hoja extends StatelessWidget {
                   RtcPressable(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => Navigator.of(context).pop(),
-                    child: const Icon(
-                      LucideIcons.x,
-                      size: 20,
-                      color: Gray.c500,
-                    ),
+                    child: Icon(LucideIcons.x, size: 20, color: Gray.c500),
                   ),
                 ],
               ),
@@ -326,7 +321,7 @@ class RtcSettingsTabs extends StatelessWidget {
                           width: 6,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: activaEsta ? Colors.white : Red.c500,
+                            color: activaEsta ? Superficie.tarjeta : Red.c500,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -358,7 +353,7 @@ class RtcSettingsTabs extends StatelessWidget {
             key: ValueKey(actual.$1),
             padding: const EdgeInsets.all(RtcSpace.s5),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Superficie.tarjeta,
               borderRadius: RtcRadius.brXxl,
               border: Border.all(color: Gray.c100),
             ),

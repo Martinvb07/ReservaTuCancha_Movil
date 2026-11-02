@@ -40,7 +40,7 @@ Future<void> mostrarQrReserva(BuildContext context, Booking b) {
         margin: const EdgeInsets.all(12),
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 28),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(28),
         ),
         child: Column(
@@ -73,11 +73,11 @@ Future<void> mostrarQrReserva(BuildContext context, Booking b) {
               data: qrDeReserva(b.bookingCode),
               size: 220,
               padding: EdgeInsets.zero,
-              eyeStyle: const QrEyeStyle(
+              eyeStyle: QrEyeStyle(
                 eyeShape: QrEyeShape.circle,
                 color: Gray.c900,
               ),
-              dataModuleStyle: const QrDataModuleStyle(
+              dataModuleStyle: QrDataModuleStyle(
                 dataModuleShape: QrDataModuleShape.circle,
                 color: Gray.c900,
               ),
@@ -237,7 +237,7 @@ class _Accion extends StatelessWidget {
       child: Container(
         height: 44,
         decoration: BoxDecoration(
-          color: oscuro ? Gray.c900 : Fondo.app,
+          color: oscuro ? GrisFijo.c900 : Fondo.app,
           borderRadius: RtcRadius.brFull,
         ),
         child: Row(

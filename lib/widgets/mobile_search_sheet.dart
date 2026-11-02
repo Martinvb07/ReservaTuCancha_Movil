@@ -367,8 +367,8 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
                 14 + MediaQuery.paddingOf(context).bottom,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: const Border(top: BorderSide(color: Gray.c100)),
+                color: Superficie.tarjeta,
+                border: Border(top: BorderSide(color: Gray.c100)),
                 boxShadow: [
                   cssShadow(
                     dy: -4,
@@ -454,7 +454,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Superficie.tarjeta,
                   shape: BoxShape.circle,
                   boxShadow: [
                     cssShadow(
@@ -464,7 +464,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
                     ),
                   ],
                 ),
-                child: const Icon(LucideIcons.x, size: 19, color: Gray.c800),
+                child: Icon(LucideIcons.x, size: 19, color: Gray.c800),
               ),
             ),
           ),
@@ -490,7 +490,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: RtcRadius.brXxl,
             boxShadow: [
               cssShadow(
@@ -529,7 +529,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
     // rounded-3xl p-4, shadow '0 10px 36px rgba(20,14,30,.16)'
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(24), // rounded-3xl
         boxShadow: [
           cssShadow(
@@ -714,7 +714,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
         ),
 
         // h-px bg-gray-100 my-2
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(vertical: RtcSpace.s2),
           child: Divider(height: 1, thickness: 1, color: Gray.c100),
         ),

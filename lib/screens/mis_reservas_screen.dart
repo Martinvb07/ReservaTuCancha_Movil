@@ -152,7 +152,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
       height: 60,
       padding: const EdgeInsets.only(left: RtcSpace.s5, right: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brFull,
         boxShadow: [
           cssShadow(
@@ -245,7 +245,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
         vertical: RtcSpace.s8,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -253,15 +253,8 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
           Container(
             width: 64,
             height: 64,
-            decoration: const BoxDecoration(
-              color: Fondo.app,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              LucideIcons.calendarSearch,
-              size: 28,
-              color: Gray.c700,
-            ),
+            decoration: BoxDecoration(color: Fondo.app, shape: BoxShape.circle),
+            child: Icon(LucideIcons.calendarSearch, size: 28, color: Gray.c700),
           ),
           const SizedBox(height: RtcSpace.s4),
           Text(
@@ -309,10 +302,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: Gray.c100,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: Gray.c100, shape: BoxShape.circle),
             child: Icon(
               _error == null ? LucideIcons.x : LucideIcons.wifiOff,
               size: 32,
@@ -400,7 +390,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
               ),
               TextSpan(
                 text: _query,
-                style: const TextStyle(color: Gray.c900),
+                style: TextStyle(color: Gray.c900),
               ),
             ],
           ),
@@ -452,7 +442,7 @@ class _BookingCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -515,11 +505,7 @@ class _BookingCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(
-                            LucideIcons.mapPin,
-                            size: 12,
-                            color: Gray.c500,
-                          ),
+                          Icon(LucideIcons.mapPin, size: 12, color: Gray.c500),
                           const SizedBox(width: 4),
                           Text(
                             booking.city,

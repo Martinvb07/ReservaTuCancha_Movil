@@ -41,13 +41,14 @@ String _fmtCop(int n) {
 }
 
 /// `STATUS_BORDER`, `STATUS_TIME` y `STATUS_LABEL` juntos.
-const _estados = <String, (Color, Color, Color, String)>{
-  // borde, fondo, color de la hora, etiqueta
-  'confirmed': (Green.c200, Green.c50, Green.c700, 'Confirmada'),
-  'pending': (Amber.c200, Amber.c50, Amber.c700, 'Pendiente'),
-  'cancelled': (Red.c100, Red.c50, Red.c500, 'Cancelada'),
-  'completed': (Blue.c200, Blue.c50, Blue.c700, 'Completada'),
-};
+Map<String, (Color, Color, Color, String)> get _estados =>
+    <String, (Color, Color, Color, String)>{
+      // borde, fondo, color de la hora, etiqueta
+      'confirmed': (Green.c200, Green.c50, Green.c700, 'Confirmada'),
+      'pending': (Amber.c200, Amber.c50, Amber.c700, 'Pendiente'),
+      'cancelled': (Red.c100, Red.c50, Red.c500, 'Cancelada'),
+      'completed': (Blue.c200, Blue.c50, Blue.c700, 'Completada'),
+    };
 
 (Color, Color, Color, String) _estilo(String estado) =>
     _estados[estado] ?? _estados['pending']!;
@@ -227,7 +228,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
         // bg-gradient-to-r from-gray-900 to-gray-800
-        gradient: const LinearGradient(colors: [Gray.c900, Gray.c800]),
+        gradient: LinearGradient(colors: [GrisFijo.c900, GrisFijo.c800]),
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(
@@ -262,7 +263,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                       'reservatucancha.site/club/$slug',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: RtcType.xs.copyWith(color: Gray.c500),
+                      style: RtcType.xs.copyWith(color: GrisFijo.c500),
                     ),
                   ],
                 ),
@@ -291,7 +292,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                   child: Text(
                     'Copiar link',
                     style: RtcType.xs.copyWith(
-                      color: Gray.c900,
+                      color: GrisFijo.c900,
                       fontWeight: RtcType.bold,
                     ),
                   ),
@@ -316,7 +317,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                   child: Text(
                     'Ver página',
                     style: RtcType.xs.copyWith(
-                      color: Gray.c300,
+                      color: GrisFijo.c300,
                       fontWeight: RtcType.bold,
                     ),
                   ),
@@ -448,7 +449,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                     width: 48,
                     height: 48,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Green.c50,
                       shape: BoxShape.circle,
                     ),
@@ -643,7 +644,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
                       color: Gray.c50,
                       borderRadius: RtcRadius.brXxl,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       LucideIcons.calendar,
                       size: 28,
                       color: Gray.c300,
@@ -777,7 +778,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
           const SizedBox(height: 10),
           Row(
             children: [
-              const Icon(LucideIcons.user, size: 12, color: Gray.c500),
+              Icon(LucideIcons.user, size: 12, color: Gray.c500),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -850,7 +851,7 @@ class OwnerHomeWidgetsState extends State<OwnerHomeWidgets> {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
       ),
       child: Column(

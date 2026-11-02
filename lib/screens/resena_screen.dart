@@ -81,7 +81,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
               Container(
                 width: 72,
                 height: 72,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Green.c50,
                   shape: BoxShape.circle,
                 ),
@@ -146,7 +146,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Superficie.tarjeta,
             borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
