@@ -16,6 +16,7 @@ import '../widgets/motion/rtc_motion.dart';
 import '../widgets/acciones_reserva.dart';
 import '../widgets/motion/rtc_pressable.dart';
 import '../data/calificar_app.dart';
+import '../data/mis_turnos.dart';
 
 /// Port de `Frontend/src/app/(public)/reservas/confirmacion/page.tsx`, con una
 /// diferencia deliberada.
@@ -99,6 +100,8 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
           _estado = _Estado.pagado;
         });
         CalificarApp.momentoFeliz();
+        // Para "Mi turno" en el inicio, con su QR aunque no haya internet.
+        MisTurnos.instance.guardar(booking);
         return;
       }
       // Sigue pendiente: el webhook no llego todavia.

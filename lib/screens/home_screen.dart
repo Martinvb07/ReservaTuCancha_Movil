@@ -31,6 +31,9 @@ import '../models/fechas.dart';
 import '../widgets/etiqueta_cupo.dart';
 import 'court_detail_screen.dart' show tagFotoCancha;
 import '../widgets/motion/rtc_pressable.dart';
+import '../data/mis_turnos.dart';
+import '../models/booking.dart';
+import '../widgets/mi_turno.dart';
 
 /// Inicio de la app.
 ///
@@ -48,6 +51,62 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Court> _canchas = const [];
   bool _cargando = true;
+
+  /// "Mi turno": el próximo turno del jugador y las canchas donde ya jugó.
+  ResumenTurnos _turnos = const ResumenTurnos();
+  bool _miTurno = false;
+  final _canchasFrecuentes = <String, Court>{};
+  final _cupoFrecuentes = <String, Disponibilidad>{};
+  bool _turnosCargados = false;
+
+  /// Junta las reservas guardadas en el teléfono con las del correo del
+  /// jugador. Si el turno es hoy, el inicio abre directo en "Mi turno".
+  Future<void> _cargarTurnos() async {
+    final email = Preferencias.instance.jugador.email;
+    final locales = await MisTurnos.instance.locales();
+    var remotas = const <Booking>[];
+    if (email.isNotEmpty) {
+      try {
+        remotas = await bookingsApi.search(guestEmail: email);
+      } on RtcApiException {
+        // Sin red se queda con las del teléfono.
+      }
+    }
+    if (!mounted) return;
+    final resumen = resumirTurnos(remotas, locales, ahoraEnBogota());
+    final hoy = fechaIso(ahoraEnBogota());
+    setState(() {
+      _turnos = resumen;
+      final p = resumen.proximo;
+      if (!_turnosCargados && p != null && fechaIso(p.date) == hoy) {
+        _miTurno = true;
+      }
+      if (!resumen.hayAlgo) _miTurno = false;
+      _turnosCargados = true;
+    });
+    // Fotos y horario libre de hoy de las canchas a las que vuelve.
+    for (final f in resumen.frecuentes) {
+      try {
+        if (!_canchasFrecuentes.containsKey(f.courtId)) {
+          final ya = _canchas.where((c) => c.id == f.courtId);
+          _canchasFrecuentes[f.courtId] = ya.isNotEmpty
+              ? ya.first
+              : await courtsApi.getById(f.courtId);
+        }
+        final cupo = await bookingsApi.disponibilidad(
+          [f.courtId],
+          hoy,
+          desde: f.horaUsual,
+        );
+        if (cupo[f.courtId] != null) {
+          _cupoFrecuentes[f.courtId] = cupo[f.courtId]!;
+        }
+      } on RtcApiException {
+        // Una cancha que ya no existe o sin red: la tarjeta sale igual.
+      }
+      if (mounted) setState(() {});
+    }
+  }
 
   /// El deporte elegido en los chips; null es "Todas".
   String? _deporte;
@@ -78,6 +137,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _cargar();
+    _cargarTurnos();
+    MisTurnos.instance.cambios.addListener(_cargarTurnos);
     // Cuando el buscador sale de la pantalla por arriba, la barra de abajo
     // muestra la lupa a su lado: es el acople del buscador al navbar de la
     // web, pero abajo, donde llega el pulgar.
@@ -88,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    MisTurnos.instance.cambios.removeListener(_cargarTurnos);
     _scroll.dispose();
     super.dispose();
   }
@@ -170,79 +232,99 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: RtcSpace.s5),
         _ChipsDeporte(
-          elegido: _deporte,
-          onElegir: (d) => setState(() => _deporte = d),
-          cerca: _posicion != null,
+          elegido: _miTurno ? '__mi_turno__' : _deporte,
+          onElegir: (d) => setState(() {
+            _deporte = d;
+            _miTurno = false;
+          }),
+          cerca: _posicion != null && !_miTurno,
           ubicando: _ubicando,
-          onCerca: _alternarCerca,
+          onCerca: () {
+            setState(() => _miTurno = false);
+            _alternarCerca();
+          },
+          conMiTurno: _turnos.hayAlgo,
+          miTurnoActivo: _miTurno,
+          avisoMiTurno: _turnos.proximo != null,
+          onMiTurno: () => setState(() => _miTurno = true),
         ),
         const SizedBox(height: RtcSpace.s6),
-        _Titulo(
-          'Canchas para hoy',
-          accion: 'Ver todas',
-          onAccion: () => rtcBuscarCanchas(sport: _deporte ?? ''),
-        ),
-        const SizedBox(height: RtcSpace.s3),
-        if (_cargando)
-          const _CarruselEsqueleto()
-        else if (filtradas.isEmpty)
-          _SinCanchas(deporte: _deporte)
-        else
-          _Carrusel(canchas: filtradas, posicion: _posicion, cupo: _cupo),
-        // Las favoritas, si hay alguna entre las canchas cargadas.
-        ValueListenableBuilder<Set<String>>(
-          valueListenable: Preferencias.instance.favoritos,
-          builder: (context, favs, _) {
-            final favoritas = _canchas
-                .where((c) => favs.contains(c.id))
-                .toList();
-            if (favoritas.isEmpty) return const SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsets.only(top: RtcSpace.s8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const _Titulo('Tus favoritas'),
-                  const SizedBox(height: RtcSpace.s3),
-                  for (final c in favoritas.take(3))
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        RtcSpace.s5,
-                        0,
-                        RtcSpace.s5,
-                        RtcSpace.s3,
-                      ),
-                      child: _FilaCancha(court: c),
-                    ),
-                ],
-              ),
-            );
-          },
-        ),
-        if (populares.isNotEmpty) ...[
+        if (_miTurno) ...[
+          MiTurnoSeccion(
+            resumen: _turnos,
+            canchas: _canchasFrecuentes,
+            cupo: _cupoFrecuentes,
+          ),
           const SizedBox(height: RtcSpace.s8),
+          const _BannerClubes(),
+        ] else ...[
           _Titulo(
-            'Mejor calificadas',
+            'Canchas para hoy',
             accion: 'Ver todas',
-            onAccion: () => rtcNavigate('/empresas'),
+            onAccion: () => rtcBuscarCanchas(sport: _deporte ?? ''),
           ),
           const SizedBox(height: RtcSpace.s3),
-          for (var i = 0; i < populares.length && i < 4; i++)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                RtcSpace.s5,
-                0,
-                RtcSpace.s5,
-                RtcSpace.s3,
-              ),
-              child: RtcFadeUp(
-                delay: Duration(milliseconds: i * 60),
-                child: _FilaCancha(court: populares[i]),
-              ),
+          if (_cargando)
+            const _CarruselEsqueleto()
+          else if (filtradas.isEmpty)
+            _SinCanchas(deporte: _deporte)
+          else
+            _Carrusel(canchas: filtradas, posicion: _posicion, cupo: _cupo),
+          // Las favoritas, si hay alguna entre las canchas cargadas.
+          ValueListenableBuilder<Set<String>>(
+            valueListenable: Preferencias.instance.favoritos,
+            builder: (context, favs, _) {
+              final favoritas = _canchas
+                  .where((c) => favs.contains(c.id))
+                  .toList();
+              if (favoritas.isEmpty) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(top: RtcSpace.s8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _Titulo('Tus favoritas'),
+                    const SizedBox(height: RtcSpace.s3),
+                    for (final c in favoritas.take(3))
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          RtcSpace.s5,
+                          0,
+                          RtcSpace.s5,
+                          RtcSpace.s3,
+                        ),
+                        child: _FilaCancha(court: c),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+          if (populares.isNotEmpty) ...[
+            const SizedBox(height: RtcSpace.s8),
+            _Titulo(
+              'Mejor calificadas',
+              accion: 'Ver todas',
+              onAccion: () => rtcNavigate('/empresas'),
             ),
+            const SizedBox(height: RtcSpace.s3),
+            for (var i = 0; i < populares.length && i < 4; i++)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  RtcSpace.s5,
+                  0,
+                  RtcSpace.s5,
+                  RtcSpace.s3,
+                ),
+                child: RtcFadeUp(
+                  delay: Duration(milliseconds: i * 60),
+                  child: _FilaCancha(court: populares[i]),
+                ),
+              ),
+          ],
+          const SizedBox(height: RtcSpace.s5),
+          const _BannerClubes(),
         ],
-        const SizedBox(height: RtcSpace.s5),
-        const _BannerClubes(),
       ],
     );
   }
@@ -348,7 +430,19 @@ class _ChipsDeporte extends StatelessWidget {
     required this.cerca,
     required this.ubicando,
     required this.onCerca,
+    this.conMiTurno = false,
+    this.miTurnoActivo = false,
+    this.avisoMiTurno = false,
+    this.onMiTurno,
   });
+
+  /// El chip "Mi turno" va primero, solo si el jugador tiene reservas.
+  final bool conMiTurno;
+  final bool miTurnoActivo;
+
+  /// El punto rojo: hay un turno pendiente.
+  final bool avisoMiTurno;
+  final VoidCallback? onMiTurno;
 
   final String? elegido;
   final ValueChanged<String?> onElegir;
@@ -367,6 +461,14 @@ class _ChipsDeporte extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
         children: [
+          if (conMiTurno) ...[
+            _ChipMiTurno(
+              activo: miTurnoActivo,
+              aviso: avisoMiTurno && !miTurnoActivo,
+              onTap: onMiTurno ?? () {},
+            ),
+            const SizedBox(width: 10),
+          ],
           _Chip(
             etiqueta: 'Todas',
             activo: elegido == null,
@@ -396,6 +498,80 @@ class _ChipsDeporte extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// "Mi turno": oscuro con letra lima para distinguirse de los deportes, y
+/// lima cuando está elegido.
+class _ChipMiTurno extends StatelessWidget {
+  const _ChipMiTurno({
+    required this.activo,
+    required this.aviso,
+    required this.onTap,
+  });
+
+  final bool activo;
+  final bool aviso;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = activo ? GrisFijo.c900 : Lime.c400;
+    return Semantics(
+      button: true,
+      selected: activo,
+      label: aviso ? 'Mi turno, tienes un turno pendiente' : 'Mi turno',
+      child: RtcPressable(
+        behavior: HitTestBehavior.opaque,
+        excludeFromSemantics: true,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          width: 84,
+          decoration: BoxDecoration(
+            color: activo ? Lime.c400 : GrisFijo.c900,
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Stack(
+            children: [
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(LucideIcons.ticket, size: 22, color: color),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Mi turno',
+                      style: RtcType.xs.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: color,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (aviso)
+                Positioned(
+                  top: 10,
+                  right: 12,
+                  child: Container(
+                    width: 9,
+                    height: 9,
+                    decoration: BoxDecoration(
+                      color: Red.c500,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: GrisFijo.c900, width: 1.5),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

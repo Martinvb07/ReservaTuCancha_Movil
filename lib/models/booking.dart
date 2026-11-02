@@ -26,6 +26,10 @@ class Booking {
     this.serieId,
     this.serieSemanas,
     this.serieTotal,
+    this.deporte = '',
+    this.direccion = '',
+    this.lat,
+    this.lng,
   });
 
   final String id;
@@ -79,6 +83,49 @@ class Booking {
   final int? serieSemanas;
   final int? serieTotal;
 
+  /// De la cancha, cuando viene poblada: para "Mi turno" y "Cómo llegar".
+  final String deporte;
+  final String direccion;
+  final double? lat;
+  final double? lng;
+
+  /// Inicio y fin del turno en hora de Colombia, comparables con
+  /// `ahoraEnBogota()` (la fecha llega como la medianoche de Bogotá en UTC).
+  DateTime get inicio => _hora(startTime);
+  DateTime get fin => _hora(endTime);
+  DateTime _hora(String hhmm) {
+    final p = hhmm.split(':');
+    return DateTime.utc(
+      date.year,
+      date.month,
+      date.day,
+      int.tryParse(p[0]) ?? 0,
+      int.tryParse(p.length > 1 ? p[1] : '0') ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    '_id': id,
+    'bookingCode': bookingCode,
+    'courtId': {
+      '_id': courtId,
+      'name': courtName,
+      'sport': deporte,
+      'location': {
+        'city': city,
+        'address': direccion,
+        if (lat != null && lng != null) 'coordinates': [lng, lat],
+      },
+    },
+    'date': date.toIso8601String(),
+    'startTime': startTime,
+    'endTime': endTime,
+    'totalPrice': totalPrice,
+    'status': status,
+    'origen': origen,
+    'serieId': ?serieId,
+  };
+
   factory Booking.fromJson(Map<String, dynamic> json) {
     final court = json['courtId'] is Map<String, dynamic>
         ? json['courtId'] as Map<String, dynamic>
@@ -110,8 +157,21 @@ class Booking {
       serieId: json['serieId'] as String?,
       serieSemanas: ((json['serie'] as Map?)?['semanas'] as num?)?.toInt(),
       serieTotal: ((json['serie'] as Map?)?['total'] as num?)?.toInt(),
+      deporte: (court?['sport'] as String?) ?? '',
+      direccion: (location['address'] as String?) ?? '',
+      lat: _coord(location, 1),
+      lng: _coord(location, 0),
     );
   }
+}
+
+/// `coordinates` viene como [lng, lat].
+double? _coord(Map<String, dynamic> location, int i) {
+  final c = location['coordinates'];
+  if (c is List && c.length == 2 && c[i] is num) {
+    return (c[i] as num).toDouble();
+  }
+  return null;
 }
 
 /// `STATUS_STYLES` de `mis-reservas/page.tsx`.
