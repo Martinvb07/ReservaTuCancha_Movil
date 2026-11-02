@@ -42,6 +42,28 @@ class AuthApi {
     );
   }
 
+  /// `POST /cuenta/google` — el ID token de Google por la sesión del panel.
+  Future<AuthSessionData> google(String idToken) async {
+    final data =
+        await RtcApi.instance.post('/cuenta/google', body: {'idToken': idToken})
+            as Map<String, dynamic>;
+    return _sesion(data);
+  }
+
+  AuthSessionData _sesion(Map<String, dynamic> data) {
+    final access = data['accessToken'] as String?;
+    final refresh = data['refreshToken'] as String?;
+    final user = data['user'];
+    if (access == null || refresh == null || user is! Map<String, dynamic>) {
+      throw RtcApiException('Credenciales inválidas');
+    }
+    return AuthSessionData(
+      accessToken: access,
+      refreshToken: refresh,
+      user: AuthUser.fromJson(user),
+    );
+  }
+
   /// Devuelve el par nuevo. `auth.service.ts:82` rota tambien el refresh.
   Future<({String accessToken, String refreshToken})> refresh(
     String refreshToken,

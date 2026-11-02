@@ -60,6 +60,7 @@ class DashboardSidebar extends StatelessWidget {
         ('/dashboard/propetario/mi-club', 'Mi Club', LucideIcons.building2),
         ('/dashboard/propetario/equipo', 'Equipo', LucideIcons.usersRound),
         ('/dashboard/propetario/soporte', 'Soporte', LucideIcons.messageSquare),
+        ('/dashboard/cuenta', 'Mi cuenta', LucideIcons.keyRound),
       ],
     ),
   ];

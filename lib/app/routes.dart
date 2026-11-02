@@ -14,6 +14,9 @@ import '../screens/dashboard/mis_canchas_screen.dart';
 import '../screens/dashboard/nueva_cancha_screen.dart';
 import '../screens/dashboard/pagos_screen.dart';
 import '../screens/dashboard/reservas_screen.dart';
+import '../screens/cuenta/olvide_screen.dart';
+import '../screens/cuenta/restablecer_screen.dart';
+import '../screens/dashboard/cuenta_screen.dart';
 import '../screens/dashboard/equipo_screen.dart';
 import '../screens/dashboard/soporte_owner_screen.dart';
 import '../screens/court_detail_screen.dart';
@@ -36,6 +39,7 @@ final rtcRoutes = <String, WidgetBuilder>{
   '/para-clubes': (_) => const ParaClubesScreen(),
   '/solicitar-acceso': (_) => const SolicitarAccesoScreen(),
   '/auth/login': (_) => const LoginScreen(),
+  '/auth/olvide': (_) => const OlvideScreen(),
 };
 
 /// La ficha de cancha es una de las dos rutas con parametro, asi que no entra
@@ -45,6 +49,9 @@ const kCourtDetailPrefix = '/canchas/';
 /// Los enlaces de los correos con token (`?token=`).
 const kReprogramarPath = '/reservas/reprogramar';
 const kResenaPath = '/resena';
+
+/// El enlace del correo para elegir contraseña nueva.
+const kRestablecerPath = '/auth/restablecer';
 
 /// Abre una pantalla de token desde un enlace del correo.
 void rtcAbrirConToken(String path, String token) {
@@ -72,6 +79,12 @@ Route<dynamic>? rtcOnGenerateRoute(RouteSettings settings) {
     return MaterialPageRoute<void>(
       settings: settings,
       builder: (_) => ReprogramarScreen(token: token),
+    );
+  }
+  if (uri.path == kRestablecerPath && token.isNotEmpty) {
+    return MaterialPageRoute<void>(
+      settings: settings,
+      builder: (_) => RestablecerScreen(token: token),
     );
   }
   if (uri.path == kResenaPath && token.isNotEmpty) {
@@ -284,6 +297,7 @@ final rtcPanelRoutes = <String, WidgetBuilder>{
   '/dashboard/propetario/pagos': (_) => const PagosScreen(),
   '/dashboard/propetario/soporte': (_) => const SoporteOwnerScreen(),
   '/dashboard/propetario/equipo': (_) => const EquipoScreen(),
+  '/dashboard/cuenta': (_) => const CuentaScreen(),
 };
 
 /// Las rutas del panel que llevan parametro y por eso no estan en el mapa.
@@ -300,6 +314,10 @@ bool rtcPanelDisponible(String href) =>
 /// lateral, no un camino de ida y vuelta, y apilar dejaria el boton de atras
 /// recorriendo secciones sueltas.
 void rtcIrAlPanel(String href) {
+  // Con la contraseña temporal del correo, primero se elige una propia.
+  if (RtcSession.instance.user?.debeCambiarClave == true) {
+    href = '/dashboard/cuenta';
+  }
   if (!rtcPanelDisponible(href)) return;
   final nav = rtcNavigatorKey.currentState;
   if (nav == null) return;
@@ -321,5 +339,9 @@ void rtcAbrirPanel() {
     rtcNavigate('/auth/login');
     return;
   }
-  rtcNavigatorKey.currentState?.pushNamed('/dashboard');
+  rtcNavigatorKey.currentState?.pushNamed(
+    RtcSession.instance.user?.debeCambiarClave == true
+        ? '/dashboard/cuenta'
+        : '/dashboard',
+  );
 }

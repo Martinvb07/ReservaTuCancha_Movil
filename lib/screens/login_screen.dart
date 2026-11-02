@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../api/rtc_api.dart';
 import '../app/routes.dart';
 import '../auth/session.dart';
+import '../data/google_login.dart';
 import '../theme/motion.dart';
 import '../theme/palette.dart';
 import '../theme/shadows.dart';
@@ -62,6 +63,63 @@ class _LoginScreenState extends State<LoginScreen> {
           : 'Mínimo 6 caracteres';
     });
     return _emailError == null && _passwordError == null;
+  }
+
+  bool _conGoogle = false;
+
+  Future<void> _entrarConGoogle() async {
+    if (_conGoogle || _loading) return;
+    setState(() {
+      _conGoogle = true;
+      _authError = null;
+    });
+    try {
+      final idToken = await GoogleLogin.idToken();
+      if (idToken == null) {
+        if (mounted) setState(() => _conGoogle = false);
+        return;
+      }
+      await RtcSession.instance.loginConGoogle(idToken);
+      if (!mounted) return;
+      rtcAbrirPanel();
+    } on RtcApiException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _authError = e.message;
+        _conGoogle = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _authError =
+            'No pudimos abrir Google. Intenta de nuevo o entra con tu correo.';
+        _conGoogle = false;
+      });
+    }
+  }
+
+  Widget _botonGoogle() {
+    return OutlinedButton.icon(
+      onPressed: _conGoogle ? null : _entrarConGoogle,
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(52),
+        side: const BorderSide(color: Gray.c200),
+        foregroundColor: Gray.c900,
+        shape: RoundedRectangleBorder(borderRadius: RtcRadius.brXxl),
+      ),
+      icon: const Text(
+        'G',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w900,
+          color: Blue.c600,
+        ),
+      ),
+      label: Text(
+        _conGoogle ? 'Abriendo Google…' : 'Entrar con Google',
+        style: RtcType.sm.copyWith(fontWeight: RtcType.bold),
+      ),
+    );
   }
 
   Future<void> _submit() async {
@@ -273,7 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       action: RtcPressable(
                         behavior: HitTestBehavior.opaque,
-                        onTap: () => rtcNavigate('/soporte'),
+                        onTap: () => rtcNavigate('/auth/olvide'),
                         child: Text(
                           '¿Olvidaste tu contraseña?',
                           style: RtcType.xs.copyWith(
@@ -298,6 +356,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: RtcSpace.s5),
                     _submitButton(),
+                    if (GoogleLogin.disponible) ...[
+                      const SizedBox(height: RtcSpace.s4),
+                      _botonGoogle(),
+                    ],
                   ],
                 ),
               ),

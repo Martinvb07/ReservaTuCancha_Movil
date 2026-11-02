@@ -72,7 +72,10 @@ class DeepLinksDePago {
   static void _abrirEnlaceDelSitio(Uri uri) {
     final ruta = uri.path;
     final token = uri.queryParameters['token'] ?? '';
-    if ((ruta == kReprogramarPath || ruta == kResenaPath) && token.isNotEmpty) {
+    if ((ruta == kReprogramarPath ||
+            ruta == kResenaPath ||
+            ruta == kRestablecerPath) &&
+        token.isNotEmpty) {
       rtcAbrirConToken(ruta, token);
       return;
     }

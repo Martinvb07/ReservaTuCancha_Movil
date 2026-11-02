@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:reservatucancha/api/cuenta_api.dart';
 import 'package:reservatucancha/api/owner_api.dart';
 import 'package:reservatucancha/models/auth_user.dart';
 import 'package:reservatucancha/models/booking.dart';
@@ -55,5 +56,20 @@ void main() {
     expect(o.pctTotal, 37.5);
     expect(o.canchas.single.nombre, 'Cancha 1');
     expect(o.horasVacias.single.hora, 18);
+  });
+
+  test('la clave temporal se recuerda y se apaga al cambiarla', () {
+    final u = AuthUser.fromJson({'id': 'u1', 'role': 'owner', 'debeCambiarClave': true});
+    expect(u.debeCambiarClave, isTrue);
+    expect(AuthUser.fromJson(u.toJson()).debeCambiarClave, isTrue);
+    expect(u.copyWith(debeCambiarClave: false).debeCambiarClave, isFalse);
+  });
+
+  test('las reglas de la contraseña son las del backend', () {
+    expect(claveValida('corta1'), isFalse);
+    expect(claveValida('solamenteletras'), isFalse);
+    expect(claveValida('12345678'), isFalse);
+    expect(claveValida('Cancha2026'), isTrue);
+    expect(claveValida('ñandú123'), isTrue);
   });
 }

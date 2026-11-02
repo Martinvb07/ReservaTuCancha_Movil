@@ -10,6 +10,7 @@ class AuthUser {
     required this.role,
     this.avatarUrl,
     this.esStaff = false,
+    this.debeCambiarClave = false,
   });
 
   final String id;
@@ -24,6 +25,19 @@ class AuthUser {
   /// Empleado del club: usa el panel del dueño, sin pagos ni equipo.
   final bool esStaff;
 
+  /// Entró con la contraseña temporal del correo: tiene que elegir una propia.
+  final bool debeCambiarClave;
+
+  AuthUser copyWith({bool? debeCambiarClave}) => AuthUser(
+    id: id,
+    name: name,
+    email: email,
+    role: role,
+    avatarUrl: avatarUrl,
+    esStaff: esStaff,
+    debeCambiarClave: debeCambiarClave ?? this.debeCambiarClave,
+  );
+
   factory AuthUser.fromJson(Map<String, dynamic> json) => AuthUser(
     id: (json['id'] ?? json['_id'] ?? json['userId'] ?? '').toString(),
     name: (json['name'] as String?) ?? '',
@@ -31,6 +45,7 @@ class AuthUser {
     role: (json['role'] as String?) ?? 'owner',
     avatarUrl: json['avatarUrl'] as String?,
     esStaff: json['esStaff'] == true,
+    debeCambiarClave: json['debeCambiarClave'] == true,
   );
 
   Map<String, dynamic> toJson() => {
@@ -40,6 +55,7 @@ class AuthUser {
     'role': role,
     'avatarUrl': avatarUrl,
     'esStaff': esStaff,
+    'debeCambiarClave': debeCambiarClave,
   };
 
   /// La inicial para el avatar del navbar cuando no hay foto.

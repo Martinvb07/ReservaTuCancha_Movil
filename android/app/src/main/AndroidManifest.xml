@@ -62,6 +62,7 @@
                 <data android:pathPrefix="/dashboard"/>
                 <data android:path="/reservas/reprogramar"/>
                 <data android:path="/resena"/>
+                <data android:path="/auth/restablecer"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

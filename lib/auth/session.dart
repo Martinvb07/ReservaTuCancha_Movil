@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../api/auth_api.dart';
 import '../api/rtc_api.dart';
+import '../data/google_login.dart';
 import '../data/push.dart';
 import '../models/auth_user.dart';
 
@@ -62,8 +63,23 @@ class RtcSession extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(String email, String password) async {
-    final data = await authApi.login(email, password);
+  Future<void> login(String email, String password) async =>
+      _abrir(await authApi.login(email, password));
+
+  /// Entrar con Google: el ID token se canjea en el backend.
+  Future<void> loginConGoogle(String idToken) async =>
+      _abrir(await authApi.google(idToken));
+
+  /// Ya eligió su contraseña: deja de pedirle el cambio.
+  Future<void> marcarClaveCambiada() async {
+    final u = _user;
+    if (u == null) return;
+    _user = u.copyWith(debeCambiarClave: false);
+    await _persist();
+    notifyListeners();
+  }
+
+  Future<void> _abrir(AuthSessionData data) async {
     _accessToken = data.accessToken;
     _refreshToken = data.refreshToken;
     _user = data.user;
@@ -105,6 +121,7 @@ class RtcSession extends ChangeNotifier {
     if (_accessToken != null) {
       await PushNotificaciones.instance.olvidarDelClub();
     }
+    await GoogleLogin.salir();
     _accessToken = null;
     _refreshToken = null;
     _user = null;
