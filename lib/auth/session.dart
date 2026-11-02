@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../api/auth_api.dart';
 import '../api/rtc_api.dart';
+import '../data/cache_offline.dart';
 import '../data/google_login.dart';
 import '../data/push.dart';
 import '../models/auth_user.dart';
@@ -122,6 +123,7 @@ class RtcSession extends ChangeNotifier {
       await PushNotificaciones.instance.olvidarDelClub();
     }
     await GoogleLogin.salir();
+    await CacheOffline.instance.borrarPanel();
     _accessToken = null;
     _refreshToken = null;
     _user = null;

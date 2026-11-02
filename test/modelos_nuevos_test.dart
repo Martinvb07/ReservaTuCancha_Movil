@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reservatucancha/api/cuenta_api.dart';
+import 'package:reservatucancha/data/cache_offline.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reservatucancha/api/owner_api.dart';
 import 'package:reservatucancha/models/auth_user.dart';
 import 'package:reservatucancha/models/booking.dart';
@@ -71,5 +73,19 @@ void main() {
     expect(claveValida('12345678'), isFalse);
     expect(claveValida('Cancha2026'), isTrue);
     expect(claveValida('ñandú123'), isTrue);
+  });
+
+  test('lo guardado sin conexión se lee y el panel se borra al salir', () async {
+    SharedPreferences.setMockInitialValues({});
+    final cache = CacheOffline.instance;
+    final publica = CacheOffline.clave(Uri.parse('https://x/api/courts?page=1'), firmada: false);
+    final panel = CacheOffline.clave(Uri.parse('https://x/api/bookings/owner'), firmada: true);
+    await cache.guardar(publica, {'data': [1, 2]});
+    await cache.guardar(panel, [{'_id': 'b1'}]);
+    expect(await cache.leer(publica), {'data': [1, 2]});
+    expect(await cache.leer(panel), isNotNull);
+    await cache.borrarPanel();
+    expect(await cache.leer(panel), isNull);
+    expect(await cache.leer(publica), isNotNull);
   });
 }

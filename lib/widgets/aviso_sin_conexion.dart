@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../api/rtc_api.dart';
+import '../data/cache_offline.dart';
 import '../app/routes.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
@@ -52,11 +53,18 @@ class AvisoSinConexion extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          'Sin conexión a internet',
-                          style: RtcType.sm.copyWith(
-                            color: Colors.white,
-                            fontWeight: RtcType.semibold,
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: rtcMostrandoGuardado,
+                          builder: (context, guardado, _) => Text(
+                            guardado
+                                ? 'Sin internet · viendo lo último guardado'
+                                : 'Sin conexión a internet',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: RtcType.sm.copyWith(
+                              color: Colors.white,
+                              fontWeight: RtcType.semibold,
+                            ),
                           ),
                         ),
                       ),

@@ -11,6 +11,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../data/cache_offline.dart';
+
 /// Error de la API con el mensaje que manda NestJS.
 ///
 /// NestJS devuelve `message` como string o como lista (las validaciones de
@@ -114,6 +116,30 @@ class RtcApi {
     final uri = _uri(path, query);
     final token = auth ? readAccessToken?.call() : null;
 
+    if (method != 'GET') return _firmado(method, uri, body, token);
+
+    /* Los GET se guardan para mostrarlos sin internet (ver CacheOffline). */
+    final clave = CacheOffline.clave(uri, firmada: auth);
+    try {
+      final datos = await _firmado(method, uri, body, token);
+      rtcMostrandoGuardado.value = false;
+      CacheOffline.instance.guardar(clave, datos);
+      return datos;
+    } on RtcApiException catch (e) {
+      if (e.statusCode != null) rethrow; // el servidor contestó: no es la red
+      final guardado = await CacheOffline.instance.leer(clave);
+      if (guardado == null) rethrow;
+      rtcMostrandoGuardado.value = true;
+      return guardado;
+    }
+  }
+
+  Future<dynamic> _firmado(
+    String method,
+    Uri uri,
+    Object? body,
+    String? token,
+  ) async {
     try {
       return await _request(method, uri, body: body, token: token);
     } on RtcApiException catch (e) {
