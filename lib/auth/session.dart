@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../api/auth_api.dart';
 import '../api/rtc_api.dart';
+import '../data/atajos.dart';
 import '../data/cache_offline.dart';
 import '../data/google_login.dart';
 import '../data/push.dart';
@@ -88,6 +89,7 @@ class RtcSession extends ChangeNotifier {
     notifyListeners();
     // Este teléfono empieza a recibir los avisos del club.
     PushNotificaciones.instance.registrarEnElClub();
+    AtajosIcono.mostrar();
   }
 
   /// La dispara el cliente HTTP cuando una request firmada vuelve 401.
@@ -124,6 +126,7 @@ class RtcSession extends ChangeNotifier {
     }
     await GoogleLogin.salir();
     await CacheOffline.instance.borrarPanel();
+    await AtajosIcono.quitar();
     _accessToken = null;
     _refreshToken = null;
     _user = null;

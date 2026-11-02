@@ -10,6 +10,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/star_rating.dart';
 import '../widgets/motion/rtc_pressable.dart';
+import '../data/calificar_app.dart';
 
 const _etiquetas = {
   1: 'Muy mala',
@@ -58,6 +59,7 @@ class _ResenaScreenState extends State<ResenaScreen> {
       );
       if (!mounted) return;
       setState(() => _enviada = true);
+      if (_estrellas >= 4) CalificarApp.momentoFeliz();
     } on RtcApiException catch (e) {
       if (!mounted) return;
       setState(() {

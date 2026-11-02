@@ -7,6 +7,7 @@ import 'app/routes.dart';
 import 'app/rtc_layout.dart';
 import 'auth/session.dart';
 import 'booking/pago.dart';
+import 'data/atajos.dart';
 import 'data/preferencias.dart';
 import 'data/push.dart';
 import 'theme/app_theme.dart';
@@ -30,6 +31,13 @@ Future<void> main() async {
   // Push: confirmaciones y recordatorios al jugador, reservas nuevas al club.
   // Sin el proyecto de Firebase en la build queda apagado.
   await PushNotificaciones.instance.iniciar();
+  // Atajos del ícono ("Escanear QR", "Reservas") para el celular del club.
+  AtajosIcono.escuchar();
+  if (RtcSession.instance.isLoggedIn) {
+    AtajosIcono.mostrar();
+  } else {
+    AtajosIcono.quitar();
+  }
   if (RtcSession.instance.isLoggedIn) {
     // No se espera: pedir permiso no tiene por qué frenar el arranque.
     PushNotificaciones.instance.registrarEnElClub();

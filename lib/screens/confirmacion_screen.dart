@@ -15,6 +15,7 @@ import '../theme/typography.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/acciones_reserva.dart';
 import '../widgets/motion/rtc_pressable.dart';
+import '../data/calificar_app.dart';
 
 /// Port de `Frontend/src/app/(public)/reservas/confirmacion/page.tsx`, con una
 /// diferencia deliberada.
@@ -97,6 +98,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
           _booking = booking;
           _estado = _Estado.pagado;
         });
+        CalificarApp.momentoFeliz();
         return;
       }
       // Sigue pendiente: el webhook no llego todavia.
