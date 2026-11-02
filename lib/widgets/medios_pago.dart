@@ -44,11 +44,12 @@ class _Chip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: nombre,
+      // Sin `alignment`: con él el Container se estira a todo el ancho y
+      // cada logo quedaba en su propia fila.
       child: Container(
-        height: 28,
-        constraints: const BoxConstraints(minWidth: 46),
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        alignment: Alignment.center,
+        height: 26,
+        constraints: const BoxConstraints(minWidth: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 7),
         decoration: BoxDecoration(
           color: Superficie.tarjeta,
           borderRadius: BorderRadius.circular(6),
@@ -61,7 +62,7 @@ class _Chip extends StatelessWidget {
             ),
           ],
         ),
-        child: ExcludeSemantics(child: child),
+        child: Center(widthFactor: 1, child: ExcludeSemantics(child: child)),
       ),
     );
   }

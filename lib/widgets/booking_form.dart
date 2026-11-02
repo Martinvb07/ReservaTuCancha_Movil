@@ -52,8 +52,6 @@ class BookingForm extends StatefulWidget {
 /// `PER_PAGE`.
 const _perPage = 8;
 
-/// Turno fijo: cuántas semanas seguidas se puede repetir el mismo horario.
-const _opcionesSemanas = [1, 4, 8, 12];
 
 class _BookingFormState extends State<BookingForm> {
   // Salen llenos con lo de la ultima reserva hecha desde este telefono.
@@ -88,9 +86,6 @@ class _BookingFormState extends State<BookingForm> {
 
   bool _aplicadaFecha = false;
   bool _aplicadaHora = false;
-
-  /// Turno fijo: 1 es una reserva normal.
-  int _semanas = 1;
 
   @override
   void initState() {
@@ -192,9 +187,7 @@ class _BookingFormState extends State<BookingForm> {
   /// de la cancha: lo que se manda en `totalPrice` no decide nada.
   int get _totalFecha => _precioCancha + _tarifaServicio;
 
-  /// En un turno fijo cada semana lleva su propia tarifa, así que el total es
-  /// el de una fecha por las semanas (lo mismo que cobra el backend).
-  int get _totalPrice => _totalFecha * _semanas;
+  int get _totalPrice => _totalFecha;
 
   /// `expandUnavailable`: una franja ocupada tapa todas las horas que abarca.
   Set<String> _expandir(List<BlockedSlot> slots) {
@@ -414,7 +407,6 @@ class _BookingFormState extends State<BookingForm> {
         endTime: _endTime,
         totalPrice: _totalPrice,
         notes: _notas.text,
-        semanas: _semanas,
         // Para avisar en este teléfono la confirmación y el recordatorio.
         pushToken: await PushNotificaciones.instance.pedirPermiso(),
       );
@@ -526,12 +518,7 @@ class _BookingFormState extends State<BookingForm> {
           const SizedBox(height: 6),
           _grillaHorarios(),
         ],
-        if (listo) ...[
-          const SizedBox(height: RtcSpace.s5),
-          _selectorSemanas(),
-          const SizedBox(height: RtcSpace.s5),
-          _resumenVivo(),
-        ],
+        if (listo) ...[const SizedBox(height: RtcSpace.s5), _resumenVivo()],
         if (_errorGeneral != null) ...[
           const SizedBox(height: RtcSpace.s3),
           Text(_errorGeneral!, style: RtcType.xs.copyWith(color: Red.c500)),
@@ -798,65 +785,6 @@ class _BookingFormState extends State<BookingForm> {
     );
   }
 
-  /// Turno fijo: la misma hora varias semanas seguidas, en un solo pago.
-  Widget _selectorSemanas() {
-    final fechas = [
-      for (var i = 0; i < _semanas; i++)
-        _selectedDate!.add(Duration(days: 7 * i)),
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _etiqueta(LucideIcons.repeat, '¿Cada semana?'),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            for (final n in _opcionesSemanas) ...[
-              if (n != _opcionesSemanas.first)
-                const SizedBox(width: RtcSpace.s2),
-              Expanded(
-                child: RtcPressable(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    HapticFeedback.selectionClick();
-                    setState(() => _semanas = n);
-                  },
-                  child: Container(
-                    height: 38,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: _semanas == n ? Green.c50 : null,
-                      borderRadius: RtcRadius.brXl,
-                      border: Border.all(
-                        color: _semanas == n ? Green.c600 : Gray.c200,
-                      ),
-                    ),
-                    child: Text(
-                      n == 1 ? 'Solo esta' : '$n sem.',
-                      style: RtcType.xs.copyWith(
-                        fontWeight: RtcType.semibold,
-                        color: _semanas == n ? Green.c700 : Gray.c600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-        if (_semanas > 1) ...[
-          const SizedBox(height: 6),
-          Text(
-            'Turno fijo a las ${hora12(_selectedSlots.first)}: '
-            '${fechas.map(diaMesCorto).join(' · ')}. Se paga todo junto y cada '
-            'fecha se puede mover por separado.',
-            style: RtcType.xs.copyWith(fontSize: 11, color: Gray.c500),
-          ),
-        ],
-      ],
-    );
-  }
-
   Widget _leyenda(Color? fill, Color border, String label) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -904,8 +832,7 @@ class _BookingFormState extends State<BookingForm> {
                 ),
                 Text(
                   '${hora12(_selectedSlots.first)} – ${hora12(_endTime)} · '
-                  '${_slotDuration * _selectedSlots.length} min'
-                  '${_semanas > 1 ? ' · $_semanas semanas' : ''}',
+                  '${_slotDuration * _selectedSlots.length} min',
                   style: RtcType.xs.copyWith(color: Green.c700),
                 ),
               ],
@@ -986,7 +913,6 @@ class _BookingFormState extends State<BookingForm> {
         const SizedBox(height: RtcSpace.s5),
         _etiqueta(LucideIcons.lock, 'Método de pago'),
         const SizedBox(height: 10),
-        if (!sinPago) ...[const MediosPago(), const SizedBox(height: 10)],
         if (sinPago) _pagoNoDisponible() else _metodoEpayco(),
         const SizedBox(height: RtcSpace.s5),
         // El desglose va completo a proposito: la tarifa de servicio se ve
@@ -997,10 +923,6 @@ class _BookingFormState extends State<BookingForm> {
         ),
         const SizedBox(height: 6),
         _lineaDesglose('Tarifa de servicio', _tarifaServicio),
-        if (_semanas > 1) ...[
-          const SizedBox(height: 6),
-          _lineaDesglose('Turno fijo · $_semanas semanas, c/u', _totalFecha),
-        ],
         const SizedBox(height: RtcSpace.s2),
         Divider(height: 1, color: Gray.c100),
         const SizedBox(height: RtcSpace.s2),
@@ -1123,54 +1045,57 @@ class _BookingFormState extends State<BookingForm> {
     );
   }
 
+  /// Una sola tarjeta: no hay nada que elegir (todo se paga en ePayco), así
+  /// que va sin radio y con los medios como logos chicos en una fila.
   Widget _metodoEpayco() {
     return Container(
       padding: const EdgeInsets.all(RtcSpace.s4),
       decoration: BoxDecoration(
-        color: Green.c50,
+        color: Superficie.tarjeta,
         borderRadius: RtcRadius.brXxl,
-        border: Border.all(color: Green.c600),
+        border: Border.all(color: Gray.c200),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 20,
-            height: 20,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Green.c600,
-              border: Border.all(color: Green.c600, width: 2),
-            ),
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Superficie.tarjeta,
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: Green.c50,
+                  borderRadius: RtcRadius.brXl,
+                ),
+                child: const Icon(
+                  LucideIcons.shieldCheck,
+                  size: 18,
+                  color: Green.c600,
+                ),
               ),
-            ),
-          ),
-          const SizedBox(width: RtcSpace.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pago seguro con ePayco',
-                  style: RtcType.sm.copyWith(
-                    fontWeight: RtcType.semibold,
-                    color: Gray.c900,
-                  ),
+              const SizedBox(width: RtcSpace.s3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Pago seguro con ePayco',
+                      style: RtcType.sm.copyWith(
+                        fontWeight: RtcType.semibold,
+                        color: Gray.c900,
+                      ),
+                    ),
+                    Text(
+                      'Eliges el medio al pagar',
+                      style: RtcType.xs.copyWith(color: Gray.c500),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Tarjeta débito o crédito, Nequi, PSE y DaviPlata',
-                  style: RtcType.xs.copyWith(color: Gray.c500),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Icon(LucideIcons.creditCard, size: 20, color: Gray.c500),
+          const SizedBox(height: RtcSpace.s3),
+          const MediosPago(),
         ],
       ),
     );
