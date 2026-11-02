@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Universal Links: los enlaces de reservatucancha.site (correos,
+	     WhatsApp) abren la app en vez de Safari. El sitio publica
+	     /.well-known/apple-app-site-association con el Team ID. -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:reservatucancha.site</string>
+		<string>applinks:www.reservatucancha.site</string>
+	</array>
+	<!-- Notificaciones push (Firebase Cloud Messaging vía APNs). -->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>
