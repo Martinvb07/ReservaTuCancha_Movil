@@ -25,8 +25,55 @@ import 'motion/rtc_pressable.dart';
 /// franjas esta copiada del original, no reinventada: los cortes de
 /// `generateTimeSlots`, el limite de 14 fechas, la seleccion contigua y el
 /// calculo del total.
+/// Lo que la barra fija de la ficha necesita saber del formulario: en qué
+/// paso va, si ya hay horario elegido y cuánto suma, para mostrar el botón de
+/// la acción que toca ("Reservar", "Continuar" o "Pagar") y ejecutarla.
+class BookingFormController extends ChangeNotifier {
+  String _paso = 'when';
+  bool _listo = false;
+  bool _procesando = false;
+  int _total = 0;
+
+  /// 'when' (elegir día y hora) o 'checkout' (datos y pago).
+  String get paso => _paso;
+
+  /// Ya hay día y horario elegidos.
+  bool get listo => _listo;
+  bool get procesando => _procesando;
+  int get total => _total;
+
+  VoidCallback? _continuar;
+  Future<bool> Function()? _pagar;
+
+  /// Pasa al paso de datos y pago.
+  void continuar() => _continuar?.call();
+
+  /// Valida y abre el pago. false si faltan datos (el formulario los marca).
+  Future<bool> pagar() async => await _pagar?.call() ?? false;
+
+  void _actualizar({
+    required String paso,
+    required bool listo,
+    required bool procesando,
+    required int total,
+  }) {
+    if (paso == _paso &&
+        listo == _listo &&
+        procesando == _procesando &&
+        total == _total) {
+      return;
+    }
+    _paso = paso;
+    _listo = listo;
+    _procesando = procesando;
+    _total = total;
+    notifyListeners();
+  }
+}
+
 class BookingForm extends StatefulWidget {
   const BookingForm({
+    this.controller,
     super.key,
     required this.courtId,
     required this.courtName,
@@ -45,13 +92,15 @@ class BookingForm extends StatefulWidget {
   final String? initialDate;
   final String? initialStart;
 
+  /// Para la barra fija de la ficha (ver [BookingFormController]).
+  final BookingFormController? controller;
+
   @override
   State<BookingForm> createState() => _BookingFormState();
 }
 
 /// `PER_PAGE`.
 const _perPage = 8;
-
 
 class _BookingFormState extends State<BookingForm> {
   // Salen llenos con lo de la ultima reserva hecha desde este telefono.
@@ -90,6 +139,14 @@ class _BookingFormState extends State<BookingForm> {
   @override
   void initState() {
     super.initState();
+    // La barra fija de la ficha ejecuta las mismas acciones que los botones.
+    widget.controller
+      ?.._continuar = () {
+        if (_selectedDate != null && _selectedSlots.isNotEmpty) {
+          setState(() => _step = 'checkout');
+        }
+      }
+      .._pagar = _confirmarYPagar;
     _cargarPagos();
     _aplicarPreseleccion();
   }
@@ -388,8 +445,9 @@ class _BookingFormState extends State<BookingForm> {
     return errores.isEmpty;
   }
 
-  Future<void> _confirmarYPagar() async {
-    if (_processing || !_validar()) return;
+  Future<bool> _confirmarYPagar() async {
+    if (_processing) return true;
+    if (!_validar()) return false;
     HapticFeedback.mediumImpact();
     setState(() {
       _processing = true;
@@ -416,7 +474,7 @@ class _BookingFormState extends State<BookingForm> {
         redirectUrlDePago(booking.id),
       );
 
-      if (!mounted) return;
+      if (!mounted) return true;
       // La pantalla de confirmacion se abre ANTES que el navegador: cuando la
       // persona vuelve, la app ya estuvo consultando si el pago entro.
       // Para la proxima: el formulario ya sale lleno y Mis reservas las
@@ -431,18 +489,32 @@ class _BookingFormState extends State<BookingForm> {
       rtcAbrirConfirmacion(booking.id);
       await abrirCheckout(checkout);
     } on RtcApiException catch (e) {
-      if (!mounted) return;
+      if (!mounted) return true;
       setState(() {
         _errorGeneral = e.message;
         _processing = false;
       });
     }
+    return true;
   }
 
   // ── PINTADO ──────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
+    // La barra de la ficha se entera después del cuadro, no durante.
+    final c = widget.controller;
+    if (c != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        c._actualizar(
+          paso: _step,
+          listo: _selectedDate != null && _selectedSlots.isNotEmpty,
+          procesando: _processing,
+          total: _totalPrice,
+        );
+      });
+    }
     // Va sobre el fondo gris de la ficha: la tarjeta blanca se separa sola,
     // sin borde ni sombra.
     return Container(

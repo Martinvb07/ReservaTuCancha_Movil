@@ -71,6 +71,16 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
   /// El titulo de la seccion de reserva: el boton de abajo lleva hasta aca.
   final _reservaKey = GlobalKey();
 
+  /// Une la barra fija de abajo con el formulario: la barra muestra y hace
+  /// la acción del paso en que va ("Reservar", "Continuar" o "Pagar").
+  final _reserva = BookingFormController();
+
+  @override
+  void dispose() {
+    _reserva.dispose();
+    super.dispose();
+  }
+
   Court? _court;
   List<Review> _reviews = const [];
   bool _loading = true;
@@ -139,9 +149,38 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
             ),
           ],
         ),
-        Positioned(left: 0, right: 0, bottom: 0, child: _barraReserva(court)),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: ListenableBuilder(
+            listenable: _reserva,
+            builder: (context, _) => _barraReserva(court),
+          ),
+        ),
       ],
     );
+  }
+
+  /// El botón de la barra hace lo mismo que el del formulario en ese paso:
+  /// sin horario lleva a elegirlo; con horario pasa a los datos; en los
+  /// datos paga (y si falta algo, sube a mostrarlo).
+  Future<void> _accionBarra() async {
+    final r = _reserva;
+    if (r.procesando) return;
+    if (r.paso == 'checkout') {
+      HapticFeedback.mediumImpact();
+      final ok = await r.pagar();
+      if (!ok) _irAReservar();
+      return;
+    }
+    if (r.listo) {
+      r.continuar();
+      // Al cambiar de paso el formulario se rearma: se sube cuando ya está.
+      WidgetsBinding.instance.addPostFrameCallback((_) => _irAReservar());
+      return;
+    }
+    _irAReservar();
   }
 
   /// Lleva al formulario de reserva desde la barra de abajo.
@@ -202,6 +241,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
           _seccion('Reserva tu turno', key: _reservaKey),
           const SizedBox(height: RtcSpace.s3),
           BookingForm(
+            controller: _reserva,
             courtId: court.id,
             courtName: court.name,
             pricePerHour: court.pricePerHour,
@@ -261,6 +301,15 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
   /// a la vista, como la barra de "Book now" de las apps de reserva.
   Widget _barraReserva(Court court) {
     final abajo = MediaQuery.paddingOf(context).bottom;
+    final conTotal = _reserva.listo && _reserva.total > 0;
+    final pagar = _reserva.paso == 'checkout';
+    final etiqueta = _reserva.procesando
+        ? 'Procesando…'
+        : pagar
+        ? 'Pagar'
+        : _reserva.listo
+        ? 'Continuar'
+        : 'Reservar';
     return Container(
       padding: EdgeInsets.fromLTRB(
         RtcSpace.s5,
@@ -285,19 +334,23 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Precio', style: RtcType.xs.copyWith(color: Gray.c500)),
+              Text(
+                conTotal ? 'Total' : 'Precio',
+                style: RtcType.xs.copyWith(color: Gray.c500),
+              ),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: '\$${formatCop(court.pricePerHour)}',
+                      text:
+                          '\$${formatCop(conTotal ? _reserva.total : court.pricePerHour)}',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
                         color: Gray.c900,
                       ),
                     ),
-                    const TextSpan(text: ' /hora'),
+                    if (!conTotal) const TextSpan(text: ' /hora'),
                   ],
                 ),
                 style: RtcType.sm.copyWith(color: Gray.c500),
@@ -308,20 +361,44 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
           Expanded(
             child: RtcPressable(
               behavior: HitTestBehavior.opaque,
-              onTap: _irAReservar,
-              child: Container(
+              onTap: _reserva.procesando ? null : _accionBarra,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
                 height: 54,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Green.c600,
+                  color: _reserva.procesando
+                      ? Green.c600.withValues(alpha: 0.6)
+                      : Green.c600,
                   borderRadius: RtcRadius.brFull,
                 ),
-                child: Text(
-                  'Reservar',
-                  style: RtcType.base.copyWith(
-                    fontWeight: RtcType.bold,
-                    color: Colors.white,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (pagar) ...[
+                      const Icon(
+                        LucideIcons.lock,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 6),
+                    ],
+                    Text(
+                      etiqueta,
+                      style: RtcType.base.copyWith(
+                        fontWeight: RtcType.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    if (!pagar && _reserva.listo) ...[
+                      const SizedBox(width: 4),
+                      const Icon(
+                        LucideIcons.chevronRight,
+                        size: 18,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
