@@ -54,13 +54,21 @@ void main() {
     });
 
     test('ida y vuelta del codigo', () {
-      expect(codigoDesdeQr(qrDeReserva(reserva('b1', 'ab12cd34'))), 'AB12CD34');
+      final qr = qrDeReserva(reserva('b1', 'AB12CD34'));
+      expect(qr, 'https://reservatucancha.site/r/AB12CD34');
+      expect(codigoDesdeQr(qr), 'AB12CD34');
+      // El formato viejo sigue funcionando en el escáner.
+      expect(codigoDesdeQr('RTC:ab12cd34'), 'AB12CD34');
     });
 
     test('sin código (búsqueda por correo) el QR lleva el identificador', () {
       final qr = qrDeReserva(reserva('665f1a2b3c4d5e6f7a8b9c0d', 'N/A'));
-      expect(qr, 'RTC:ID:665f1a2b3c4d5e6f7a8b9c0d');
+      expect(qr, 'https://reservatucancha.site/r/665f1a2b3c4d5e6f7a8b9c0d');
       expect(leerQr(qr), (codigo: null, id: '665f1a2b3c4d5e6f7a8b9c0d'));
+      expect(leerQr('RTC:ID:665f1a2b3c4d5e6f7a8b9c0d'), (
+        codigo: null,
+        id: '665f1a2b3c4d5e6f7a8b9c0d',
+      ));
       expect(codigoDesdeQr(qr), isNull);
     });
 
@@ -68,6 +76,8 @@ void main() {
       expect(codigoDesdeQr('https://otra-cosa.com'), isNull);
       expect(codigoDesdeQr('RTC:'), isNull);
       expect(leerQr('RTC:ID:'), isNull);
+      expect(leerQr('https://reservatucancha.site/canchas/123'), isNull);
+      expect(leerQr('https://otro.com/r/ABCD1234'), isNull);
       expect(codigoDesdeQr(null), isNull);
     });
   });

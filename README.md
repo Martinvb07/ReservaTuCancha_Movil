@@ -14,6 +14,19 @@ flutter run
 
 La CI (`.github/workflows/ci.yml`) corre `analyze` y `test` en cada push y pull request.
 
+## Probar en un Android
+
+Cada push a `main` compila un APK en GitHub Actions: pestaña **Actions** → la
+última corrida de **CI** → abajo, en **Artifacts**, `ReservaTuCancha-apk`. Se
+descarga un .zip con `ReservaTuCancha.apk` adentro; se pasa al teléfono y se
+instala (Android pide permitir "instalar apps desconocidas" la primera vez).
+
+Con el teléfono conectado por USB (depuración USB activada) también sirve:
+
+```bash
+flutter run --release
+```
+
 ## Build para la tienda
 
 Las claves van con `--dart-define`; sin ellas cada función queda apagada y la app funciona igual.

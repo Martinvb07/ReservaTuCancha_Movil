@@ -23,25 +23,43 @@ import 'motion/rtc_pressable.dart';
 bool tieneCodigoReserva(Booking b) =>
     b.bookingCode.isNotEmpty && b.bookingCode != 'N/A';
 
-/// Lo que va dentro del QR. El prefijo lo distingue de cualquier otro QR que
-/// el dueño escanee por error; el escáner del panel lo lee con [leerQr].
+/// Lo que va dentro del QR: un enlace normal a la reserva,
+/// `https://reservatucancha.site/r/<código o id>`.
 ///
-/// Con código va el código ("RTC:ABCD1234"). Sin código (reservas que llegan
-/// por la búsqueda de correo) va el identificador ("RTC:ID:665f..."), que el
-/// escáner busca igual entre las reservas de su club.
+/// Con un texto propio ("RTC:...") la cámara del teléfono o Google Lens
+/// decían "no se encontró información": no sabían qué hacer con él. Con un
+/// enlace, cualquier cámara abre la página que verifica la reserva, y el
+/// escáner del panel lo sigue leyendo con [leerQr].
+///
+/// Va el código si lo hay; si no (reservas que llegan por la búsqueda de
+/// correo) va el identificador.
 String qrDeReserva(Booking b) =>
-    tieneCodigoReserva(b) ? 'RTC:${b.bookingCode}' : 'RTC:ID:${b.id}';
+    'https://reservatucancha.site/r/${tieneCodigoReserva(b) ? b.bookingCode : b.id}';
+
+final _objectId = RegExp(r'^[0-9a-fA-F]{24}$');
 
 /// Lo que trae un QR de reserva: el código o el identificador. null si no es
-/// uno nuestro.
+/// uno nuestro. Entiende el enlace actual y el formato viejo "RTC:...".
 ({String? codigo, String? id})? leerQr(String? valor) {
-  if (valor == null || !valor.startsWith('RTC:')) return null;
-  final resto = valor.substring(4).trim();
-  if (resto.startsWith('ID:')) {
-    final id = resto.substring(3).trim();
-    return id.isEmpty ? null : (codigo: null, id: id);
+  if (valor == null) return null;
+  final texto = valor.trim();
+  String? ref;
+  final uri = Uri.tryParse(texto);
+  if (uri != null &&
+      (uri.host == 'reservatucancha.site' ||
+          uri.host == 'www.reservatucancha.site') &&
+      uri.pathSegments.length == 2 &&
+      uri.pathSegments.first == 'r') {
+    ref = uri.pathSegments[1];
+  } else if (texto.startsWith('RTC:ID:')) {
+    ref = texto.substring(7);
+  } else if (texto.startsWith('RTC:')) {
+    ref = texto.substring(4);
   }
-  return resto.isEmpty ? null : (codigo: resto.toUpperCase(), id: null);
+  ref = ref?.trim();
+  if (ref == null || ref.isEmpty) return null;
+  if (_objectId.hasMatch(ref)) return (codigo: null, id: ref.toLowerCase());
+  return (codigo: ref.toUpperCase(), id: null);
 }
 
 /// El código de reserva de un QR, o null si no es uno nuestro o no trae código.
