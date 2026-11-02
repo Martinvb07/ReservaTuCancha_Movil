@@ -43,7 +43,11 @@ android {
         applicationId = "site.reservatucancha.reservatucancha"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Android 8.0. Lo pide `sentry_flutter`, que declara 26: con el 24 que
+        // trae Flutter por defecto, la fusion de manifiestos falla y no
+        // compila. Deja fuera Android 7.0 y 7.1, que hoy son ~1% de los
+        // telefonos.
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
