@@ -118,7 +118,7 @@ class _CourtsMapState extends State<CourtsMap> {
                   '$hidden sin ubicación',
                   style: RtcType.xs.copyWith(
                     fontWeight: RtcType.semibold,
-                    color: Gray.c700,
+                    color: GrisFijo.c700,
                   ),
                 ),
               ),

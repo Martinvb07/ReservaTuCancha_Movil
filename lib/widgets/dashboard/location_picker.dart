@@ -491,7 +491,7 @@ class _LocationPickerState extends State<LocationPicker> {
                           style: RtcType.sm.copyWith(
                             fontSize: 13,
                             fontWeight: RtcType.bold,
-                            color: Gray.c900,
+                            color: GrisFijo.c900,
                           ),
                         ),
                       ),

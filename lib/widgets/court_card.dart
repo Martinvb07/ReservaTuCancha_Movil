@@ -97,12 +97,15 @@ class _CourtCardState extends State<CourtCard> {
                         top: 12,
                         left: 12,
                         child: _Badge(
+                          // Pastilla blanca sobre la foto en los dos modos:
+                          // con Gray.c800 el texto se aclaraba en oscuro y
+                          // quedaba blanco sobre blanco.
                           background: Colors.white.withValues(alpha: 0.95),
-                          foreground: Gray.c800,
+                          foreground: GrisFijo.c800,
                           leading: SportIcon(
                             sport: court.sport,
                             size: 14,
-                            color: Gray.c800,
+                            color: GrisFijo.c800,
                           ),
                           label: sport.label,
                         ),
