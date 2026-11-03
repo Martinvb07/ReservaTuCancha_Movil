@@ -82,8 +82,14 @@ class StarRating extends StatelessWidget {
                     )
                   : RtcStar(
                       size: size.px,
-                      fill: emptyFill ?? RtcLight.muted,
-                      stroke: emptyStroke ?? RtcLight.mutedForeground,
+                      fill:
+                          emptyFill ??
+                          (RtcModo.oscuro ? RtcDark.muted : RtcLight.muted),
+                      stroke:
+                          emptyStroke ??
+                          (RtcModo.oscuro
+                              ? RtcDark.mutedForeground
+                              : RtcLight.mutedForeground),
                     ),
             ),
           ),

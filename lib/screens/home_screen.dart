@@ -1094,7 +1094,7 @@ class _FilaCancha extends StatelessWidget {
                           court.averageRating.toStringAsFixed(1),
                           style: RtcType.xs.copyWith(
                             fontWeight: RtcType.bold,
-                            color: GrisFijo.c800,
+                            color: Gray.c800,
                           ),
                         ),
                         const SizedBox(width: RtcSpace.s3),

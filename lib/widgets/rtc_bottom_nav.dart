@@ -97,16 +97,26 @@ class RtcBottomNav extends StatelessWidget {
               color: GrisFijo.c900.withValues(alpha: 0.88),
               borderRadius: RtcRadius.brFull,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                for (final tab in rtcTabs)
-                  _Item(
-                    tab: tab,
-                    activa: tab.ruta == activa,
-                    onTap: () => onTap(tab),
-                  ),
-              ],
+            /* Con la lupa al lado la pildora se angosta y las cuatro
+               pestañas más el nombre de la activa no caben: se recortaban.
+               Si no hay espacio, la activa queda solo con su ícono (sigue
+               en lima, así se sabe dónde se está). */
+            child: LayoutBuilder(
+              builder: (context, c) {
+                final conNombre = c.maxWidth >= _anchoConNombre;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    for (final tab in rtcTabs)
+                      _Item(
+                        tab: tab,
+                        activa: tab.ruta == activa,
+                        conNombre: conNombre,
+                        onTap: () => onTap(tab),
+                      ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -114,6 +124,11 @@ class RtcBottomNav extends StatelessWidget {
     );
   }
 }
+
+/// Ancho que necesitan las pestañas con el nombre de la activa a la vista:
+/// las inactivas son círculos de 48 y la activa suma el nombre más largo
+/// ("Reservas"/"Canchas") con su relleno.
+const double _anchoConNombre = 48.0 * 3 + 140;
 
 /// El circulo de la lupa. Entra creciendo desde la derecha de la barra.
 class _Lupa extends StatelessWidget {
@@ -186,10 +201,16 @@ class _Lupa extends StatelessWidget {
 }
 
 class _Item extends StatelessWidget {
-  const _Item({required this.tab, required this.activa, required this.onTap});
+  const _Item({
+    required this.tab,
+    required this.activa,
+    required this.onTap,
+    this.conNombre = true,
+  });
 
   final RtcTab tab;
   final bool activa;
+  final bool conNombre;
   final VoidCallback onTap;
 
   @override
@@ -208,7 +229,9 @@ class _Item extends StatelessWidget {
           duration: RtcDur.pick,
           curve: RtcCurves.smooth,
           height: 48,
-          padding: EdgeInsets.symmetric(horizontal: activa ? 18 : 0),
+          padding: EdgeInsets.symmetric(
+            horizontal: activa && conNombre ? 18 : 0,
+          ),
           constraints: const BoxConstraints(minWidth: 48),
           decoration: BoxDecoration(
             color: activa ? Lime.c400 : Colors.white.withValues(alpha: 0.08),
@@ -233,7 +256,7 @@ class _Item extends StatelessWidget {
                       ? GrisFijo.c900
                       : Colors.white.withValues(alpha: 0.75),
                 ),
-              if (activa) ...[
+              if (activa && conNombre) ...[
                 const SizedBox(width: RtcSpace.s2),
                 Text(
                   tab.etiqueta,

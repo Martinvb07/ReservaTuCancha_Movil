@@ -250,6 +250,24 @@ class _CanchasScreenState extends State<CanchasScreen> {
     _page = 1;
   });
 
+  /// Alto visible del scroll, para medir el mapa. Lo fija el LayoutBuilder
+  /// de [build].
+  double? _altoVista;
+  final _mapaKey = GlobalKey();
+
+  /// Baja el scroll lo justo para que el mapa (con el espacio de la barra de
+  /// navegación debajo) quede entero a la vista.
+  void _mostrarMapaEntero() {
+    final ctx = _mapaKey.currentContext;
+    if (ctx == null) return;
+    Scrollable.ensureVisible(
+      ctx,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+      alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+    );
+  }
+
   void _readDock(double pixels) {
     final box = _anchorKey.currentContext?.findRenderObject() as RenderBox?;
     if (box != null && box.attached && box.hasSize) {
@@ -273,18 +291,27 @@ class _CanchasScreenState extends State<CanchasScreen> {
         _readDock(n.metrics.pixels);
         return false;
       },
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: _hero()),
-          // La barra de filtros es sticky bajo el navbar, igual que en la web.
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _FilterBarDelegate(child: _filterBar()),
-          ),
-          SliverToBoxAdapter(child: _content()),
-          const SliverToBoxAdapter(child: SizedBox(height: kBottomNavEspacio)),
-        ],
+      child: LayoutBuilder(
+        builder: (context, c) {
+          _altoVista = c.maxHeight.isFinite ? c.maxHeight : null;
+          return _scroll();
+        },
       ),
+    );
+  }
+
+  Widget _scroll() {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(child: _hero()),
+        // La barra de filtros es sticky bajo el navbar, igual que en la web.
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: _FilterBarDelegate(child: _filterBar()),
+        ),
+        SliverToBoxAdapter(child: _content()),
+        const SliverToBoxAdapter(child: SizedBox(height: kBottomNavEspacio)),
+      ],
     );
   }
 
@@ -693,20 +720,35 @@ class _CanchasScreenState extends State<CanchasScreen> {
     if (_courtsError != null) return _errorState();
 
     if (_view == 'mapa') {
+      /* La barra de navegación flota encima del contenido: el mapa se mide
+         para caber entero entre la barra de filtros fija y esa barra, y al
+         tocar un pin se baja el scroll hasta ahí. Antes medía 68% de la
+         pantalla y la ficha de la cancha (abajo del mapa) quedaba encima de
+         la barra de navegación. */
+      final barraAbajo =
+          kBottomNavEspacio + MediaQuery.paddingOf(context).bottom;
+      final alto = _altoVista == null
+          ? (MediaQuery.sizeOf(context).height * 0.68).clamp(420.0, 900.0)
+          : (_altoVista! -
+                    _FilterBarDelegate._height -
+                    RtcSpace.s2 -
+                    barraAbajo)
+                .clamp(320.0, 900.0);
       return Padding(
-        padding: const EdgeInsets.fromLTRB(
+        key: _mapaKey,
+        padding: EdgeInsets.fromLTRB(
           RtcSpace.s4,
           RtcSpace.s2,
           RtcSpace.s4,
-          RtcSpace.s10,
+          barraAbajo,
         ),
-        // `MAP_HEIGHT`: h-[68vh] min-h-[420px]
         child: SizedBox(
-          height: (MediaQuery.sizeOf(context).height * 0.68).clamp(420, 900),
+          height: alto,
           child: CourtsMap(
             courts: _filtered,
             // `carryQuery`: el mapa tambien lleva la fecha y la hora.
             onOpenCourt: (c) => rtcOpenCourt(c.id, date: _fecha, start: _hora),
+            onSelect: _mostrarMapaEntero,
           ),
         ),
       );

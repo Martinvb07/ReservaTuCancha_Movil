@@ -56,9 +56,12 @@ class _ModoToggleState extends State<ModoToggle> {
         ? Lime.c400
         : widget.sobreOscuro
         ? Colors.white.withValues(alpha: 0.12)
-        : Colors.white;
+        : Superficie.tarjeta;
+    /* Sobre el lima el ícono va oscuro en los dos modos; sobre la tarjeta
+       sigue al modo (Gray.c900 se aclara en oscuro). Antes el botón era
+       blanco fijo y en modo oscuro el ícono quedaba blanco sobre blanco. */
     final colorIcono = _clubes
-        ? Gray.c900
+        ? GrisFijo.c900
         : widget.sobreOscuro
         ? Colors.white
         : Gray.c900;

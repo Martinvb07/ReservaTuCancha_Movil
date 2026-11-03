@@ -19,10 +19,19 @@ import 'motion/rtc_pressable.dart';
 /// Mismas tiles de OpenStreetMap que Leaflet en la web, y los pines son la
 /// pildora de precio de `.rtc-pin`: blanca en reposo, negra al elegirse.
 class CourtsMap extends StatefulWidget {
-  const CourtsMap({super.key, required this.courts, this.onOpenCourt});
+  const CourtsMap({
+    super.key,
+    required this.courts,
+    this.onOpenCourt,
+    this.onSelect,
+  });
 
   final List<Court> courts;
   final ValueChanged<Court>? onOpenCourt;
+
+  /// Al tocar un pin: la pantalla acomoda el scroll para que la ficha que
+  /// aparece abajo no quede debajo de la barra de navegación.
+  final VoidCallback? onSelect;
 
   @override
   State<CourtsMap> createState() => _CourtsMapState();
@@ -67,7 +76,10 @@ class _CourtsMapState extends State<CourtsMap> {
                       child: _PricePin(
                         label: shortPrice(p.court.pricePerHour),
                         active: _selected?.court.id == p.court.id,
-                        onTap: () => setState(() => _selected = p),
+                        onTap: () {
+                          setState(() => _selected = p);
+                          widget.onSelect?.call();
+                        },
                       ),
                     ),
                 ],

@@ -7,8 +7,6 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../theme/palette.dart';
-
 class MediosPago extends StatelessWidget {
   const MediosPago({super.key});
 
@@ -50,11 +48,14 @@ class _Chip extends StatelessWidget {
         height: 26,
         constraints: const BoxConstraints(minWidth: 40),
         padding: const EdgeInsets.symmetric(horizontal: 7),
-        decoration: BoxDecoration(
-          color: Superficie.tarjeta,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Gray.c200),
-          boxShadow: const [
+        /* Blanco en los dos modos, como en cualquier checkout: los logos
+           son azul marino y casi negro, y sobre la tarjeta oscura se
+           perdían (VISA y Nequi desaparecían). */
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+          border: Border.fromBorderSide(BorderSide(color: Color(0xFFE5E7EB))),
+          boxShadow: [
             BoxShadow(
               color: Color(0x0D000000),
               blurRadius: 2,

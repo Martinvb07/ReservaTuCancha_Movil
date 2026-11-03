@@ -17,6 +17,9 @@ String _corazon(String trazo, String relleno) =>
     '0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 '
     '8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>';
 
+String _hex(Color c) =>
+    '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
+
 /// Boton circular blanco que marca o desmarca una cancha como favorita.
 /// Late al marcarla.
 class BotonFavorito extends StatefulWidget {
@@ -94,7 +97,9 @@ class _BotonFavoritoState extends State<BotonFavorito>
                 child: SvgPicture.string(
                   activa
                       ? _corazon('#EF4444', '#EF4444')
-                      : _corazon('#111827', 'none'),
+                      // El trazo sigue al modo: con #111827 fijo el
+                      // corazón vacío desaparecía sobre la tarjeta oscura.
+                      : _corazon(_hex(Gray.c900), 'none'),
                   width: widget.tamano * 0.45,
                   height: widget.tamano * 0.45,
                 ),
