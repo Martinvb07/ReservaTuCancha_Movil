@@ -7,7 +7,7 @@ import 'rtc_api.dart';
 class CuentaApi {
   const CuentaApi();
 
-  /// `POST /cuenta/olvide`. Responde igual exista o no la cuenta.
+  /// `POST /cuenta/olvide`. Si el correo no tiene cuenta, responde 404 con el motivo.
   Future<void> olvide(String email) =>
       RtcApi.instance.post('/cuenta/olvide', body: {'email': email.trim()});
 

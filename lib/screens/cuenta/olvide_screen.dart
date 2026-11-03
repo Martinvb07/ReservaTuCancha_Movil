@@ -75,7 +75,7 @@ class _OlvideScreenState extends State<OlvideScreen> {
                     const SizedBox(width: RtcSpace.s3),
                     Expanded(
                       child: Text(
-                        'Si ${_email.text.trim()} tiene una cuenta, te llegó un enlace que sirve durante 1 hora. Mira también en spam.',
+                        'Te mandamos un enlace a ${_email.text.trim()} que sirve durante 1 hora. Si no lo ves, mira en spam.',
                         style: RtcType.sm.copyWith(color: Green.c900),
                       ),
                     ),
