@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../models/court.dart';
 import '../models/geo.dart';
@@ -88,17 +89,38 @@ class _CourtsMapState extends State<CourtsMap> {
             ],
           ),
 
-          // Ficha de la cancha — el popup de Leaflet, aca como tarjeta abajo.
-          if (_selected != null)
-            Positioned(
-              left: RtcSpace.s4,
-              right: RtcSpace.s4,
-              bottom: RtcSpace.s4,
-              child: _CourtPopup(
-                court: _selected!.court,
-                onTap: () => widget.onOpenCourt?.call(_selected!.court),
+          // Vista previa de la cancha — el popup de Leaflet, aca como
+          // tarjeta abajo. Entra subiendo y se cambia con un fundido al
+          // tocar otro pin.
+          Positioned(
+            left: RtcSpace.s3,
+            right: RtcSpace.s3,
+            // Encima del crédito de OpenStreetMap, que tiene que verse.
+            bottom: 26,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 260),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (hijo, anim) => FadeTransition(
+                opacity: anim,
+                child: SlideTransition(
+                  position: Tween(
+                    begin: const Offset(0, 0.25),
+                    end: Offset.zero,
+                  ).animate(anim),
+                  child: hijo,
+                ),
               ),
+              child: _selected == null
+                  ? const SizedBox.shrink()
+                  : _CourtPopup(
+                      key: ValueKey(_selected!.court.id),
+                      court: _selected!.court,
+                      onTap: () => widget.onOpenCourt?.call(_selected!.court),
+                      onClose: () => setState(() => _selected = null),
+                    ),
             ),
+          ),
 
           if (hidden > 0)
             Positioned(
@@ -189,12 +211,20 @@ class _PricePin extends StatelessWidget {
   }
 }
 
-/// `.rtc-map-popup` — la ficha de la cancha sobre el mapa.
+/// `.rtc-map-popup` — la vista previa de la cancha sobre el mapa: foto con
+/// la nota encima, deporte, ubicación, precio y una flecha que invita a
+/// abrirla. Toda la tarjeta abre la ficha; la X la cierra.
 class _CourtPopup extends StatelessWidget {
-  const _CourtPopup({required this.court, required this.onTap});
+  const _CourtPopup({
+    super.key,
+    required this.court,
+    required this.onTap,
+    required this.onClose,
+  });
 
   final Court court;
   final VoidCallback onTap;
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -202,85 +232,207 @@ class _CourtPopup extends StatelessWidget {
     return RtcPressable(
       onTap: onTap,
       child: Container(
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Superficie.tarjeta,
-          borderRadius: RtcRadius.brXxl,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: Gray.c100),
           boxShadow: RtcShadows.mapPopup,
         ),
-        clipBehavior: Clip.antiAlias,
         child: Row(
           children: [
-            SizedBox(
-              width: 96,
-              height: 96,
-              child: RemoteImage(
-                url: court.photos.isNotEmpty ? court.photos.first : sport.image,
-                sport: court.sport,
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(RtcSpace.s3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+            // ── Foto con la nota ─────────────────────────────────────
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+                width: 96,
+                height: 96,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Row(
-                      children: [
-                        SportIcon(
-                          sport: court.sport,
-                          size: 14,
-                          color: Green.c600,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          sport.label,
-                          style: RtcType.xs.copyWith(
-                            fontWeight: RtcType.semibold,
-                            color: Gray.c500,
+                    RemoteImage(
+                      url: court.photos.isNotEmpty
+                          ? court.photos.first
+                          : sport.image,
+                      sport: court.sport,
+                    ),
+                    if (court.averageRating > 0)
+                      Positioned(
+                        left: 6,
+                        bottom: 6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: GrisFijo.c900.withValues(alpha: 0.78),
+                            borderRadius: RtcRadius.brFull,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                LucideIcons.star,
+                                size: 11,
+                                color: Yellow.c400,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                court.averageRating.toStringAsFixed(1),
+                                style: RtcType.xs.copyWith(
+                                  fontSize: 11,
+                                  height: 1.1,
+                                  fontWeight: RtcType.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      court.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: RtcType.sm.copyWith(
-                        fontWeight: RtcType.semibold,
-                        color: Gray.c900,
                       ),
-                    ),
-                    Text(
-                      court.locationLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: RtcType.xs.copyWith(color: Gray.c500),
-                    ),
-                    const SizedBox(height: RtcSpace.s2),
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '\$${formatCop(court.pricePerHour)}',
-                            style: RtcType.sm.copyWith(
-                              fontWeight: RtcType.bold,
-                              color: Gray.c900,
-                            ),
-                          ),
-                          TextSpan(
-                            text: ' / hora',
-                            style: RtcType.xs.copyWith(color: Gray.c500),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(width: RtcSpace.s3),
+
+            // ── Datos ─────────────────────────────────────────────────
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Green.c50,
+                          borderRadius: RtcRadius.brFull,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SportIcon(
+                              sport: court.sport,
+                              size: 12,
+                              color: Green.c700,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              sport.label,
+                              style: RtcType.xs.copyWith(
+                                fontSize: 11,
+                                height: 1.1,
+                                fontWeight: RtcType.bold,
+                                color: Green.c700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      _Cerrar(onTap: onClose),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    court.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: RtcType.base.copyWith(
+                      fontWeight: FontWeight.w800,
+                      height: 1.2,
+                      color: Gray.c900,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Icon(LucideIcons.mapPin, size: 12, color: Gray.c500),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        child: Text(
+                          court.locationLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: RtcType.xs.copyWith(color: Gray.c500),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: RtcSpace.s2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '\$${formatCop(court.pricePerHour)}',
+                                style: RtcType.base.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: Green.c700,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' /hora',
+                                style: RtcType.xs.copyWith(color: Gray.c500),
+                              ),
+                            ],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: const BoxDecoration(
+                          color: Lime.c400,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          LucideIcons.arrowRight,
+                          size: 17,
+                          color: GrisFijo.c900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// La X chiquita para cerrar la vista previa sin tocar el mapa.
+class _Cerrar extends StatelessWidget {
+  const _Cerrar({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'Cerrar',
+      child: RtcPressable(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          width: 24,
+          height: 24,
+          decoration: BoxDecoration(color: Fondo.suave, shape: BoxShape.circle),
+          child: Icon(LucideIcons.x, size: 13, color: Gray.c600),
         ),
       ),
     );
