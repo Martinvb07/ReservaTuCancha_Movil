@@ -12,7 +12,6 @@ import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'motion/rtc_motion.dart';
-import 'rtc_navbar.dart' show kNavHeight;
 import 'motion/rtc_pressable.dart';
 
 /// Port de `Frontend/src/components/layout/SupportChat.tsx`.
@@ -245,38 +244,57 @@ class _SupportChatState extends State<SupportChat> {
     final tree = _tree;
     if (!_montado || tree == null) return const SizedBox.shrink();
 
-    final abajo = MediaQuery.paddingOf(context).bottom;
-    return Positioned(
-      // `inset-x-4 bottom-4 top-20` de la rama movil. El `top-20` de la web se
-      // mide desde el tope de la VENTANA, y el navbar (64) ya ocupa parte de
-      // eso; aca el panel vive debajo del navbar, asi que solo queda el resto.
-      left: RtcSpace.s4,
-      right: RtcSpace.s4,
-      top: 80 - kNavHeight,
-      bottom: RtcSpace.s4 + abajo,
-      child: RtcChatPanel(
-        cerrando: _cerrando,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: Superficie.tarjeta,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(24),
-              ), // rounded-3xl
-              border: Border.all(color: Gray.c100),
-              boxShadow: RtcShadows.sheetCard,
-            ),
-            child: Column(
-              children: [
-                _encabezado(tree),
-                Expanded(child: _conversacion()),
-                _pie(),
-              ],
+    /* En la app no hay navbar arriba (la web lo tiene): el panel respeta la
+       barra de estado y la de gestos del teléfono, y va sobre un velo que tapa
+       la página. Sin el velo, las tarjetas de atrás asomaban por los costados
+       y el chat parecía encimado sobre la información. Tocar el velo cierra. */
+    final relleno = MediaQuery.paddingOf(context);
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onOpenChange(false),
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: _cerrando ? 0 : 1),
+                duration: Duration(milliseconds: _cerrando ? 200 : 260),
+                builder: (context, t, _) =>
+                    ColoredBox(color: Colors.black.withValues(alpha: 0.45 * t)),
+              ),
             ),
           ),
-        ),
+          Positioned(
+            left: RtcSpace.s3,
+            right: RtcSpace.s3,
+            top: relleno.top + RtcSpace.s3,
+            bottom: relleno.bottom + RtcSpace.s3,
+            child: RtcChatPanel(
+              cerrando: _cerrando,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: Superficie.tarjeta,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(24),
+                    ), // rounded-3xl
+                    border: Border.all(color: Gray.c100),
+                    boxShadow: RtcShadows.sheetCard,
+                  ),
+                  child: Column(
+                    children: [
+                      _encabezado(tree),
+                      Expanded(child: _conversacion()),
+                      _pie(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
