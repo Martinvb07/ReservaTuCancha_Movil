@@ -17,7 +17,6 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/icons/sport_icon.dart';
 import '../widgets/mobile_search_sheet.dart';
-import '../widgets/mobile_search_trigger.dart';
 import '../widgets/modo_toggle.dart';
 import '../widgets/motion/rtc_motion.dart';
 import '../widgets/remote_image.dart';
@@ -34,6 +33,7 @@ import '../widgets/motion/rtc_pressable.dart';
 import '../data/mis_turnos.dart';
 import '../models/booking.dart';
 import '../widgets/mi_turno.dart';
+import '../widgets/icons/icono_deporte_3d.dart';
 
 /// Inicio de la app.
 ///
@@ -217,31 +217,27 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView(
       controller: _scroll,
       padding: const EdgeInsets.only(
-        top: RtcSpace.s4,
+        // La franja de arriba va pegada al borde, con su propio relleno.
+        top: 0,
         bottom: kBottomNavEspacio + RtcSpace.s6,
       ),
       children: [
-        const _Cabecera(),
-        const SizedBox(height: RtcSpace.s5),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
-          child: MobileSearchTrigger(
-            suave: true,
-            onTap: () => showMobileSearchSheet(context),
-          ),
-        ),
-        const SizedBox(height: RtcSpace.s5),
-        _ChipsDeporte(
-          elegido: _miTurno ? '__mi_turno__' : _deporte,
+        _Franja(
+          elegido: _deporte,
+          // Una pestaña a la vez: elegir un deporte apaga "Cerca de mí".
           onElegir: (d) => setState(() {
             _deporte = d;
             _miTurno = false;
+            _posicion = null;
           }),
           cerca: _posicion != null && !_miTurno,
           ubicando: _ubicando,
           onCerca: () {
-            setState(() => _miTurno = false);
-            _alternarCerca();
+            setState(() {
+              _miTurno = false;
+              _deporte = null;
+            });
+            if (_posicion == null) _alternarCerca();
           },
           conMiTurno: _turnos.hayAlgo,
           miTurnoActivo: _miTurno,
@@ -332,46 +328,389 @@ class _HomeScreenState extends State<HomeScreen> {
 
 /// Lo que mide la pantalla desde arriba hasta el borde inferior del buscador:
 /// padding, cabecera, espacio y la pildora. Pasado eso, se acopla abajo.
-const _alturaHastaBuscador = 16.0 + 92 + 20 + 64;
+const _alturaHastaBuscador = 12.0 + 48 + 14 + 56;
 
-// ── CABECERA ─────────────────────────────────────────────────────────────
+// ── FRANJA DE ARRIBA ─────────────────────────────────────────────────────
+// La misma de la web: marca, la píldora "Empieza tu búsqueda" y las
+// pestañas de deporte con sus íconos 3D y un subrayado que se desliza.
 
-class _Cabecera extends StatelessWidget {
-  const _Cabecera();
+class _Franja extends StatelessWidget {
+  const _Franja({
+    required this.elegido,
+    required this.onElegir,
+    required this.cerca,
+    required this.ubicando,
+    required this.onCerca,
+    required this.conMiTurno,
+    required this.miTurnoActivo,
+    required this.avisoMiTurno,
+    required this.onMiTurno,
+  });
+
+  final String? elegido;
+  final ValueChanged<String?> onElegir;
+  final bool cerca;
+  final bool ubicando;
+  final VoidCallback onCerca;
+  final bool conMiTurno;
+  final bool miTurnoActivo;
+  final bool avisoMiTurno;
+  final VoidCallback onMiTurno;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Superficie.tarjeta, Fondo.app],
+        ),
+        border: Border(bottom: BorderSide(color: Gray.c100)),
+      ),
+      padding: const EdgeInsets.only(top: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '¿Partido hoy?',
-                  style: RtcType.sm.copyWith(
-                    color: Green.c700,
-                    fontWeight: RtcType.semibold,
+          // Marca + cambio a Para clubes
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
+            child: SizedBox(
+              height: 48,
+              child: Row(
+                children: [
+                  Image.asset('assets/images/logo.png', width: 38, height: 38),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text.rich(
+                      const TextSpan(
+                        children: [
+                          TextSpan(text: 'Reserva'),
+                          TextSpan(
+                            text: 'TuCancha',
+                            style: TextStyle(color: Green.c600),
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: RtcType.lg.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: Gray.c900,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Encuentra tu\ncancha ideal',
-                  style: RtcType.xl2.copyWith(
-                    fontSize: 28,
-                    height: 1.15,
-                    fontWeight: FontWeight.w800,
-                    color: Gray.c900,
-                    letterSpacing: -0.4,
-                  ),
-                ),
-              ],
+                  const ModoToggle(clubes: false),
+                ],
+              ),
             ),
           ),
-          const ModoToggle(clubes: false),
+          const SizedBox(height: 14),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
+            child: _PildoraBuscar(onTap: () => showMobileSearchSheet(context)),
+          ),
+          const SizedBox(height: 6),
+          _Pestanas(
+            activa: miTurnoActivo
+                ? '__mi_turno__'
+                : cerca
+                ? 'cerca'
+                : (elegido ?? ''),
+            opciones: [
+              if (conMiTurno)
+                _Opcion(
+                  '__mi_turno__',
+                  'Mi turno',
+                  _IconoMiTurno(aviso: avisoMiTurno && !miTurnoActivo),
+                  onMiTurno,
+                ),
+              _Opcion(
+                '',
+                'Todo',
+                const IconoDeporte3D(clave: '', size: 30),
+                () => onElegir(null),
+              ),
+              for (final s in sports)
+                _Opcion(
+                  s.key,
+                  s.key == 'voley_playa' ? 'Vóley playa' : s.label,
+                  IconoDeporte3D(clave: s.key, size: 30),
+                  () => onElegir(s.key),
+                ),
+              _Opcion(
+                'cerca',
+                'Cerca de mí',
+                ubicando
+                    ? SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Gray.c500,
+                          ),
+                        ),
+                      )
+                    : const IconoDeporte3D(clave: 'cerca', size: 30),
+                onCerca,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Empieza tu búsqueda": abre el buscador completo.
+class _PildoraBuscar extends StatelessWidget {
+  const _PildoraBuscar({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'Buscar canchas',
+      child: RtcPressable(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          height: 56,
+          decoration: BoxDecoration(
+            color: Superficie.tarjeta,
+            borderRadius: RtcRadius.brFull,
+            border: Border.all(color: Gray.c200),
+            boxShadow: [
+              cssShadow(
+                dy: 3,
+                blur: 12,
+                color: Colors.black.withValues(alpha: 0.10),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(LucideIcons.search, size: 18, color: Gray.c900),
+              const SizedBox(width: 10),
+              Text(
+                'Empieza tu búsqueda',
+                style: RtcType.base.copyWith(
+                  fontWeight: RtcType.semibold,
+                  color: Gray.c900,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Opcion {
+  const _Opcion(this.clave, this.etiqueta, this.icono, this.onTap);
+
+  final String clave;
+  final String etiqueta;
+  final Widget icono;
+  final VoidCallback onTap;
+}
+
+/// Fila de pestañas con un solo subrayado que viaja a la activa.
+class _Pestanas extends StatefulWidget {
+  const _Pestanas({required this.activa, required this.opciones});
+
+  final String activa;
+  final List<_Opcion> opciones;
+
+  @override
+  State<_Pestanas> createState() => _PestanasState();
+}
+
+class _PestanasState extends State<_Pestanas> {
+  final _llaves = <String, GlobalKey>{};
+  final _filaKey = GlobalKey();
+  double? _left;
+  double _width = 0;
+
+  GlobalKey _llave(String clave) => _llaves.putIfAbsent(clave, GlobalKey.new);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _medir(llevar: false));
+  }
+
+  @override
+  void didUpdateWidget(_Pestanas old) {
+    super.didUpdateWidget(old);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _medir(llevar: old.activa != widget.activa),
+    );
+  }
+
+  void _medir({required bool llevar}) {
+    if (!mounted) return;
+    final ctx = _llaves[widget.activa]?.currentContext;
+    final fila = _filaKey.currentContext?.findRenderObject() as RenderBox?;
+    final caja = ctx?.findRenderObject() as RenderBox?;
+    if (ctx == null || fila == null || caja == null || !caja.hasSize) return;
+    final x = caja.localToGlobal(Offset.zero, ancestor: fila).dx;
+    if (x != _left || caja.size.width != _width) {
+      setState(() {
+        _left = x;
+        _width = caja.size.width;
+      });
+    }
+    // La activa a la vista, si quedó escondida al costado.
+    if (llevar) {
+      Scrollable.ensureVisible(
+        ctx,
+        alignment: 0.5,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5 - 6),
+      child: Stack(
+        key: _filaKey,
+        children: [
+          Row(
+            children: [
+              for (final o in widget.opciones)
+                _Pestana(
+                  key: _llave(o.clave),
+                  opcion: o,
+                  activa: o.clave == widget.activa,
+                ),
+            ],
+          ),
+          if (_left != null)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeOutCubic,
+              left: _left! + 6,
+              width: (_width - 12).clamp(0, double.infinity),
+              bottom: 0,
+              height: 3,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Gray.c900,
+                  borderRadius: RtcRadius.brFull,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Pestana extends StatelessWidget {
+  const _Pestana({super.key, required this.opcion, required this.activa});
+
+  final _Opcion opcion;
+  final bool activa;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: activa,
+      label: opcion.etiqueta,
+      child: RtcPressable(
+        behavior: HitTestBehavior.opaque,
+        excludeFromSemantics: true,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          opcion.onTap();
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(6, 10, 6, 14),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedScale(
+                scale: activa ? 1.1 : 1,
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOutBack,
+                child: AnimatedOpacity(
+                  opacity: activa ? 1 : 0.75,
+                  duration: const Duration(milliseconds: 220),
+                  child: opcion.icono,
+                ),
+              ),
+              const SizedBox(width: 8),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 220),
+                style: RtcType.sm.copyWith(
+                  fontWeight: RtcType.semibold,
+                  color: activa ? Gray.c900 : Gray.c500,
+                ),
+                child: Text(opcion.etiqueta),
+              ),
+              const SizedBox(width: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Ícono de "Mi turno": boleto en un círculo lima, con punto rojo si hay
+/// un turno pendiente.
+class _IconoMiTurno extends StatelessWidget {
+  const _IconoMiTurno({required this.aviso});
+
+  final bool aviso;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 30,
+      height: 30,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Lime.c400,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: const Icon(
+              LucideIcons.ticket,
+              size: 16,
+              color: GrisFijo.c900,
+            ),
+          ),
+          if (aviso)
+            Positioned(
+              top: -1,
+              right: -1,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: Red.c500,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Superficie.tarjeta, width: 1.5),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -416,226 +755,6 @@ class _Titulo extends StatelessWidget {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-// ── CHIPS DE DEPORTE ─────────────────────────────────────────────────────
-
-class _ChipsDeporte extends StatelessWidget {
-  const _ChipsDeporte({
-    required this.elegido,
-    required this.onElegir,
-    required this.cerca,
-    required this.ubicando,
-    required this.onCerca,
-    this.conMiTurno = false,
-    this.miTurnoActivo = false,
-    this.avisoMiTurno = false,
-    this.onMiTurno,
-  });
-
-  /// El chip "Mi turno" va primero, solo si el jugador tiene reservas.
-  final bool conMiTurno;
-  final bool miTurnoActivo;
-
-  /// El punto rojo: hay un turno pendiente.
-  final bool avisoMiTurno;
-  final VoidCallback? onMiTurno;
-
-  final String? elegido;
-  final ValueChanged<String?> onElegir;
-
-  /// "Cerca de mí" no es un deporte: ordena lo que se vea, con cualquier
-  /// deporte elegido. Por eso se prende y apaga aparte.
-  final bool cerca;
-  final bool ubicando;
-  final VoidCallback onCerca;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 84,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
-        children: [
-          if (conMiTurno) ...[
-            _ChipMiTurno(
-              activo: miTurnoActivo,
-              aviso: avisoMiTurno && !miTurnoActivo,
-              onTap: onMiTurno ?? () {},
-            ),
-            const SizedBox(width: 10),
-          ],
-          _Chip(
-            etiqueta: 'Todas',
-            activo: elegido == null,
-            onTap: () => onElegir(null),
-            icono: (c) => Icon(LucideIcons.layoutGrid, size: 22, color: c),
-          ),
-          const SizedBox(width: 10),
-          _Chip(
-            etiqueta: 'Cerca de mí',
-            activo: cerca,
-            onTap: onCerca,
-            icono: (c) => ubicando
-                ? SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: c),
-                  )
-                : Icon(LucideIcons.locateFixed, size: 22, color: c),
-          ),
-          for (final s in sports) ...[
-            const SizedBox(width: 10),
-            _Chip(
-              etiqueta: s.label,
-              activo: elegido == s.key,
-              onTap: () => onElegir(s.key),
-              icono: (c) => SportIcon(sport: s.key, size: 22, color: c),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// "Mi turno": oscuro con letra lima para distinguirse de los deportes, y
-/// lima cuando está elegido.
-class _ChipMiTurno extends StatelessWidget {
-  const _ChipMiTurno({
-    required this.activo,
-    required this.aviso,
-    required this.onTap,
-  });
-
-  final bool activo;
-  final bool aviso;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = activo ? GrisFijo.c900 : Lime.c400;
-    return Semantics(
-      button: true,
-      selected: activo,
-      label: aviso ? 'Mi turno, tienes un turno pendiente' : 'Mi turno',
-      child: RtcPressable(
-        behavior: HitTestBehavior.opaque,
-        excludeFromSemantics: true,
-        onTap: () {
-          HapticFeedback.selectionClick();
-          onTap();
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          width: 84,
-          decoration: BoxDecoration(
-            color: activo ? Lime.c400 : GrisFijo.c900,
-            borderRadius: BorderRadius.circular(22),
-          ),
-          child: Stack(
-            children: [
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(LucideIcons.ticket, size: 22, color: color),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Mi turno',
-                      style: RtcType.xs.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: color,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (aviso)
-                Positioned(
-                  top: 10,
-                  right: 12,
-                  child: Container(
-                    width: 9,
-                    height: 9,
-                    decoration: BoxDecoration(
-                      color: Red.c500,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: GrisFijo.c900, width: 1.5),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  const _Chip({
-    required this.etiqueta,
-    required this.activo,
-    required this.onTap,
-    required this.icono,
-  });
-
-  final String etiqueta;
-  final bool activo;
-  final VoidCallback onTap;
-  final Widget Function(Color) icono;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = activo ? Colors.white : Gray.c800;
-    return Semantics(
-      button: true,
-      selected: activo,
-      child: RtcPressable(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          HapticFeedback.selectionClick();
-          onTap();
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          width: 84,
-          decoration: BoxDecoration(
-            color: activo ? Green.c600 : Superficie.tarjeta,
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: activo
-                ? [
-                    cssShadow(
-                      dy: 8,
-                      blur: 18,
-                      color: Green.c600.withValues(alpha: 0.30),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              icono(color),
-              const SizedBox(height: 6),
-              Text(
-                etiqueta,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: RtcType.xs.copyWith(
-                  fontWeight: RtcType.semibold,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

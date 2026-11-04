@@ -13,6 +13,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'floating_actions.dart';
 import 'icons/city_glyph.dart';
+import 'icons/icono_deporte_3d.dart';
 import 'icons/sport_icon.dart';
 import 'motion/rtc_motion.dart';
 import 'motion/rtc_pressable.dart';
@@ -595,11 +596,13 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
             child: _OptionRow(
               active: _sport == options[i].$1,
               background: _sportMeta[options[i].$1]?.bg ?? Green.c50,
-              tile: SportIcon(
-                sport: options[i].$1.isEmpty ? null : options[i].$1,
-                size: 21,
-                color: _sportMeta[options[i].$1]?.color ?? Green.c600,
-              ),
+              tile: IconoDeporte3D.tiene(options[i].$1)
+                  ? IconoDeporte3D(clave: options[i].$1, size: 28)
+                  : SportIcon(
+                      sport: options[i].$1.isEmpty ? null : options[i].$1,
+                      size: 21,
+                      color: _sportMeta[options[i].$1]?.color ?? Green.c600,
+                    ),
               title: options[i].$2,
               subtitle:
                   _sportMeta[options[i].$1]?.tag ?? 'Explora todas las canchas',
