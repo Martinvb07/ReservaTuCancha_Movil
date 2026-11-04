@@ -15,12 +15,13 @@ void main() {
     // infinitas (igual que sus keyframes en CSS) y el arbol nunca queda quieto.
     await tester.pump(const Duration(milliseconds: 800));
 
-    expect(find.text('¿Partido hoy?'), findsOneWidget);
-    expect(find.text('¿Listo para jugar?'), findsOneWidget);
+    // La franja de arriba: la píldora del buscador y las pestañas de deporte.
+    expect(find.text('Empieza tu búsqueda'), findsOneWidget);
+    expect(find.text('Todo'), findsOneWidget);
+    expect(find.text('Cerca de mí'), findsOneWidget);
     // La pestaña activa de la barra inferior es la unica que muestra su
     // nombre.
     expect(find.text('Inicio'), findsOneWidget);
-    expect(find.text('Todas'), findsOneWidget);
   });
 
   test('el tema usa los tokens de la web, no los de Material', () {
