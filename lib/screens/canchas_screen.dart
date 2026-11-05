@@ -11,6 +11,7 @@ import '../theme/shadows.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import '../widgets/court_card.dart';
+import '../widgets/foto_ciudad.dart';
 import '../widgets/courts_map.dart';
 import '../widgets/mobile_search_sheet.dart';
 import '../widgets/mobile_search_trigger.dart';
@@ -328,23 +329,35 @@ class _CanchasScreenState extends State<CanchasScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Explora canchas',
-            style: RtcType.xl2.copyWith(
-              fontSize: 28,
-              height: 1.15,
-              fontWeight: FontWeight.w800,
-              color: Gray.c900,
-              letterSpacing: -0.4,
+          // Con una ciudad elegida (desde "Explora por ciudad" o el
+          // buscador), la cabecera es una portada con la foto de la ciudad.
+          if (_ciudad.isNotEmpty)
+            _PortadaCiudad(
+              ciudad: _ciudad,
+              deporte: _deporte.isEmpty ? null : getSport(_deporte).label,
+              texto: _loadingCourts
+                  ? 'Buscando…'
+                  : '$_total ${_total == 1 ? 'cancha disponible' : 'canchas disponibles'}',
+            )
+          else ...[
+            Text(
+              'Explora canchas',
+              style: RtcType.xl2.copyWith(
+                fontSize: 28,
+                height: 1.15,
+                fontWeight: FontWeight.w800,
+                color: Gray.c900,
+                letterSpacing: -0.4,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            _loadingCourts
-                ? 'Buscando…'
-                : '$_total canchas disponibles en Colombia',
-            style: RtcType.sm.copyWith(color: Gray.c500),
-          ),
+            const SizedBox(height: 4),
+            Text(
+              _loadingCourts
+                  ? 'Buscando…'
+                  : '$_total canchas disponibles en Colombia',
+              style: RtcType.sm.copyWith(color: Gray.c500),
+            ),
+          ],
           const SizedBox(height: RtcSpace.s5),
           MobileSearchTrigger(
             key: _anchorKey,
@@ -606,7 +619,8 @@ class _CanchasScreenState extends State<CanchasScreen> {
   // ── CONTENIDO ────────────────────────────────────────────────────────
   Widget _content() {
     final aviso = _avisoBusqueda();
-    if (aviso == null && _ciudad.isEmpty) return _resultados();
+    // La ciudad elegida ya la dice la portada de arriba.
+    if (aviso == null) return _resultados();
 
     // El `pt-2` de la seccion ya lo pone `_resultados`; se descuenta de los
     // `mb-*` para que la separacion sume lo mismo que en la web.
@@ -624,31 +638,8 @@ class _CanchasScreenState extends State<CanchasScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (aviso != null) ...[
-                aviso,
-                SizedBox(
-                  height: _ciudad.isEmpty ? RtcSpace.s3 - pt : RtcSpace.s3,
-                ),
-              ],
-              // `md:hidden`: en movil si se ve.
-              if (_ciudad.isNotEmpty) ...[
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      const TextSpan(text: 'Canchas en '),
-                      TextSpan(
-                        text: _ciudad,
-                        style: RtcType.sm.copyWith(
-                          fontWeight: RtcType.semibold,
-                          color: Gray.c900,
-                        ),
-                      ),
-                    ],
-                  ),
-                  style: RtcType.sm.copyWith(color: Gray.c500),
-                ),
-                const SizedBox(height: RtcSpace.s5 - pt),
-              ],
+              aviso,
+              const SizedBox(height: RtcSpace.s3 - pt),
             ],
           ),
         ),
@@ -1367,6 +1358,97 @@ class _FiltrosRapidos extends StatelessWidget {
             onTap: onBaratas,
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Portada de los resultados con ciudad: la foto, "Canchas en" y el nombre,
+/// con la cantidad. Si la foto no carga, queda el degradado verde.
+class _PortadaCiudad extends StatelessWidget {
+  const _PortadaCiudad({
+    required this.ciudad,
+    required this.texto,
+    this.deporte,
+  });
+
+  final String ciudad;
+  final String texto;
+  final String? deporte;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(28),
+      child: SizedBox(
+        height: 200,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF15803D), GrisFijo.c900],
+                ),
+              ),
+            ),
+            FotoCiudad(ciudad: ciudad),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.10),
+                    Colors.black.withValues(alpha: 0.25),
+                    Colors.black.withValues(alpha: 0.75),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: RtcSpace.s5,
+              right: RtcSpace.s5,
+              bottom: RtcSpace.s5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    deporte == null
+                        ? 'Canchas en'
+                        : 'Canchas de ${deporte!.toLowerCase()} en',
+                    style: RtcType.sm.copyWith(
+                      color: const Color(0xFFBEF264),
+                      fontWeight: RtcType.semibold,
+                    ),
+                  ),
+                  Text(
+                    ciudad,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: RtcType.xl2.copyWith(
+                      fontSize: 32,
+                      height: 1.15,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    texto,
+                    style: RtcType.sm.copyWith(
+                      color: Colors.white.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

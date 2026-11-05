@@ -34,6 +34,8 @@ import '../data/mis_turnos.dart';
 import '../models/booking.dart';
 import '../widgets/mi_turno.dart';
 import '../widgets/icons/icono_deporte_3d.dart';
+import '../widgets/foto_ciudad.dart';
+import '../data/ciudades.dart';
 
 /// Inicio de la app.
 ///
@@ -318,6 +320,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
           ],
+          const SizedBox(height: RtcSpace.s8),
+          const _ExploraCiudades(),
           const SizedBox(height: RtcSpace.s5),
           const _BannerClubes(),
         ],
@@ -1246,6 +1250,155 @@ class _FilaCancha extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(LucideIcons.chevronRight, size: 18, color: Gray.c700),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── EXPLORA POR CIUDAD ───────────────────────────────────────────────────
+// Cada ciudad con su foto y cuántas canchas tiene (el total sale de la API,
+// una consulta chica por ciudad); al tocarla, Canchas ya filtrado. Las
+// ciudades sin canchas no salen.
+
+class _ExploraCiudades extends StatefulWidget {
+  const _ExploraCiudades();
+
+  @override
+  State<_ExploraCiudades> createState() => _ExploraCiudadesState();
+}
+
+class _ExploraCiudadesState extends State<_ExploraCiudades> {
+  List<(String, int, String)>? _ciudades;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargar();
+  }
+
+  Future<void> _cargar() async {
+    final lista = await Future.wait(
+      kCiudades.map((ciudad) async {
+        try {
+          final p = await courtsApi.getAll(city: ciudad, limit: 1);
+          final c = p.data.isEmpty ? null : p.data.first;
+          final foto = c == null
+              ? ''
+              : (c.photos.isNotEmpty
+                    ? c.photos.first
+                    : getSport(c.sport).image);
+          return (ciudad, p.total, foto);
+        } on RtcApiException {
+          return (ciudad, 0, '');
+        }
+      }),
+    );
+    if (!mounted) return;
+    setState(() {
+      _ciudades = lista.where((c) => c.$2 > 0).toList()
+        ..sort((a, b) => b.$2.compareTo(a.$2));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ciudades = _ciudades;
+    if (ciudades != null && ciudades.isEmpty) return const SizedBox.shrink();
+    final items = ciudades ?? const <(String, int, String)>[];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Titulo(
+          'Explora por ciudad',
+          accion: 'Ver todas',
+          onAccion: () => rtcNavigate('/empresas'),
+        ),
+        const SizedBox(height: RtcSpace.s3),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
+          child: ciudades == null
+              ? const SizedBox(height: 180)
+              : GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: RtcSpace.s3,
+                  crossAxisSpacing: RtcSpace.s3,
+                  childAspectRatio: 0.92,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    for (final c in items)
+                      _TarjetaCiudad(ciudad: c.$1, total: c.$2, respaldo: c.$3),
+                  ],
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TarjetaCiudad extends StatelessWidget {
+  const _TarjetaCiudad({
+    required this.ciudad,
+    required this.total,
+    required this.respaldo,
+  });
+
+  final String ciudad;
+  final int total;
+  final String respaldo;
+
+  @override
+  Widget build(BuildContext context) {
+    return RtcPressable(
+      onTap: () => rtcBuscarCanchas(city: ciudad),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Superficie.tarjeta,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: ColoredBox(
+                  color: Fondo.suave,
+                  child: FotoCiudad(ciudad: ciudad, respaldo: respaldo),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6, 10, 6, 4),
+              child: Row(
+                children: [
+                  Icon(LucideIcons.mapPin, size: 14, color: Green.c600),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      ciudad,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: RtcType.sm.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: Gray.c900,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6, 0, 6, 4),
+              child: Text(
+                '$total ${total == 1 ? 'cancha' : 'canchas'}',
+                style: RtcType.xs.copyWith(color: Gray.c500),
+              ),
             ),
           ],
         ),

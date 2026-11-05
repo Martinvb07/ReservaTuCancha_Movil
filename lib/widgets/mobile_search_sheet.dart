@@ -13,6 +13,7 @@ import '../theme/tokens.dart';
 import '../theme/typography.dart';
 import 'floating_actions.dart';
 import 'icons/city_glyph.dart';
+import '../data/ciudades.dart';
 import 'icons/icono_deporte_3d.dart';
 import 'icons/sport_icon.dart';
 import 'motion/rtc_motion.dart';
@@ -145,18 +146,8 @@ const _cityMeta = <String, ({String dept, Color bg, Color color})>{
   ),
 };
 
-/// `CITIES` de constants.ts.
-const _cities = [
-  'Villavicencio',
-  'Acacías',
-  'Restrepo',
-  'Bogotá',
-  'Medellín',
-  'Cali',
-  'Barranquilla',
-  'Bucaramanga',
-];
-
+/// `CITIES` de constants.ts (compartida en data/ciudades.dart).
+const _cities = kCiudades;
 /// `HOURS`: 06:00 a 23:00, guardadas en 24h.
 final _hours = [
   for (var i = 6; i < 24; i++) '${i.toString().padLeft(2, '0')}:00',
