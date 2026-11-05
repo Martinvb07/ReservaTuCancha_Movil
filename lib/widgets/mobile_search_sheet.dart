@@ -667,7 +667,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
               ),
               decoration: BoxDecoration(
                 color: _time.isEmpty ? Green.c50 : Colors.transparent,
-                borderRadius: RtcRadius.brXl,
+                borderRadius: RtcRadius.brFull,
               ),
               child: Row(
                 children: [
@@ -676,7 +676,7 @@ class _MobileSearchSheetState extends State<_MobileSearchSheet> {
                     height: 32,
                     decoration: BoxDecoration(
                       color: Green.c50,
-                      borderRadius: RtcRadius.brMd,
+                      shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       LucideIcons.clock,
@@ -799,18 +799,18 @@ class _OptionRow extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: active ? Green.c50 : Colors.transparent,
-          borderRadius: RtcRadius.brXl,
+          borderRadius: RtcRadius.brFull,
         ),
         child: Row(
           children: [
-            // w-10 h-10 rounded-xl
+            // w-10 h-10 rounded-full
             Container(
               width: 40,
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: background,
-                borderRadius: RtcRadius.brXl,
+                shape: BoxShape.circle,
               ),
               child: tile,
             ),
@@ -876,7 +876,7 @@ class _HourChip extends StatelessWidget {
           decoration: BoxDecoration(
             color: active ? Green.c600 : Colors.transparent,
             border: Border.all(color: active ? Green.c600 : Gray.c200),
-            borderRadius: RtcRadius.brLg,
+            borderRadius: RtcRadius.brFull,
           ),
           child: Text(
             label,
@@ -1097,7 +1097,7 @@ class _NavButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(6),
-        decoration: const BoxDecoration(borderRadius: RtcRadius.brLg),
+        decoration: const BoxDecoration(shape: BoxShape.circle),
         child: Icon(icon, size: 16, color: Gray.c500),
       ),
     );
