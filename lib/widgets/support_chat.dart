@@ -33,8 +33,8 @@ class SupportChat extends StatefulWidget {
   State<SupportChat> createState() => _SupportChatState();
 }
 
-const _whatsapp =
-    'https://wa.me/573124352786?text=Hola%2C%20vengo%20del%20asistente%20de%20ReservaTuCancha%20y%20necesito%20ayuda';
+const _correo =
+    'mailto:soporte@reservatucancha.site?subject=Vengo%20del%20asistente%20de%20ReservaTuCancha%20y%20necesito%20ayuda';
 
 /* Coreografia de un turno (ms). Cada paso encadena con el anterior para que
    nada aparezca ni desaparezca de golpe. */
@@ -196,8 +196,8 @@ class _SupportChatState extends State<SupportChat> {
     });
     _alFinal();
 
-    if (opcion.accion == 'whatsapp') {
-      _abrirExterno(_whatsapp);
+    if (opcion.accion == 'correo') {
+      _abrirExterno(_correo);
       return;
     }
 
@@ -548,13 +548,13 @@ class _SupportChatState extends State<SupportChat> {
       ),
       child: RtcPressable(
         behavior: HitTestBehavior.opaque,
-        onTap: () => _abrirExterno(_whatsapp),
+        onTap: () => _abrirExterno(_correo),
         child: Text.rich(
           TextSpan(
             children: [
               const TextSpan(text: '¿Prefieres hablar con una persona? '),
               TextSpan(
-                text: 'Escríbenos por WhatsApp',
+                text: 'Escríbenos un correo',
                 style: RtcType.xs.copyWith(
                   fontSize: 11,
                   color: Green.c600,

@@ -112,14 +112,14 @@ class RtcLayout extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: _AccesoAyuda(
-                          icono: LucideIcons.messageCircle,
-                          titulo: 'WhatsApp',
+                          icono: LucideIcons.mail,
+                          titulo: 'Correo',
                           detalle: 'Escríbenos directo',
-                          fondo: Green.c500,
+                          fondo: Blue.c500,
                           colorIcono: Colors.white,
                           onTap: () => cerrarY(
                             () => launchUrl(
-                              Uri.parse(kWhatsappSoporte),
+                              Uri.parse(kCorreoSoporte),
                               mode: LaunchMode.externalApplication,
                             ),
                           ),
@@ -196,7 +196,7 @@ class RtcLayout extends StatelessWidget {
                   Positioned.fill(
                     child: FloatingActions(
                       extraAbajo: conBarra ? kBottomNavEspacio - 8 : 72,
-                      // El asistente y WhatsApp viven en la pestaña "Más".
+                      // El asistente y el correo viven en la pestaña "Más".
                       botonesVisibles: false,
                     ),
                   ),
@@ -249,7 +249,7 @@ class RtcLayout extends StatelessWidget {
   }
 }
 
-/// Tarjeta de ayuda arriba de la hoja "Más": el asistente y WhatsApp, que
+/// Tarjeta de ayuda arriba de la hoja "Más": el asistente y el correo, que
 /// antes flotaban sobre todas las pantallas.
 class _AccesoAyuda extends StatelessWidget {
   const _AccesoAyuda({

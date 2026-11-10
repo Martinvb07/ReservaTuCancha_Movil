@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/motion.dart';
 import '../theme/palette.dart';
@@ -28,7 +27,7 @@ class FloatingActions extends StatefulWidget {
   /// inferior de la app.
   final double extraAbajo;
 
-  /// En la app los botones de chat y WhatsApp solo se muestran en Soporte:
+  /// En la app el boton del asistente solo se muestran en Soporte:
   /// en el resto tapaban el contenido. El chat sigue montado igual, para que
   /// Soporte lo pueda abrir y no se pierda la conversacion.
   final bool botonesVisibles;
@@ -56,8 +55,8 @@ class FloatingActions extends StatefulWidget {
 /// telefono no existe, asi que los dos flotantes son circulos de 56.
 const _tamano = 56.0;
 
-const kWhatsappSoporte =
-    'https://wa.me/573124352786?text=Hola%2C%20necesito%20ayuda%20con%20ReservaTuCancha';
+const kCorreoSoporte =
+    'mailto:soporte@reservatucancha.site?subject=Necesito%20ayuda%20con%20ReservaTuCancha';
 
 class _FloatingActionsState extends State<FloatingActions> {
   bool _chatAbiertoValor = false;
@@ -103,25 +102,9 @@ class _FloatingActionsState extends State<FloatingActions> {
     final abajo = MediaQuery.paddingOf(context).bottom + widget.extraAbajo;
     return Stack(
       children: [
-        // Con el chat abierto el FAB de WhatsApp queda debajo del panel: se
-        // desvanece en vez de desmontarse, que se ve como un parpadeo.
         Positioned(
           right: RtcSpace.s6,
-          bottom: RtcSpace.s6 + abajo,
-          child: _Fab(
-            oculto: _chatAbierto || !widget.botonesVisibles,
-            background: Green.c500,
-            foreground: Colors.white,
-            icon: LucideIcons.messageCircle,
-            onTap: () => launchUrl(
-              Uri.parse(kWhatsappSoporte),
-              mode: LaunchMode.externalApplication,
-            ),
-          ),
-        ),
-        Positioned(
-          right: RtcSpace.s6,
-          bottom: RtcSpace.s6 + _tamano + RtcSpace.s4 + abajo, // bottom-24
+          bottom: RtcSpace.s6 + abajo, // bottom-6
           child: _Fab(
             oculto: _chatAbierto || !widget.botonesVisibles,
             background: GrisFijo.c900,

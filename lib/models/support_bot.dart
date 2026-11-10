@@ -25,7 +25,7 @@ class SupportBotOpcion {
   /// Enlace interno (/canchas), externo o mailto:.
   final String? url;
 
-  /// Por ahora solo 'whatsapp'.
+  /// Por ahora solo 'correo' (abre el correo de soporte).
   final String? accion;
 
   factory SupportBotOpcion.fromJson(Map<String, dynamic> json) =>

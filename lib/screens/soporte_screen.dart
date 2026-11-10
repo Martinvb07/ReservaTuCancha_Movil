@@ -22,11 +22,10 @@ class SoporteScreen extends StatefulWidget {
   State<SoporteScreen> createState() => _SoporteScreenState();
 }
 
-const _whatsapp = 'https://wa.me/573124352786';
 const _email = 'soporte@reservatucancha.site';
 
 /// Abre un enlace externo. En la web son `<a target="_blank">`; aca salen a
-/// la app de WhatsApp o al cliente de correo del telefono.
+/// al cliente de correo del telefono.
 Future<void> _open(String url) async {
   final uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {
@@ -76,17 +75,6 @@ get _canales =>
         href: null,
         background: Green.c50,
         iconColor: Green.c600,
-      ),
-      (
-        icon: LucideIcons.phone,
-        title: 'WhatsApp',
-        desc:
-            'Si tu caso necesita revisión, escríbenos y te atendemos personalmente.',
-        cta: 'Abrir WhatsApp',
-        badge: null,
-        href: _whatsapp,
-        background: Emerald.c50,
-        iconColor: Emerald.c600,
       ),
       (
         icon: LucideIcons.mail,
@@ -147,7 +135,7 @@ get _faq => <String, List<(String, String)>>{
     (
       'Me cobraron pero no me llegó la confirmación',
       'Espera unos minutos y revisa spam. Si sigue sin llegar, escríbenos por '
-          'WhatsApp con el número de tu transacción y lo revisamos de inmediato.',
+          'correo con el número de tu transacción y lo revisamos de inmediato.',
     ),
   ],
   'Cambios': [
@@ -169,7 +157,7 @@ get _faq => <String, List<(String, String)>>{
     ),
     (
       '¿Y si me pasé del plazo?',
-      'Escríbenos por WhatsApp y hablamos con el club para ver qué se puede '
+      'Escríbenos por correo y hablamos con el club para ver qué se puede '
           'hacer. No lo prometemos, pero siempre lo intentamos.',
     ),
   ],
@@ -192,7 +180,7 @@ get _faq => <String, List<(String, String)>>{
     ),
     (
       'Llegué y la cancha estaba ocupada',
-      'Escríbenos por WhatsApp con tu código de reserva. Hablamos con el club y '
+      'Escríbenos por correo con tu código de reserva. Hablamos con el club y '
           'te ayudamos a resolverlo.',
     ),
   ],
@@ -334,18 +322,18 @@ class _SoporteScreenState extends State<SoporteScreen> {
           ),
           const SizedBox(height: RtcSpace.s3),
           Text(
-            'Escríbenos por WhatsApp con tu código de reserva y lo revisamos '
+            'Escríbenos por correo con tu código de reserva y lo revisamos '
             'contigo.',
             textAlign: TextAlign.center,
             style: RtcType.sm.copyWith(color: GrisFijo.c500),
           ),
           const SizedBox(height: RtcSpace.s6 + 4), // mt-7
           _CtaButton(
-            icon: LucideIcons.phone,
-            label: 'Escribir por WhatsApp',
+            icon: LucideIcons.mail,
+            label: 'Escribir por correo',
             background: Lime.c400,
             foreground: GrisFijo.c900,
-            onTap: () => _open(_whatsapp),
+            onTap: () => _open('mailto:$_email'),
           ),
           const SizedBox(height: RtcSpace.s3),
           _CtaButton(

@@ -106,7 +106,7 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           'Iniciar chat',
           Green.c50,
           Green.c600,
-          // Los tres botones de la web son `<button>` sin `onClick`: no
+          // Los botones de la web son `<button>` sin `onClick`: no
           // llevan a ningun lado todavia. Se portan igual de inertes.
           insignia: 'Más rápido',
         ),
@@ -118,15 +118,6 @@ class _SoporteOwnerScreenState extends State<SoporteOwnerScreen> {
           'Enviar email',
           Blue.c50,
           Blue.c600,
-        ),
-        const SizedBox(height: RtcSpace.s4),
-        _canal(
-          LucideIcons.phone,
-          'WhatsApp',
-          'Atención personalizada',
-          'Abrir chat',
-          Emerald.c50,
-          Emerald.c600,
         ),
         const SizedBox(height: RtcSpace.s8),
         _horario(),

@@ -106,8 +106,8 @@
    "mensaje": "No manejamos cancelaciones ni devoluciones de dinero.\n\nSi no puedes ir, mueve tu reserva a otro día u hora desde el correo de confirmación: el valor que ya pagaste se conserva completo.\n\nSi ya se te pasó el plazo de 24 horas, escríbenos y lo miramos con el club.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     }
    ]
   },
@@ -116,8 +116,8 @@
    "mensaje": "La confirmación llega al instante al correo que escribiste al reservar. Si no la ves:\n\n• Revisa las carpetas de spam y promociones.\n• Verifica que el correo esté bien escrito.\n• Espera 2 o 3 minutos: a veces el proveedor lo retiene.\n\nSi después de eso no aparece, escríbenos con tu nombre y la fecha de la reserva y la reenviamos.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     }
    ]
   },
@@ -158,11 +158,11 @@
   },
   "pagos-cobro-sin-reserva": {
    "esRespuesta": true,
-   "mensaje": "Eso tiene solución. Suele ocurrir cuando el banco deja el pago en estado «pendiente» y no alcanza a confirmarse a tiempo.\n\nEscríbenos por WhatsApp con la referencia de Wompi, el valor y la fecha. Verificamos la transacción y, si quedó un cobro sin reserva, se devuelve.",
+   "mensaje": "Eso tiene solución. Suele ocurrir cuando el banco deja el pago en estado «pendiente» y no alcanza a confirmarse a tiempo.\n\nEscríbenos a soporte@reservatucancha.site con la referencia de Wompi, el valor y la fecha. Verificamos la transacción y, si quedó un cobro sin reserva, se devuelve.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     }
    ]
   },
@@ -176,8 +176,8 @@
    "mensaje": "No hacemos devoluciones de dinero.\n\nEn lugar de eso puedes mover tu reserva a otro día u hora hasta 24 horas antes del turno, conservando lo que ya pagaste. El enlace está en tu correo de confirmación.\n\nSi se te pasó el plazo, escríbenos y lo miramos con el club.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     }
    ]
   },
@@ -345,8 +345,8 @@
    "mensaje": "Por ahora cada club maneja un solo usuario administrador. Si necesitas más, escríbenos y lo vemos contigo.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     }
    ]
   },
@@ -410,8 +410,8 @@
    "mensaje": "Escríbenos desde el correo registrado pidiendo dar de baja tu club. Lo confirmamos contigo, despublicamos las canchas y cerramos la cuenta.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     }
    ]
   },
@@ -420,8 +420,8 @@
    "mensaje": "Con gusto te conectamos con nuestro equipo.\n\nHorario de atención:\n• Lunes a viernes: 8:00 a. m. – 7:00 p. m.\n• Sábados: 9:00 a. m. – 2:00 p. m.\n(Colombia, UTC-5)\n\nFuera de ese horario déjanos el mensaje y respondemos apenas abramos.",
    "opciones": [
     {
-     "texto": "Escribir por WhatsApp",
-     "accion": "whatsapp"
+     "texto": "Escribir a soporte",
+     "accion": "correo"
     },
     {
      "texto": "Enviar un email",
