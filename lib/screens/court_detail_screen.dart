@@ -245,6 +245,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
             courtId: court.id,
             courtName: court.name,
             pricePerHour: court.pricePerHour,
+            priceRules: court.priceRules,
             availability: court.availability,
             initialDate: widget.initialDate,
             initialStart: widget.initialStart,
@@ -343,7 +344,7 @@ class _CourtDetailScreenState extends State<CourtDetailScreen> {
                   children: [
                     TextSpan(
                       text:
-                          '\$${formatCop(conTotal ? _reserva.total : court.pricePerHour)}',
+                          '\$${formatCop(conTotal ? _reserva.total : court.precioDesde)}',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,

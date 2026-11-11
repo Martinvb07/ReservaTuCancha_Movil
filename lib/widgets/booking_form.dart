@@ -9,6 +9,7 @@ import '../app/routes.dart';
 import '../booking/pago.dart';
 import '../models/court.dart';
 import '../models/fechas.dart';
+import '../models/precios.dart';
 import '../theme/palette.dart';
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
@@ -78,6 +79,7 @@ class BookingForm extends StatefulWidget {
     required this.courtId,
     required this.courtName,
     required this.pricePerHour,
+    this.priceRules = const [],
     required this.availability,
     this.initialDate,
     this.initialStart,
@@ -86,6 +88,9 @@ class BookingForm extends StatefulWidget {
   final String courtId;
   final String courtName;
   final int pricePerHour;
+
+  /// Franjas con otro precio (noche, fin de semana).
+  final List<ReglaPrecio> priceRules;
   final List<AvailabilitySlot> availability;
 
   /// Preseleccion desde el buscador (`yyyy-MM-dd` y `HH:mm`).
@@ -230,11 +235,20 @@ class _BookingFormState extends State<BookingForm> {
           _slotDuration * _selectedSlots.length,
         );
 
-  /// `Math.round(pricePerHour * slotDurationH * (selectedSlots.length || 1))`.
+  /// Con precios por horario el turno vale segun el dia y la hora: la misma
+  /// cuenta que hace el servidor al cobrar (`models/precios.dart`).
   int get _precioCancha {
-    final horas = _slotDuration / 60;
-    final n = _selectedSlots.isEmpty ? 1 : _selectedSlots.length;
-    return (widget.pricePerHour * horas * n).round();
+    final fecha = _selectedDate;
+    if (fecha == null || _selectedSlots.isEmpty) {
+      return (widget.pricePerHour * _slotDuration / 60).round();
+    }
+    return precioTurno(
+      widget.pricePerHour,
+      widget.priceRules,
+      diaSemanaJs(fecha),
+      _selectedSlots.first,
+      _endTime,
+    );
   }
 
   int get _tarifaServicio =>
@@ -551,7 +565,7 @@ class _BookingFormState extends State<BookingForm> {
         textBaseline: TextBaseline.alphabetic,
         children: [
           Text(
-            '\$${formatCop(widget.pricePerHour)}',
+            '\$${formatCop(precioMinimo(widget.pricePerHour, widget.priceRules))}',
             style: RtcType.xl2.copyWith(
               fontWeight: RtcType.bold,
               color: Gray.c900,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../theme/palette.dart';
+import 'precios.dart';
 
 /// Espeja `Court` de `Frontend/src/types/court.types.ts`.
 class Court {
@@ -22,6 +23,7 @@ class Court {
     this.photos = const [],
     this.amenities = const [],
     this.availability = const [],
+    this.priceRules = const [],
   });
 
   final String id;
@@ -46,6 +48,13 @@ class Court {
 
   /// Los dias y horas que abre la cancha. Sin esto no se puede reservar.
   final List<AvailabilitySlot> availability;
+
+  /// Franjas con otro precio (noche, fin de semana). Vacio: vale lo mismo
+  /// a toda hora.
+  final List<ReglaPrecio> priceRules;
+
+  /// El precio por hora mas bajo, para las tarjetas ("Desde").
+  int get precioDesde => precioMinimo(pricePerHour, priceRules);
 
   factory Court.fromJson(Map<String, dynamic> json) {
     final location = (json['location'] as Map<String, dynamic>?) ?? const {};
@@ -76,6 +85,12 @@ class Court {
           (json['availability'] as List?)
               ?.whereType<Map<String, dynamic>>()
               .map(AvailabilitySlot.fromJson)
+              .toList() ??
+          const [],
+      priceRules:
+          (json['priceRules'] as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(ReglaPrecio.fromJson)
               .toList() ??
           const [],
     );

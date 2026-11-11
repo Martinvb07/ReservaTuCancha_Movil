@@ -6,6 +6,7 @@ import '../../api/owner_api.dart';
 import '../../api/rtc_api.dart';
 import '../../models/court.dart';
 import '../../models/fechas.dart';
+import '../../models/precios.dart';
 import '../../theme/palette.dart';
 import '../../theme/tokens.dart';
 import '../../theme/typography.dart';
@@ -82,7 +83,13 @@ class _AnotarReservaState extends State<_AnotarReserva> {
   int get _precioLista {
     final cancha = _canchas.where((c) => c.id == _courtId).firstOrNull;
     if (cancha == null || _minutos <= 0) return 0;
-    return (cancha.pricePerHour * _minutos / 60).round();
+    return precioTurno(
+      cancha.pricePerHour,
+      cancha.priceRules,
+      diaSemanaJs(_fecha),
+      _hhmm(_desde),
+      _hhmm(_hasta),
+    );
   }
 
   bool get _listo =>
