@@ -311,7 +311,7 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
           ),
           const SizedBox(height: RtcSpace.s4),
           Text(
-            _error == null ? 'NO ENCONTRAMOS RESERVAS' : 'NO PUDIMOS BUSCAR',
+            _error == null ? 'No encontramos reservas' : 'No pudimos buscar',
             style: RtcType.sm.copyWith(
               fontWeight: FontWeight.w900,
               color: Gray.c500,

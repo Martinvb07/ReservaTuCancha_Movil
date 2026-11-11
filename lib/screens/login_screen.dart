@@ -261,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'INICIAR SESIÓN',
+                      'Iniciar sesión',
                       style: RtcType.xl3.copyWith(
                         fontWeight: FontWeight.w900,
                         color: Gray.c900,

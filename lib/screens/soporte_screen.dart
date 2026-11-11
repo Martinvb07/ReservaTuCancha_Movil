@@ -278,7 +278,7 @@ class _SoporteScreenState extends State<SoporteScreen> {
         child: Column(
           children: [
             Text(
-              'PREGUNTAS FRECUENTES',
+              'Preguntas frecuentes',
               textAlign: TextAlign.center,
               style: RtcType.xl2.copyWith(
                 fontWeight: FontWeight.w900,
@@ -313,7 +313,7 @@ class _SoporteScreenState extends State<SoporteScreen> {
       child: Column(
         children: [
           Text(
-            '¿NO ENCONTRASTE TU RESPUESTA?',
+            '¿No encontraste tu respuesta?',
             textAlign: TextAlign.center,
             style: RtcType.xl2.copyWith(
               color: Colors.white,

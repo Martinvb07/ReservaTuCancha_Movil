@@ -181,7 +181,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     const SizedBox(height: RtcSpace.s6),
     _titulillo('PAGO PROCESADO', Lime.c400),
     const SizedBox(height: RtcSpace.s2),
-    _titulo('¡TODO LISTO!'),
+    _titulo('¡Todo listo!'),
     const SizedBox(height: RtcSpace.s2),
     _bajada(
       'Tu pago fue recibido. Te enviamos los detalles al correo con el link '
@@ -207,7 +207,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     const SizedBox(height: RtcSpace.s6),
     _titulillo('PAGO NO APROBADO', Red.c400),
     const SizedBox(height: RtcSpace.s2),
-    _titulo('NO SE PUDO COBRAR'),
+    _titulo('No se pudo cobrar'),
     const SizedBox(height: RtcSpace.s2),
     _bajada(
       'El banco rechazó el pago, así que liberamos el horario para que otra '
@@ -225,7 +225,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen>
     const SizedBox(height: RtcSpace.s6),
     _titulillo('VERIFICANDO', Amber.c400),
     const SizedBox(height: RtcSpace.s2),
-    _titulo('ESTAMOS CONFIRMANDO'),
+    _titulo('Estamos confirmando'),
     const SizedBox(height: RtcSpace.s2),
     _bajada(
       'El pago está tardando más de lo normal en confirmarse. Si salió bien, '

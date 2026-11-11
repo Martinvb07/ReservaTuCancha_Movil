@@ -265,7 +265,10 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_cargando)
             const _CarruselEsqueleto()
           else if (filtradas.isEmpty)
-            _SinCanchas(deporte: _deporte)
+            _SinCanchas(
+              deporte: _deporte,
+              onVerTodas: () => setState(() => _deporte = null),
+            )
           else
             _Carrusel(canchas: filtradas, posicion: _posicion, cupo: _cupo),
           // Las favoritas, si hay alguna entre las canchas cargadas.
@@ -406,6 +409,40 @@ class _Franja extends StatelessWidget {
                     ),
                   ),
                   const ModoToggle(clubes: false),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Titular: dice qué es la app antes del buscador (igual que la web).
+          RtcFadeUp(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    const TextSpan(
+                      children: [
+                        TextSpan(text: 'Reserva tu cancha '),
+                        TextSpan(
+                          text: 'en segundos',
+                          style: TextStyle(color: Green.c600),
+                        ),
+                      ],
+                    ),
+                    style: RtcType.xl2.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: Gray.c900,
+                      letterSpacing: -0.4,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Elige el horario, paga en línea y a jugar.',
+                    style: RtcType.sm.copyWith(color: Gray.c500),
+                  ),
                 ],
               ),
             ),
@@ -1117,37 +1154,92 @@ class _CarruselEsqueleto extends StatelessWidget {
 }
 
 class _SinCanchas extends StatelessWidget {
-  const _SinCanchas({required this.deporte});
+  const _SinCanchas({required this.deporte, required this.onVerTodas});
 
   final String? deporte;
+
+  /// Vuelve a la pestaña "Todo" cuando el deporte elegido no tiene canchas.
+  final VoidCallback onVerTodas;
 
   @override
   Widget build(BuildContext context) {
     final nombre = deporte == null ? null : getSport(deporte!).label;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
-      padding: const EdgeInsets.all(RtcSpace.s6),
-      decoration: BoxDecoration(
-        color: Superficie.tarjeta,
-        borderRadius: BorderRadius.circular(28),
-      ),
-      child: Column(
-        children: [
-          Icon(LucideIcons.searchX, size: 32, color: Gray.c300),
-          const SizedBox(height: RtcSpace.s3),
-          Text(
-            rtcSinConexion.value
-                ? 'No pudimos cargar las canchas. Revisa tu conexión.'
-                : nombre == null
-                ? 'Todavía no hay canchas publicadas'
-                : 'No hay canchas de $nombre por ahora',
-            textAlign: TextAlign.center,
-            style: RtcType.sm.copyWith(
-              fontWeight: RtcType.semibold,
-              color: Gray.c700,
+    final sinConexion = rtcSinConexion.value;
+    return RtcFadeUp(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: RtcSpace.s5),
+        padding: const EdgeInsets.symmetric(
+          horizontal: RtcSpace.s6,
+          vertical: RtcSpace.s8,
+        ),
+        decoration: BoxDecoration(
+          color: Superficie.tarjeta,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: sinConexion ? Red.c50 : Green.c50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                sinConexion ? LucideIcons.wifiOff : LucideIcons.searchX,
+                size: 24,
+                color: sinConexion ? Red.c500 : Green.c600,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: RtcSpace.s4),
+            Text(
+              sinConexion
+                  ? 'No pudimos cargar las canchas'
+                  : nombre == null
+                  ? 'Pronto verás canchas aquí'
+                  : 'Aún no hay canchas de $nombre',
+              textAlign: TextAlign.center,
+              style: RtcType.base.copyWith(
+                fontWeight: RtcType.bold,
+                color: Gray.c900,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              sinConexion
+                  ? 'Revisa tu conexión e inténtalo otra vez.'
+                  : nombre == null
+                  ? 'Estamos sumando los primeros clubes. Vuelve en unos días.'
+                  : 'Prueba con otro deporte o mira todas las canchas.',
+              textAlign: TextAlign.center,
+              style: RtcType.sm.copyWith(color: Gray.c500),
+            ),
+            if (!sinConexion && nombre != null) ...[
+              const SizedBox(height: RtcSpace.s5),
+              RtcPressable(
+                onTap: onVerTodas,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: RtcSpace.s5,
+                    vertical: 10,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: GrisFijo.c900,
+                    borderRadius: RtcRadius.brFull,
+                  ),
+                  child: Text(
+                    'Ver todas',
+                    style: RtcType.sm.copyWith(
+                      fontWeight: RtcType.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

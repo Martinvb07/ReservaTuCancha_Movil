@@ -195,10 +195,10 @@ class _SolicitarAccesoScreenState extends State<SolicitarAccesoScreen> {
                       TextSpan(
                         children: [
                           const TextSpan(
-                            text: 'PUBLICA TU CANCHA Y EMPIEZA A\n',
+                            text: 'Publica tu cancha y empieza a\n',
                           ),
                           TextSpan(
-                            text: 'RECIBIR RESERVAS HOY',
+                            text: 'recibir reservas hoy',
                             style: const TextStyle(color: Lime.c400),
                           ),
                         ],
@@ -680,7 +680,7 @@ class _SuccessBodyState extends State<_SuccessBody>
           ),
           const SizedBox(height: RtcSpace.s6),
           Text(
-            '¡SOLICITUD ENVIADA!',
+            '¡Solicitud enviada!',
             textAlign: TextAlign.center,
             style: RtcType.xl3.copyWith(
               color: Colors.white,

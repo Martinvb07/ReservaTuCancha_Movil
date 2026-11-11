@@ -98,8 +98,8 @@ const _faq = <(String, String)>[
     'No hay mensualidad ni contrato. Al jugador se le suma una tarifa de '
         'servicio de \$2.000 sobre el precio de tu cancha, y de lo recaudado '
         'salen la pasarela y nuestra parte: frente a tu precio de lista eso es '
-        'cerca de un 5%, y menos cuando la cancha es más cara. Si nadie '
-        'reserva, no pagas nada.',
+        'entre un 4% y un 5% en la mayoría de canchas, y menos cuando la '
+        'cancha es más cara. Si nadie reserva, no pagas nada.',
   ),
   (
     '¿Cómo recibo los pagos?',
